@@ -1,0 +1,13 @@
+{
+	"$comment": "Emits the JS and .d.ts consumers load (dist/, committed: git dependencies install the repository as is). CI rebuilds and fails when dist differs from src.",
+	"extends": "./tsconfig.json",
+	"compilerOptions": {
+		"noEmit": false,
+		"rootDir": "src",
+		"outDir": "dist",
+		"declaration": true,
+		"sourceMap": false,
+		"newLine": "lf"
+	},
+	"include": ["src"]
+}

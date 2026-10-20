@@ -26,9 +26,6 @@ importers:
       ajv:
         specifier: 8.20.0
         version: 8.20.0
-      tsx:
-        specifier: '>=4'
-        version: 4.23.15
 
 packages:
 
@@ -1096,6 +1093,7 @@ snapshots:
       esbuild: 0.28.2
     optionalDependencies:
       fsevents: 2.3.3
+    optional: true
 
   typescript@6.0.3: {}
 

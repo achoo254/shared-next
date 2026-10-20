@@ -1,5 +1,7 @@
 node_modules/
 dist/
+# The built package is committed: git dependencies install the repository as is.
+!packages/brand/dist/
 coverage/
 *.tsbuildinfo
 .DS_Store

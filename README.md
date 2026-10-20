@@ -37,19 +37,14 @@ Trong `package.json` của workspace dùng gói (pnpm 11.9, đã thử cú pháp
 `git+file:`):
 
 ```json
-"@shared-next/brand": "github:achoo254/shared-next#v0.1.0&path:/packages/brand"
+"@shared-next/brand": "github:achoo254/shared-next#v0.2.0&path:/packages/brand"
 ```
 
-Lockfile ghi lại commit và đường dẫn, nên bản cài luôn đúng tag. Gói chỉ có mã nguồn TypeScript ESM (không có
-bước build), yêu cầu Node >=22.12:
-
-- **Vite, Vitest, tsx** chạy thẳng mã nguồn của gói.
-- **`node file.ts` không dùng được**: Node từ chối bỏ kiểu cho file nằm trong `node_modules`
-  (`ERR_UNSUPPORTED_NODE_MODULES_TYPE_STRIPPING`, đã thử trên Node 24.18). Script nào import gói này thì chạy bằng
-  `tsx` (thêm `tsx` vào devDependencies nếu chưa có).
-- **`tsc`**: mã nguồn import nội bộ bằng đuôi `.js`, nên `tsc` (cả `NodeNext` lẫn `Bundler`) đọc được mà sản phẩm
-  không cần bật `allowImportingTsExtensions`. Mã nguồn được kiểm với các cờ nghiêm nhất mà các sản phẩm dùng
-  (`exactOptionalPropertyTypes`, `noUncheckedIndexedAccess`, `noUnused*`, `verbatimModuleSyntax`).
+Lockfile ghi lại commit và đường dẫn, nên bản cài luôn đúng tag. Gói giao JavaScript ESM đã biên dịch kèm
+`.d.ts` (thư mục `packages/brand/dist`, commit vào git vì phụ thuộc git cài nguyên trạng repo), yêu cầu
+Node >=22.12. Mọi nơi dùng được như một gói npm thường: `node`, `vite.config.ts` với trình nạp cấu hình mặc định
+của Vite, Vitest, `tsc` (cả `NodeNext` lẫn `Bundler`). Mã nguồn TypeScript ở `packages/brand/src` để đọc và sửa;
+sản phẩm không import từ đó.
 
 ### Trỏ `$schema` về schema của gói
 
@@ -72,7 +67,7 @@ export const brand = defineBrand(config);
 
 ### Kiểm schema và sinh file (`pnpm brand:gen`)
 
-Mỗi sản phẩm giữ một script ngắn gọi `writeBrandFiles`. Ví dụ của chat (chạy bằng `tsx`):
+Mỗi sản phẩm giữ một script ngắn gọi `writeBrandFiles`. Ví dụ của chat:
 
 ```ts
 import { chromium } from "playwright"; // scribe: "@playwright/test"
@@ -131,7 +126,7 @@ Các phần còn lại thuộc từng sản phẩm, không nằm trong gói: b�
 
 ### Chặn tên sản phẩm viết cứng (`pnpm lint`)
 
-Dùng CLI (bin `check-brand`, shebang gọi `tsx`; `tsx` là peer dependency tùy chọn của gói) hoặc gọi
+Dùng CLI (bin `check-brand`, chạy bằng `node`) hoặc gọi
 `checkBrand({ root, appName, dirs, ... })` trong script riêng. Dòng `check:brand` trong `package.json` của từng sản
 phẩm, đã đối chiếu với repo hiện tại (20/10/2026): cùng tập file được đọc, cùng tập file áp luật literal, cùng tập
 HTML, 0 vi phạm như lệnh cũ:
@@ -190,18 +185,20 @@ Các luật bật theo sản phẩm:
 
 ## Phát hành
 
-1. Sửa trong repo này, chạy `pnpm lint`, `pnpm typecheck`, `pnpm test` (CI chạy đúng ba lệnh đó).
-2. Tăng `version` trong `packages/brand/package.json` theo semver: sửa lỗi là patch, thêm tùy chọn hay trường tùy
+1. Sửa mã nguồn trong `packages/brand/src`, chạy `pnpm lint`, `pnpm typecheck`.
+2. Biên dịch lại `dist`: `pnpm build`, rồi `pnpm test` (có test nạp `dist` qua `exports` của gói bằng `node`).
+3. Tăng `version` trong `packages/brand/package.json` theo semver: sửa lỗi là patch, thêm tùy chọn hay trường tùy
    chọn là minor, đổi hay bỏ API, schema, hoặc làm đổi file sinh ra của một sản phẩm là major (khi còn `0.x` thì
    minor).
-3. Commit, gắn tag trùng version rồi đẩy lên:
+4. Commit **cả `src` lẫn `dist`** trong cùng một commit. CI biên dịch lại và báo lỗi nếu `dist` khác bản đã commit.
+5. Gắn tag trùng version rồi đẩy lên `main`:
 
    ```sh
-   git tag v0.2.0
-   git push origin main v0.2.0
+   git tag v0.3.0
+   git push origin main v0.3.0
    ```
 
-4. Ở từng sản phẩm, đổi `#v0.1.0` thành tag mới trong `package.json`, chạy `pnpm install`, `pnpm brand:gen` và các
+6. Ở từng sản phẩm, đổi tag trong dòng phụ thuộc của `package.json`, chạy `pnpm install`, `pnpm brand:gen` và các
    bước kiểm của sản phẩm.
 
 Tag đã đẩy thì không sửa hay gắn lại: lockfile của các sản phẩm ghi commit của tag đó.
@@ -230,5 +227,6 @@ Localman, Miu World) không thuộc phạm vi của bất kỳ license mã ngu�
 pnpm install
 pnpm lint        # Biome
 pnpm typecheck   # tsc cho toàn bộ gói, rồi riêng hai entry trình duyệt với lib DOM và không có kiểu Node
-pnpm test        # Vitest
+pnpm build       # tsc -> packages/brand/dist (commit kết quả)
+pnpm test        # Vitest, kể cả test nạp dist bằng node
 ```

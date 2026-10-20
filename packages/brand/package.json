@@ -1,36 +1,42 @@
 {
 	"name": "@shared-next/brand",
-	"version": "0.1.0",
+	"version": "0.2.0",
 	"description": "Brand config (name, colours, icons, ids, hosts) of the *-next products: schema, browser-safe loader, manifest/icon generator and product-name checker",
 	"type": "module",
 	"engines": {
 		"node": ">=22.12"
 	},
+	"types": "./dist/index.d.ts",
 	"exports": {
-		".": "./src/index.ts",
-		"./hosts": "./src/hosts.ts",
-		"./build": "./src/build.ts",
-		"./check-brand": "./src/check-brand.ts",
+		".": {
+			"types": "./dist/index.d.ts",
+			"default": "./dist/index.js"
+		},
+		"./hosts": {
+			"types": "./dist/hosts.d.ts",
+			"default": "./dist/hosts.js"
+		},
+		"./build": {
+			"types": "./dist/build.d.ts",
+			"default": "./dist/build.js"
+		},
+		"./check-brand": {
+			"types": "./dist/check-brand.d.ts",
+			"default": "./dist/check-brand.js"
+		},
 		"./brand.config.schema.json": "./brand.config.schema.json",
 		"./package.json": "./package.json"
 	},
 	"bin": {
-		"check-brand": "./src/check-brand/bin.ts"
+		"check-brand": "./dist/check-brand/bin.js"
 	},
-	"files": ["src", "brand.config.schema.json", "README.md"],
+	"files": ["dist", "brand.config.schema.json", "README.md"],
 	"scripts": {
+		"build": "node --eval \"require('node:fs').rmSync('dist',{recursive:true,force:true})\" && tsc -p tsconfig.build.json && node --eval \"require('node:fs').chmodSync('dist/check-brand/bin.js',0o755)\"",
 		"typecheck": "tsc -p tsconfig.json && tsc -p tsconfig.browser.json",
 		"test": "vitest run --maxWorkers=2"
 	},
 	"dependencies": {
 		"ajv": "8.20.0"
-	},
-	"peerDependencies": {
-		"tsx": ">=4"
-	},
-	"peerDependenciesMeta": {
-		"tsx": {
-			"optional": true
-		}
 	}
 }
