@@ -1,0 +1,129 @@
+{
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"$id": "https://github.com/achoo254/shared-next/packages/brand/brand.config.schema.json",
+	"title": "Brand configuration",
+	"description": "Product name, colours, icons, identifiers and hosts of one *-next product (@shared-next/brand). Renaming the product means editing brand.config.json, regenerating (pnpm brand:gen) and rebuilding; no product name is hard-coded elsewhere. Optional fields exist for the products that use them; a product makes them mandatory with parseBrandConfig(value, { require: [...] }).",
+	"type": "object",
+	"additionalProperties": false,
+	"required": [
+		"appName",
+		"shortName",
+		"description",
+		"colors",
+		"icon",
+		"iconMaskable",
+		"appIds",
+		"urlScheme",
+		"primaryTenant",
+		"hostTemplates"
+	],
+	"properties": {
+		"$schema": { "type": "string" },
+		"appName": { "type": "string", "minLength": 1, "maxLength": 40 },
+		"shortName": { "type": "string", "minLength": 1, "maxLength": 12 },
+		"description": { "type": "string", "minLength": 1, "maxLength": 200 },
+		"colors": {
+			"description": "Colours around the page (web manifest, browser chrome, native splash). Each product keeps them equal to its design tokens. primary is the accent (--c-primary-solid), theme a dedicated toolbar colour, background the light page background, backgroundDark the dark one.",
+			"type": "object",
+			"additionalProperties": false,
+			"required": ["background"],
+			"properties": {
+				"primary": { "$ref": "#/$defs/hexColor" },
+				"theme": { "$ref": "#/$defs/hexColor" },
+				"background": { "$ref": "#/$defs/hexColor" },
+				"backgroundDark": { "$ref": "#/$defs/hexColor" }
+			}
+		},
+		"icon": {
+			"description": "Master icon relative to the product's brand root: an SVG the generator draws the favicon and PNG icons from, or a pre-rendered PNG.",
+			"$ref": "#/$defs/assetPath"
+		},
+		"iconMaskable": {
+			"description": "Full-bleed icon whose artwork stays inside the central 80% circle: manifest maskable icons and the Apple touch icon.",
+			"$ref": "#/$defs/assetPath"
+		},
+		"webInstall": {
+			"description": "Whether the web app links, serves and emits the web manifest and icons (installable site).",
+			"type": "boolean"
+		},
+		"appIds": {
+			"description": "Store and bundle identifiers of the Capacitor shells (iOS, Android). There is no native desktop app: desktop is the installable web app (PWA). Changing one makes the store treat it as a different app.",
+			"type": "object",
+			"additionalProperties": false,
+			"required": ["ios"],
+			"properties": {
+				"ios": { "$ref": "#/$defs/reverseDomain" },
+				"android": { "$ref": "#/$defs/reverseDomain" }
+			}
+		},
+		"urlScheme": {
+			"description": "Private-use URI scheme (RFC 8252): deep links and the native OIDC redirect the IdP registers.",
+			"$ref": "#/$defs/reverseDomain"
+		},
+		"primaryTenant": {
+			"type": "object",
+			"additionalProperties": false,
+			"required": ["domain", "issuer"],
+			"properties": {
+				"domain": { "$ref": "#/$defs/domain" },
+				"issuer": {
+					"type": "string",
+					"pattern": "^https://([a-z0-9]([a-z0-9-]*[a-z0-9])?\\.)+[a-z]{2,}$"
+				}
+			}
+		},
+		"hostTemplates": {
+			"description": "Hosts of one tenant; {domain} is the tenant's domain.",
+			"type": "object",
+			"additionalProperties": false,
+			"required": ["web"],
+			"properties": {
+				"web": { "$ref": "#/$defs/hostTemplate" }
+			}
+		},
+		"sharedDomains": {
+			"description": "Registrable domains shared by every tenant and never under a tenant's domain, so their content is not same-site with the app.",
+			"type": "object",
+			"additionalProperties": false,
+			"required": ["media", "miniApp"],
+			"properties": {
+				"media": { "$ref": "#/$defs/domain" },
+				"miniApp": { "$ref": "#/$defs/domain" }
+			}
+		},
+		"devOrigins": {
+			"description": "Extra origins accepted only by development builds.",
+			"type": "array",
+			"items": {
+				"type": "string",
+				"pattern": "^http://(localhost|127\\.0\\.0\\.1)(:[0-9]{1,5})?$"
+			},
+			"uniqueItems": true
+		},
+		"pushSenderName": {
+			"description": "Title of push notifications that hide the message.",
+			"type": "string",
+			"minLength": 1,
+			"maxLength": 40
+		}
+	},
+	"$defs": {
+		"hexColor": { "type": "string", "pattern": "^#[0-9a-f]{6}$" },
+		"assetPath": {
+			"type": "string",
+			"pattern": "^(?!.*(^|/)\\.\\.(/|$))[a-z0-9][a-z0-9/._-]*\\.(svg|png)$"
+		},
+		"reverseDomain": {
+			"type": "string",
+			"pattern": "^[a-z][a-z0-9]*(\\.[a-z][a-z0-9-]*){2,}$"
+		},
+		"domain": {
+			"type": "string",
+			"pattern": "^([a-z0-9]([a-z0-9-]*[a-z0-9])?\\.)+[a-z]{2,}$"
+		},
+		"hostTemplate": {
+			"type": "string",
+			"pattern": "^([a-z0-9-]+\\.)+\\{domain\\}$"
+		}
+	}
+}

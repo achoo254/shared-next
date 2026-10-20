@@ -1,0 +1,31 @@
+{
+  "$schema": "./brand.config.schema.json",
+  "appName": "Chat",
+  "shortName": "Chat",
+  "description": "Nhắn tin nhanh trên web, điện thoại và máy tính.",
+  "colors": {
+    "primary": "#6e56cf",
+    "background": "#f9f9fb",
+    "backgroundDark": "#111113"
+  },
+  "icon": "brand/icon.svg",
+  "iconMaskable": "brand/icon-maskable.svg",
+  "appIds": {
+    "ios": "com.hoandat.chat",
+    "android": "com.hoandat.chat"
+  },
+  "urlScheme": "com.hoandat.chat",
+  "primaryTenant": {
+    "domain": "hoandat.com",
+    "issuer": "https://auth.hoandat.com"
+  },
+  "hostTemplates": {
+    "web": "chat.{domain}"
+  },
+  "sharedDomains": {
+    "media": "media.chat-media.invalid",
+    "miniApp": "chat-apps.invalid"
+  },
+  "devOrigins": ["http://localhost:5173"],
+  "pushSenderName": "Chat"
+}

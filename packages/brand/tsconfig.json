@@ -1,0 +1,24 @@
+{
+	"$comment": "Consumers type-check these sources with their own options, so this file turns on the strictest flags any consumer uses (chat: exactOptionalPropertyTypes; scribe and miu: noUnused*). erasableSyntaxOnly keeps the code runnable by type stripping.",
+	"compilerOptions": {
+		"target": "ES2023",
+		"module": "NodeNext",
+		"moduleResolution": "NodeNext",
+		"lib": ["ES2023"],
+		"types": ["node"],
+		"noEmit": true,
+		"strict": true,
+		"noUncheckedIndexedAccess": true,
+		"exactOptionalPropertyTypes": true,
+		"noImplicitOverride": true,
+		"noFallthroughCasesInSwitch": true,
+		"noUnusedLocals": true,
+		"noUnusedParameters": true,
+		"verbatimModuleSyntax": true,
+		"isolatedModules": true,
+		"erasableSyntaxOnly": true,
+		"resolveJsonModule": true,
+		"skipLibCheck": true
+	},
+	"include": ["src", "test", "vitest.config.ts"]
+}

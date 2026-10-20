@@ -1,0 +1,9 @@
+{
+	"$comment": "Proves the browser-safe entries (. and ./hosts) compile with the DOM library and without Node types, as a web app's tsconfig sees them.",
+	"extends": "./tsconfig.json",
+	"compilerOptions": {
+		"lib": ["ES2023", "DOM"],
+		"types": []
+	},
+	"include": ["src/index.ts", "src/hosts.ts"]
+}
