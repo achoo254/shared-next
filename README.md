@@ -218,8 +218,8 @@ Tag đã đẩy thì không sửa hay gắn lại: lockfile của các sản ph�
 
 ## Giấy phép
 
-Chưa có license — mọi quyền được bảo lưu cho tới khi chủ sở hữu chọn. Tên và logo của các sản phẩm (Chat, Scribe,
-Localman, Miu World) không thuộc phạm vi của bất kỳ license mã nguồn nào được chọn sau này.
+Mã nguồn theo license MIT (xem `LICENSE`). Tên và logo của các sản phẩm (Chat, Scribe, Localman, Miu World,
+Auth Next) không thuộc phạm vi license này.
 
 ## Phát triển
 
