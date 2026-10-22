@@ -1,7 +1,12 @@
 # shared-next
 
 Các gói dùng chung của hệ sản phẩm *-next (chat-next, scribe-next, localman-next, miu-world-next).
-Hiện có một gói: **`@shared-next/brand`** (thư mục `packages/brand`).
+Hiện có hai gói:
+
+- **`@shared-next/brand`** (thư mục `packages/brand`): cấu hình thương hiệu, mô tả bên dưới.
+- **`@shared-next/capacitor-system-auth`** (thư mục `packages/capacitor-system-auth`): plugin Capacitor 8 mở
+  trang đăng nhập trong trình duyệt hệ thống (iOS `ASWebAuthenticationSession`, Android Auth Tab / Custom Tabs)
+  và trả URL callback. Cách dùng và cấu hình app: [`packages/capacitor-system-auth/README.md`](packages/capacitor-system-auth/README.md).
 
 ## `@shared-next/brand` là gì
 

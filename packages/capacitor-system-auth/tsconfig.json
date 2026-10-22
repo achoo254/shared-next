@@ -1,0 +1,23 @@
+{
+	"$comment": "Strictest flags any consumer uses, as in packages/brand. Browser code: DOM lib, no Node types.",
+	"compilerOptions": {
+		"target": "ES2022",
+		"module": "NodeNext",
+		"moduleResolution": "NodeNext",
+		"lib": ["ES2023", "DOM"],
+		"types": [],
+		"noEmit": true,
+		"strict": true,
+		"noUncheckedIndexedAccess": true,
+		"exactOptionalPropertyTypes": true,
+		"noImplicitOverride": true,
+		"noFallthroughCasesInSwitch": true,
+		"noUnusedLocals": true,
+		"noUnusedParameters": true,
+		"verbatimModuleSyntax": true,
+		"isolatedModules": true,
+		"erasableSyntaxOnly": true,
+		"skipLibCheck": true
+	},
+	"include": ["src", "test", "vitest.config.ts"]
+}

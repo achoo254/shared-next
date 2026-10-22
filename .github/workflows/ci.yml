@@ -39,8 +39,8 @@ jobs:
       - run: pnpm build
       - name: dist matches src
         run: |
-          git diff --exit-code -- packages/brand/dist
-          untracked="$(git status --porcelain --untracked-files=all -- packages/brand/dist)"
+          git diff --exit-code -- packages/*/dist
+          untracked="$(git status --porcelain --untracked-files=all -- packages/*/dist)"
           if [ -n "$untracked" ]; then echo "$untracked"; echo "dist is out of date: run pnpm build and commit"; exit 1; fi
 
       - run: pnpm test

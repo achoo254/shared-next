@@ -1,0 +1,8 @@
+# SwiftPM / Xcode output of `pnpm verify:ios`
+.build/
+.swiftpm/
+DerivedData/
+# Android Gradle output (the module is compiled inside the consuming app)
+android/build/
+android/.gradle/
+Package.resolved

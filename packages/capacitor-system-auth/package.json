@@ -1,0 +1,46 @@
+{
+	"name": "@shared-next/capacitor-system-auth",
+	"version": "0.1.0",
+	"description": "Capacitor 8 plugin: open an authorization URL in the system browser session (ASWebAuthenticationSession, Auth Tab / Custom Tabs) and return the callback URL",
+	"type": "module",
+	"types": "./dist/index.d.ts",
+	"module": "./dist/index.js",
+	"main": "./dist/index.js",
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"default": "./dist/index.js"
+		},
+		"./package.json": "./package.json"
+	},
+	"files": [
+		"dist",
+		"android/src/main/",
+		"android/build.gradle",
+		"ios/Sources",
+		"Package.swift",
+		"README.md"
+	],
+	"capacitor": {
+		"ios": {
+			"src": "ios"
+		},
+		"android": {
+			"src": "android"
+		}
+	},
+	"keywords": ["capacitor", "plugin", "native"],
+	"scripts": {
+		"build": "node --eval \"require('node:fs').rmSync('dist',{recursive:true,force:true})\" && tsc -p tsconfig.build.json",
+		"typecheck": "tsc -p tsconfig.json",
+		"test": "vitest run --maxWorkers=2",
+		"verify:ios": "xcodebuild -scheme SharedNextCapacitorSystemAuth -destination 'generic/platform=iOS Simulator' build"
+	},
+	"peerDependencies": {
+		"@capacitor/core": "^8.0.0"
+	},
+	"devDependencies": {
+		"@capacitor/core": "8.5.3"
+	},
+	"license": "MIT"
+}
