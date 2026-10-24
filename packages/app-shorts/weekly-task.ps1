@@ -7,6 +7,8 @@ param(
 )
 
 $ErrorActionPreference = "Continue"
+# The tools print UTF-8; without this the log gets Vietnamese text decoded with the OEM code page.
+[Console]::OutputEncoding = [System.Text.Encoding]::UTF8
 $package = $PSScriptRoot
 $workspace = (Resolve-Path (Join-Path $package "..\..\..")).Path
 $shared = Join-Path $workspace "shared-next"

@@ -72,6 +72,7 @@ và chỉ lưu khi kênh được cấp đúng là `--channel`.
 
 **Quyền xem mặc định là `public`** (người sở hữu chốt 24/10/2026); `--privacy private` để xem trước.
 
-**Giới hạn của Google:** video tải lên qua API từ project chưa qua kiểm tra tuân thủ (API Compliance Audit)
-bị khóa ở chế độ riêng tư dù gửi `public`. Muốn API đăng công khai thì nộp mẫu kiểm tra trong Cloud Console;
-trước đó, video đăng qua API phải được đổi sang công khai trong YouTube Studio.
+**Giới hạn của Google:** tài liệu `videos.insert` cảnh báo video tải lên từ project chưa qua kiểm tra tuân thủ
+(API Compliance Audit) có thể bị khóa ở chế độ riêng tư. Lần đăng thật đầu tiên (24/10/2026, `chat-search`,
+`Oqh1Ue6s5WA`) vẫn ra công khai (`privacyStatus: public` qua `videos.list`). Nếu sau này video bị khóa, nộp
+mẫu kiểm tra (bản nháp câu trả lời: `hoandat-app/plans/reports/youtube-api-audit-draft-261024.md`).
