@@ -28,9 +28,17 @@ function Save-Ledger([string]$repo, [string[]]$paths, [string]$message) {
 	if ($LASTEXITCODE -eq 0) { return }
 	# Commit only the ledger, even if someone else staged other files in the meantime.
 	git -C $repo commit -q -m $message -- $paths 2>&1 | Out-File -FilePath $log -Append -Encoding utf8
-	git -C $repo pull -q --rebase --autostash origin main 2>&1 | Out-File -FilePath $log -Append -Encoding utf8
 	git -C $repo push -q origin main 2>&1 | Out-File -FilePath $log -Append -Encoding utf8
-	Write-Log "${repo}: ledger pushed (exit $LASTEXITCODE)"
+	if ($LASTEXITCODE -ne 0) {
+		# Behind origin: rebase only on a clean tree, so another session's unfinished work is never stashed.
+		if (git -C $repo status --porcelain --untracked-files=no) {
+			Write-Log "${repo}: push rejected and the tree has other changes; ledger left committed locally"
+			return
+		}
+		git -C $repo pull -q --rebase origin main 2>&1 | Out-File -FilePath $log -Append -Encoding utf8
+		git -C $repo push -q origin main 2>&1 | Out-File -FilePath $log -Append -Encoding utf8
+	}
+	Write-Log "${repo}: ledger push exit $LASTEXITCODE"
 }
 
 Write-Log "start"
