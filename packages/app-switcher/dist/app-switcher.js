@@ -1,6 +1,6 @@
 import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
 /**
- * The 9-dot button and its popover of links to the tenant's other apps: a
+ * The 9-dot button and its popover of links to the other apps: a
  * non-modal <dialog> shown with the `open` attribute (never showModal, so
  * the page stays usable and the popover sits next to its button).
  * No inline styles (Scribe's CSP has no style-src 'unsafe-inline'), no
@@ -30,7 +30,7 @@ function safeLinks(options) {
     }
 }
 export function AppSwitcher(props) {
-    const { current, tenantDomain, isPrimaryTenant, onOpen } = props;
+    const { current, domain, onOpen } = props;
     const locale = resolveAppSwitcherLocale(props.locale);
     const panelId = useId();
     const [open, setOpen] = useState(false);
@@ -42,9 +42,9 @@ export function AppSwitcher(props) {
     usePopoverDismiss(open, close, refs);
     // An installed PWA would load the other app in its own window.
     const newContext = useStandaloneDisplay() && !onOpen;
-    const { links, error } = useMemo(() => safeLinks({ current, tenantDomain, isPrimaryTenant, locale }), [current, tenantDomain, isPrimaryTenant, locale]);
+    const { links, error } = useMemo(() => safeLinks({ current, domain, locale }), [current, domain, locale]);
     useEffect(() => {
-        // A wrong tenant domain hides the switcher; the app keeps working.
+        // A wrong domain hides the switcher; the app keeps working.
         if (error !== undefined)
             console.error(error);
     }, [error]);

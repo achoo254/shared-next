@@ -1,6 +1,6 @@
 /**
  * The built package, loaded the way consumers load it: plain Node resolving
- * `@shared-next/app-switcher` through package.json `exports` (no Vite).
+ * `@achoo254/app-switcher` through package.json `exports` (no Vite).
  * CI rebuilds dist/ before this and fails when it differs from the commit.
  */
 import { execFileSync } from "node:child_process";
@@ -41,15 +41,16 @@ describe("dist", () => {
 	it("exports through package.json what the sources export and builds links", () => {
 		const loaded = JSON.parse(
 			node(`
-				const mod = await import("@shared-next/app-switcher");
-				const links = mod.appSwitcherLinks({ current: "chat", tenantDomain: "hoandat.com", isPrimaryTenant: false, locale: "en" });
-				const css = import.meta.resolve("@shared-next/app-switcher/app-switcher.css");
+				const mod = await import("@achoo254/app-switcher");
+				const links = mod.appSwitcherLinks({ current: "chat", domain: "hoandat.com", locale: "en" });
+				const css = import.meta.resolve("@achoo254/app-switcher/app-switcher.css");
 				process.stdout.write(JSON.stringify({ keys: Object.keys(mod).sort(), links: links.map((l) => l.href), css: css.endsWith("/dist/app-switcher.css") }));
 			`),
 		);
 		expect(loaded).toEqual({
 			keys: Object.keys(srcIndex).sort(),
 			links: [
+				"https://scribe.hoandat.com/?utm_source=chat&utm_medium=app_switcher",
 				"https://localman.hoandat.com/?utm_source=chat&utm_medium=app_switcher",
 				"https://tunnel.hoandat.com/?utm_source=chat&utm_medium=app_switcher",
 				"https://auth.hoandat.com/account?utm_source=chat&utm_medium=app_switcher",

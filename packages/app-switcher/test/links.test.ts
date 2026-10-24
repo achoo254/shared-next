@@ -11,11 +11,10 @@ function ids(links: { readonly id: string }[]): string[] {
 }
 
 describe("appSwitcherLinks", () => {
-	it("lists every other app, then the account page, on the primary tenant", () => {
+	it("lists every other app, then the account page", () => {
 		const links = appSwitcherLinks({
 			current: "localman",
-			tenantDomain: "hoandat.com",
-			isPrimaryTenant: true,
+			domain: "hoandat.com",
 			locale: "en",
 		});
 		expect(ids(links)).toEqual(["chat", "scribe", "tunelo", "account"]);
@@ -27,19 +26,18 @@ describe("appSwitcherLinks", () => {
 		]);
 	});
 
-	it("leaves out Scribe on another tenant and keeps Chat", () => {
+	it("builds every host under the domain it is given", () => {
 		const links = appSwitcherLinks({
 			current: "localman",
-			tenantDomain: "inetdev.io.vn",
-			isPrimaryTenant: false,
+			domain: "example.org",
 			locale: "vi",
 		});
-		expect(ids(links)).toEqual(["chat", "tunelo", "account"]);
+		expect(ids(links)).toEqual(["chat", "scribe", "tunelo", "account"]);
 		expect(links[0]?.href).toBe(
-			"https://chat.inetdev.io.vn/?utm_source=localman&utm_medium=app_switcher",
+			"https://chat.example.org/?utm_source=localman&utm_medium=app_switcher",
 		);
 		expect(links[1]?.href).toBe(
-			"https://tunnel.inetdev.io.vn/?utm_source=localman&utm_medium=app_switcher",
+			"https://scribe.example.org/?utm_source=localman&utm_medium=app_switcher",
 		);
 	});
 
@@ -48,8 +46,7 @@ describe("appSwitcherLinks", () => {
 		(current) => {
 			const links = appSwitcherLinks({
 				current,
-				tenantDomain: "hoandat.com",
-				isPrimaryTenant: true,
+				domain: "hoandat.com",
 				locale: "en",
 			});
 			expect(ids(links)).not.toContain(current);
@@ -71,8 +68,7 @@ describe("appSwitcherLinks", () => {
 	it("labels the links in the requested locale", () => {
 		const options = {
 			current: "chat",
-			tenantDomain: "hoandat.com",
-			isPrimaryTenant: true,
+			domain: "hoandat.com",
 		} as const;
 		const account = (locale: "en" | "vi" | "zh-CN") =>
 			appSwitcherLinks({ ...options, locale }).at(-1)?.label;
@@ -112,8 +108,7 @@ describe("appSwitcherLinks", () => {
 	it("labels the links of a regional tag such as vi-VN", () => {
 		const [first] = appSwitcherLinks({
 			current: "chat",
-			tenantDomain: "hoandat.com",
-			isPrimaryTenant: true,
+			domain: "hoandat.com",
 			locale: "vi-VN",
 		});
 		expect(first?.description).toBe(
@@ -127,23 +122,21 @@ describe("appSwitcherLinks", () => {
 		"hoandat.com/x",
 		"localhost",
 		"",
-	])("rejects %j as a tenant domain", (tenantDomain) => {
+	])("rejects %j as a root domain", (domain) => {
 		expect(() =>
 			appSwitcherLinks({
 				current: "chat",
-				tenantDomain,
-				isPrimaryTenant: true,
+				domain,
 				locale: "en",
 			}),
-		).toThrow("is not a tenant domain");
+		).toThrow("is not a root domain");
 	});
 
 	it("rejects an app that is not in the catalog", () => {
 		expect(() =>
 			appSwitcherLinks({
 				current: "miu" as AppSwitcherAppId,
-				tenantDomain: "hoandat.com",
-				isPrimaryTenant: true,
+				domain: "hoandat.com",
 				locale: "en",
 			}),
 		).toThrow('"miu" is not a catalog app');

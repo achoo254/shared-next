@@ -27,7 +27,7 @@ function valueAt(root, path) {
  * type. It checks only that the required fields are non-empty strings;
  * the full schema needs Ajv, which compiles validators with `new Function`
  * (blocked by a strict CSP), so it runs at build time instead through
- * `parseBrandConfig` of `@shared-next/brand/build`.
+ * `parseBrandConfig` of `@achoo254/brand/build`.
  */
 export function defineBrand(config) {
     const missing = REQUIRED_STRINGS.filter((path) => {

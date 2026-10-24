@@ -58,7 +58,7 @@ describe("hosts", () => {
 			"$&.vn",
 		]) {
 			expect(() => hostsFor(chat, domain), domain).toThrow(
-				/is not a tenant domain/,
+				/is not a root domain/,
 			);
 		}
 		expect(() => allowedOrigins(chat, "evil.vn/x", false)).toThrow();

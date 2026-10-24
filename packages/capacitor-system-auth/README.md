@@ -1,4 +1,4 @@
-# @shared-next/capacitor-system-auth
+# @achoo254/capacitor-system-auth
 
 Capacitor 8 plugin that opens an authorization URL in the **system browser session** and returns the callback
 URL. The *-next apps use it to sign in, never in a WebView (Google rejects WebView OAuth with
@@ -12,20 +12,28 @@ The plugin only runs the browser part. PKCE, `state`/`nonce` checks and the code
 
 ## Install
 
-In the app's `package.json` (same git-tag scheme as `@shared-next/brand`; the tag is a release of this repo):
-
-```json
-"@shared-next/capacitor-system-auth": "github:achoo254/shared-next#<tag>&path:/packages/capacitor-system-auth"
+```sh
+npm install @achoo254/capacitor-system-auth
+npx cap sync
 ```
 
-Then `pnpm install` and `npx cap sync`. The package ships built JS (`dist/`, committed) plus the native
+pnpm 11 refuses versions published less than 24 hours ago (`minimumReleaseAge`, 1440 minutes by default). To
+install a release on its first day, list that exact version in `pnpm-workspace.yaml`:
+
+```yaml
+minimumReleaseAgeExclude:
+  - "@achoo254/capacitor-system-auth@0.2.0"
+```
+
+The Capacitor CLI names the Swift package after the npm name: `Achoo254CapacitorSystemAuth` (`Package.swift`
+must keep that name). The package ships built JS (`dist/`) plus the native
 sources the Capacitor CLI links: `Package.swift` + `ios/Sources` (Swift Package Manager) and the Gradle module
 in `android/`. Requires `@capacitor/core` 8.
 
 ## Usage
 
 ```ts
-import { SystemAuth } from "@shared-next/capacitor-system-auth";
+import { SystemAuth } from "@achoo254/capacitor-system-auth";
 
 // Custom scheme (Scribe, Chat): redirect_uri = com.hoandat.chat:/auth/callback
 const { url } = await SystemAuth.authenticate({
@@ -123,10 +131,10 @@ again.
 ## Development
 
 ```sh
-pnpm --filter @shared-next/capacitor-system-auth typecheck
-pnpm --filter @shared-next/capacitor-system-auth test
-pnpm --filter @shared-next/capacitor-system-auth build      # tsc -> dist/ (commit it)
-pnpm --filter @shared-next/capacitor-system-auth verify:ios # xcodebuild for the iOS Simulator (needs Xcode)
+pnpm --filter @achoo254/capacitor-system-auth typecheck
+pnpm --filter @achoo254/capacitor-system-auth test
+pnpm --filter @achoo254/capacitor-system-auth build      # tsc -> dist/ (commit it)
+pnpm --filter @achoo254/capacitor-system-auth verify:ios # xcodebuild for the iOS Simulator (needs Xcode)
 ```
 
 The Android module has no Gradle wrapper of its own; it compiles inside the consuming app
@@ -134,7 +142,7 @@ The Android module has no Gradle wrapper of its own; it compiles inside the cons
 
 Native naming the Capacitor CLI depends on:
 
-- SPM package and product are `SharedNextCapacitorSystemAuth`, the name the CLI derives from the npm name.
+- SPM package and product are `Achoo254CapacitorSystemAuth`, the name the CLI derives from the npm name.
 - `SystemAuthPlugin.swift` must stay the only Swift file with an `@objc(...)` class name; the CLI registers the
   first one of each file.
 - The Android plugin class is `com.hoandat.capacitor.systemauth.SystemAuthPlugin` (JS name `SystemAuth`).

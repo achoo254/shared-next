@@ -2,13 +2,13 @@
 import PackageDescription
 
 // The package and product name must equal what the Capacitor CLI derives from
-// the npm name (@shared-next/capacitor-system-auth -> SharedNextCapacitorSystemAuth).
+// the npm name (@achoo254/capacitor-system-auth -> Achoo254CapacitorSystemAuth).
 let package = Package(
-    name: "SharedNextCapacitorSystemAuth",
+    name: "Achoo254CapacitorSystemAuth",
     platforms: [.iOS(.v15)],
     products: [
         .library(
-            name: "SharedNextCapacitorSystemAuth",
+            name: "Achoo254CapacitorSystemAuth",
             targets: ["SystemAuthPlugin"])
     ],
     dependencies: [

@@ -1,7 +1,7 @@
 {
-	"name": "@shared-next/app-switcher",
-	"version": "0.1.0",
-	"description": "App switcher of the *-next products: static catalog of the apps one account signs in to, tenant-aware links with UTM tags, and an accessible React popover",
+	"name": "@achoo254/app-switcher",
+	"version": "0.2.0",
+	"description": "App switcher of the *-next products: static catalog of the apps one account signs in to, links under one root domain with UTM tags, and an accessible React popover",
 	"type": "module",
 	"engines": {
 		"node": ">=22.12"
@@ -15,19 +15,19 @@
 		"./app-switcher.css": "./dist/app-switcher.css",
 		"./package.json": "./package.json"
 	},
-	"files": ["dist", "README.md"],
+	"files": ["dist", "README.md", "LICENSE"],
 	"sideEffects": ["*.css"],
 	"scripts": {
-		"build": "node --eval \"require('node:fs').rmSync('dist',{recursive:true,force:true})\" && tsc -p tsconfig.build.json && node --eval \"require('node:fs').copyFileSync('src/app-switcher.css','dist/app-switcher.css')\"",
+		"build": "node --eval \"require('node:fs').rmSync('dist',{recursive:true,force:true})\" && tsc -p tsconfig.build.json && node --eval \"require('node:fs').copyFileSync('src/app-switcher.css','dist/app-switcher.css')\" && node --eval \"require('node:fs').copyFileSync('../../LICENSE','LICENSE')\"",
 		"typecheck": "tsc -p tsconfig.json && tsc -p tsconfig.browser.json",
 		"test": "vitest run --maxWorkers=2"
 	},
 	"peerDependencies": {
-		"@shared-next/brand": ">=0.2.0 <1",
+		"@achoo254/brand": ">=0.3.0 <1",
 		"react": "^19.0.0"
 	},
 	"devDependencies": {
-		"@shared-next/brand": "workspace:*",
+		"@achoo254/brand": "workspace:*",
 		"@testing-library/dom": "10.4.2",
 		"@testing-library/react": "16.3.3",
 		"@types/react": "19.3.0",
@@ -36,5 +36,19 @@
 		"react": "19.3.0",
 		"react-dom": "19.3.0"
 	},
-	"license": "MIT"
+	"license": "MIT",
+	"author": "achoo254",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/achoo254/shared-next.git",
+		"directory": "packages/app-switcher"
+	},
+	"homepage": "https://github.com/achoo254/shared-next/tree/main/packages/app-switcher#readme",
+	"bugs": {
+		"url": "https://github.com/achoo254/shared-next/issues"
+	},
+	"keywords": ["react", "app-switcher"],
+	"publishConfig": {
+		"access": "public"
+	}
 }

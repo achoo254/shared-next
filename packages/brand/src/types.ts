@@ -22,11 +22,11 @@ export interface BrandConfig {
 		readonly domain: string;
 		readonly issuer: string;
 	};
-	/** Hosts of one tenant; `{domain}` is the tenant's domain. */
+	/** Hosts of the product; `{domain}` is its root domain. */
 	readonly hostTemplates: {
 		readonly web: string;
 	};
-	/** Domains shared by every tenant, never under a tenant's domain. */
+	/** Domains of shared content, never under the product's root domain. */
 	readonly sharedDomains?: {
 		readonly media: string;
 		readonly miniApp: string;

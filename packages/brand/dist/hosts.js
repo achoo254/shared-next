@@ -2,7 +2,7 @@
 export const DOMAIN_PATTERN = /^([a-z0-9]([a-z0-9-]*[a-z0-9])?\.)+[a-z]{2,}$/;
 function fill(template, domain) {
     if (!DOMAIN_PATTERN.test(domain)) {
-        throw new Error(`brand: "${domain}" is not a tenant domain`);
+        throw new Error(`brand: "${domain}" is not a root domain`);
     }
     // A function replacement: "$&" or "$1" in the domain stay literal text.
     return template.replace("{domain}", () => domain);
@@ -12,13 +12,13 @@ export function hostsFor(brand, domain) {
     const web = fill(brand.hostTemplates.web, domain);
     return { web, webOrigin: `https://${web}` };
 }
-/** `https://<web host>` of the primary tenant. */
+/** `https://<web host>` under `primaryTenant.domain`. */
 export function primaryOrigin(brand) {
     return hostsFor(brand, brand.primaryTenant.domain).webOrigin;
 }
 /**
  * Origin of one Mini App (bot `botId`) on the shared Mini App domain, never
- * under a tenant's domain. Throws when the brand has no sharedDomains.
+ * under the product's own domain. Throws when the brand has no sharedDomains.
  */
 export function miniAppOrigin(brand, botId) {
     if (brand.sharedDomains === undefined) {
@@ -31,7 +31,7 @@ export function miniAppOrigin(brand, botId) {
 }
 /**
  * Origins whose state-changing requests and WebSocket handshakes the product
- * accepts for a tenant; development builds also accept `devOrigins`.
+ * accepts under `domain`; development builds also accept `devOrigins`.
  */
 export function allowedOrigins(brand, domain, development) {
     const origins = [hostsFor(brand, domain).webOrigin];

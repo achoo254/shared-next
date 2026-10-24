@@ -1,6 +1,6 @@
 {
-	"name": "@shared-next/capacitor-system-auth",
-	"version": "0.1.0",
+	"name": "@achoo254/capacitor-system-auth",
+	"version": "0.2.0",
 	"description": "Capacitor 8 plugin: open an authorization URL in the system browser session (ASWebAuthenticationSession, Auth Tab / Custom Tabs) and return the callback URL",
 	"type": "module",
 	"types": "./dist/index.d.ts",
@@ -19,7 +19,8 @@
 		"android/build.gradle",
 		"ios/Sources",
 		"Package.swift",
-		"README.md"
+		"README.md",
+		"LICENSE"
 	],
 	"capacitor": {
 		"ios": {
@@ -31,10 +32,10 @@
 	},
 	"keywords": ["capacitor", "plugin", "native"],
 	"scripts": {
-		"build": "node --eval \"require('node:fs').rmSync('dist',{recursive:true,force:true})\" && tsc -p tsconfig.build.json",
+		"build": "node --eval \"require('node:fs').rmSync('dist',{recursive:true,force:true})\" && tsc -p tsconfig.build.json && node --eval \"require('node:fs').copyFileSync('../../LICENSE','LICENSE')\"",
 		"typecheck": "tsc -p tsconfig.json",
 		"test": "vitest run --maxWorkers=2",
-		"verify:ios": "xcodebuild -scheme SharedNextCapacitorSystemAuth -destination 'generic/platform=iOS Simulator' build"
+		"verify:ios": "xcodebuild -scheme Achoo254CapacitorSystemAuth -destination 'generic/platform=iOS Simulator' build"
 	},
 	"peerDependencies": {
 		"@capacitor/core": "^8.0.0"
@@ -42,5 +43,18 @@
 	"devDependencies": {
 		"@capacitor/core": "8.5.3"
 	},
-	"license": "MIT"
+	"license": "MIT",
+	"author": "achoo254",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/achoo254/shared-next.git",
+		"directory": "packages/capacitor-system-auth"
+	},
+	"homepage": "https://github.com/achoo254/shared-next/tree/main/packages/capacitor-system-auth#readme",
+	"bugs": {
+		"url": "https://github.com/achoo254/shared-next/issues"
+	},
+	"publishConfig": {
+		"access": "public"
+	}
 }

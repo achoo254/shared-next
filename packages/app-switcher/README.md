@@ -1,12 +1,12 @@
-# @shared-next/app-switcher
+# @achoo254/app-switcher
 
 The app switcher of the *-next products: a 9-dot button that opens a list of the other apps the same account
 signs in to, then the account page. One sign-in at the IdP covers every app, so a click lands the user in the
 other app without signing in again.
 
 - **Static catalog** (`APP_SWITCHER_CATALOG`): Chat, Scribe, Localman, Tunelo, then the account page
-  (`auth.<domain>/account`). Chat, Localman and Tunelo run on every tenant; Scribe is listed on the primary
-  tenant only (auth-next declares its clients there only). Miu World is never listed (its players are children). Labels and one-line descriptions in `en`, `vi`
+  (`auth.<domain>/account`), every host under the one root domain the app passes. Miu World is never listed
+  (its players are children). Labels and one-line descriptions in `en`, `vi`
   and `zh-CN`. `locale` takes any BCP 47 tag, matched by language and case-insensitively (`vi-VN` -> `vi`,
   `zh` or `zh-*` -> `zh-CN`); any other language falls back to English.
 - **`appSwitcherLinks(options)`**: the list as plain data (no React, no DOM).
@@ -18,30 +18,30 @@ Radix dependency.
 
 ## Install
 
-In the app's `package.json` (same git-tag scheme as `@shared-next/brand`; the tag is a release of this repo):
-
-```json
-"@shared-next/app-switcher": "github:achoo254/shared-next#<tag>&path:/packages/app-switcher"
+```sh
+npm install @achoo254/app-switcher @achoo254/brand react
 ```
 
-Peer dependencies: `react` 19 and `@shared-next/brand` 0.x (host names come from its `hostsFor`, so the
-tenant domain is checked by the same rule as the brand config). Chat, Scribe and Localman already depend on
-`@shared-next/brand`; the switcher uses the copy the app has.
+Peer dependencies: `react` 19 and `@achoo254/brand` 0.3 or later 0.x (host names come from its `hostsFor`, so
+the domain is checked by the same rule as the brand config).
 
-Declare `@shared-next/brand` yourself, as a git dependency (see its README). The `@shared-next` npm scope is
-not registered to us: a peer that pnpm installs on its own would come from the registry, i.e. someone else's
-package.
+pnpm 11 refuses versions published less than 24 hours ago (`minimumReleaseAge`, 1440 minutes by default). To
+install a release on its first day, list that exact version in `pnpm-workspace.yaml`:
+
+```yaml
+minimumReleaseAgeExclude:
+  - "@achoo254/app-switcher@0.2.0"
+```
 
 ## Usage
 
 ```tsx
-import "@shared-next/app-switcher/app-switcher.css";
-import { AppSwitcher } from "@shared-next/app-switcher";
+import "@achoo254/app-switcher/app-switcher.css";
+import { AppSwitcher } from "@achoo254/app-switcher";
 
 <AppSwitcher
 	current="localman" // this app: left out of the list, sent as utm_source
-	tenantDomain="hoandat.com" // the tenant's root domain, no port or path
-	isPrimaryTenant={true} // Scribe only on the primary tenant
+	domain="hoandat.com" // the apps' root domain, no port or path
 	locale="vi-VN" // any BCP 47 tag: vi*, zh*, else English
 	placement="bottom-end" // or "right-end" beside a side rail (Chat)
 	onOpen={native ? openInSystemBrowser : undefined}
@@ -51,26 +51,25 @@ import { AppSwitcher } from "@shared-next/app-switcher";
 Every link is `https://<host>/<path>?utm_source=<current>&utm_medium=app_switcher`. Without `onOpen` it is a
 plain `<a href>` the browser follows, with `target="_blank" rel="noopener"` when the page runs as an installed
 PWA (`display-mode: standalone`) so the other app does not load inside this app's window; with `onOpen` the
-click is cancelled and the URL handed to it (native shells open the system browser). A `tenantDomain` that is not a lowercase registrable domain (for instance
+click is cancelled and the URL handed to it (native shells open the system browser). A `domain` that is not a lowercase registrable domain (for instance
 `localhost:5173` in development) renders nothing and logs the error with `console.error`; the rest of the app
 keeps working.
 
 Plain data, for a custom layout or a test:
 
 ```ts
-import { appSwitcherLinks } from "@shared-next/app-switcher";
+import { appSwitcherLinks } from "@achoo254/app-switcher";
 
 appSwitcherLinks({
 	current: "chat",
-	tenantDomain: "hoandat.com",
-	isPrimaryTenant: true,
+	domain: "hoandat.com",
 	locale: "en",
 });
 // [{ id: "scribe", label: "Scribe", description: "...", href: "https://scribe.hoandat.com/?utm_source=chat&utm_medium=app_switcher" },
 //  ..., { id: "account", label: "Manage your account", href: "https://auth.hoandat.com/account?..." }]
 ```
 
-It throws when `current` is not a catalog app or `tenantDomain` is not a tenant domain.
+It throws when `current` is not a catalog app or `domain` is not a root domain.
 
 ## Keyboard and screen readers
 
@@ -112,4 +111,4 @@ colours (`Canvas`, `CanvasText`, `GrayText`, `Highlight`), never a brand colour.
 
 Edit `src/catalog.ts` (and the icon in `src/icons.tsx`), keep it in line with auth-next's
 `src/app-directory/apps-catalog.ts`, run the gates in the repository README, commit `src` and `dist` together and
-release a new tag.
+release a new version (repository README, "Phát hành").

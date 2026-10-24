@@ -1,5 +1,5 @@
 /**
- * Hosts a tenant serves the product from, derived from hostTemplates and
+ * Hosts the product is served from, derived from hostTemplates and
  * sharedDomains. Browser-safe. Product-specific paths on the web host (a
  * Bot API, webhooks) stay in the product: they are routes, not brand.
  */
@@ -7,7 +7,7 @@ import type { BrandConfig } from "./types.js";
 
 type HostsBrand = Pick<BrandConfig, "hostTemplates">;
 
-/** The hosts one tenant serves the product from. */
+/** The hosts the product is served from under one root domain. */
 export interface TenantHosts {
 	/** Host of the web app, e.g. chat.<domain>. */
 	readonly web: string;
@@ -20,7 +20,7 @@ export const DOMAIN_PATTERN = /^([a-z0-9]([a-z0-9-]*[a-z0-9])?\.)+[a-z]{2,}$/;
 
 function fill(template: string, domain: string): string {
 	if (!DOMAIN_PATTERN.test(domain)) {
-		throw new Error(`brand: "${domain}" is not a tenant domain`);
+		throw new Error(`brand: "${domain}" is not a root domain`);
 	}
 	// A function replacement: "$&" or "$1" in the domain stay literal text.
 	return template.replace("{domain}", () => domain);
@@ -32,7 +32,7 @@ export function hostsFor(brand: HostsBrand, domain: string): TenantHosts {
 	return { web, webOrigin: `https://${web}` };
 }
 
-/** `https://<web host>` of the primary tenant. */
+/** `https://<web host>` under `primaryTenant.domain`. */
 export function primaryOrigin(
 	brand: HostsBrand & Pick<BrandConfig, "primaryTenant">,
 ): string {
@@ -41,7 +41,7 @@ export function primaryOrigin(
 
 /**
  * Origin of one Mini App (bot `botId`) on the shared Mini App domain, never
- * under a tenant's domain. Throws when the brand has no sharedDomains.
+ * under the product's own domain. Throws when the brand has no sharedDomains.
  */
 export function miniAppOrigin(
 	brand: Pick<BrandConfig, "sharedDomains">,
@@ -58,7 +58,7 @@ export function miniAppOrigin(
 
 /**
  * Origins whose state-changing requests and WebSocket handshakes the product
- * accepts for a tenant; development builds also accept `devOrigins`.
+ * accepts under `domain`; development builds also accept `devOrigins`.
  */
 export function allowedOrigins(
 	brand: HostsBrand & Pick<BrandConfig, "devOrigins">,

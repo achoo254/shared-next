@@ -2,7 +2,7 @@
 	"$schema": "https://json-schema.org/draft/2020-12/schema",
 	"$id": "https://github.com/achoo254/shared-next/packages/brand/brand.config.schema.json",
 	"title": "Brand configuration",
-	"description": "Product name, colours, icons, identifiers and hosts of one *-next product (@shared-next/brand). Renaming the product means editing brand.config.json, regenerating (pnpm brand:gen) and rebuilding; no product name is hard-coded elsewhere. Optional fields exist for the products that use them; a product makes them mandatory with parseBrandConfig(value, { require: [...] }).",
+	"description": "Product name, colours, icons, identifiers and hosts of one *-next product (@achoo254/brand). Renaming the product means editing brand.config.json, regenerating (pnpm brand:gen) and rebuilding; no product name is hard-coded elsewhere. Optional fields exist for the products that use them; a product makes them mandatory with parseBrandConfig(value, { require: [...] }).",
 	"type": "object",
 	"additionalProperties": false,
 	"required": [
@@ -73,7 +73,7 @@
 			}
 		},
 		"hostTemplates": {
-			"description": "Hosts of one tenant; {domain} is the tenant's domain.",
+			"description": "Hosts of the product; {domain} is its root domain.",
 			"type": "object",
 			"additionalProperties": false,
 			"required": ["web"],
@@ -82,7 +82,7 @@
 			}
 		},
 		"sharedDomains": {
-			"description": "Registrable domains shared by every tenant and never under a tenant's domain, so their content is not same-site with the app.",
+			"description": "Registrable domains never under the product's root domain, so their content is not same-site with the app.",
 			"type": "object",
 			"additionalProperties": false,
 			"required": ["media", "miniApp"],

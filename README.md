@@ -3,22 +3,22 @@
 Các gói dùng chung của hệ sản phẩm *-next (chat-next, scribe-next, localman-next, miu-world-next).
 Hiện có ba gói dùng trong sản phẩm và một gói công cụ:
 
-- **`@shared-next/brand`** (thư mục `packages/brand`): cấu hình thương hiệu, mô tả bên dưới.
-- **`@shared-next/capacitor-system-auth`** (thư mục `packages/capacitor-system-auth`): plugin Capacitor 8 mở
+- **`@achoo254/brand`** (thư mục `packages/brand`): cấu hình thương hiệu, mô tả bên dưới.
+- **`@achoo254/capacitor-system-auth`** (thư mục `packages/capacitor-system-auth`): plugin Capacitor 8 mở
   trang đăng nhập trong trình duyệt hệ thống (iOS `ASWebAuthenticationSession`, Android Auth Tab / Custom Tabs)
   và trả URL callback. Cách dùng và cấu hình app: [`packages/capacitor-system-auth/README.md`](packages/capacitor-system-auth/README.md).
-- **`@shared-next/app-switcher`** (thư mục `packages/app-switcher`): nút 9 chấm chuyển sang app khác cùng tài
-  khoản (Chat, Scribe, Localman, Tunelo, rồi trang tài khoản), React 19, danh mục tĩnh theo tenant, link gắn
-  `utm_source`/`utm_medium=app_switcher`. Peer dependency `@shared-next/brand` (dựng host bằng `hostsFor`).
+- **`@achoo254/app-switcher`** (thư mục `packages/app-switcher`): nút 9 chấm chuyển sang app khác cùng tài
+  khoản (Chat, Scribe, Localman, Tunelo, rồi trang tài khoản), React 19, danh mục tĩnh dưới một tên miền gốc, link gắn
+  `utm_source`/`utm_medium=app_switcher`. Peer dependency `@achoo254/brand` (dựng host bằng `hostsFor`).
   Cách dùng và biến CSS: [`packages/app-switcher/README.md`](packages/app-switcher/README.md).
-- **`@shared-next/app-shorts`** (thư mục `packages/app-shorts`, riêng tư, không publish): dựng Shorts dọc
+- **`@achoo254/app-shorts`** (thư mục `packages/app-shorts`, riêng tư, không publish): dựng Shorts dọc
   cho kênh YouTube Hoandat Apps từ ảnh store của từng app và đăng bằng YouTube Data API; cũng là nơi có
   script cấp quyền YouTube cho cả kênh Miu World. Cách chạy: [`packages/app-shorts/README.md`](packages/app-shorts/README.md).
 
-## `@shared-next/brand` là gì
+## `@achoo254/brand` là gì
 
 Một nguồn duy nhất cho thương hiệu của từng sản phẩm. Mỗi sản phẩm giữ **một** `brand.config.json` (tên, màu,
-icon, bundle id, URL scheme, tenant chính, mẫu host). Gói này cung cấp:
+icon, bundle id, URL scheme, tên miền chính (`primaryTenant`), mẫu host). Gói này cung cấp:
 
 - **Schema** `brand.config.schema.json`: tập hợp mọi trường bốn sản phẩm đang dùng. Trường mà chỉ vài sản phẩm cần
   (`sharedDomains`, `devOrigins`, `pushSenderName`, `webInstall`, `appIds.android`, `colors.primary`,
@@ -38,32 +38,37 @@ icon, bundle id, URL scheme, tenant chính, mẫu host). Gói này cung cấp:
 sinh `tauri.json` và schema không có `appIds.desktop`. Khi chuyển sang gói này, mỗi sản phẩm xóa
 `appIds.desktop` khỏi `brand.config.json` và xóa file `generated/tauri.json` của mình.
 
-Tên gói dùng scope `@shared-next` (trùng tên repo), không dùng `@next`: scope `@next` trên npm thuộc về Next.js
-(`@next/env`, `@next/font`), một lệnh `pnpm add @next/brand` thiếu phần git sẽ kéo nhầm gói của người khác.
+Ba gói công khai trên npm dưới scope `@achoo254` (tài khoản npm `achoo254`), license MIT, phát hành từ GitHub Actions
+qua trusted publishing nên mỗi bản có provenance. Trước 24/10/2026 các gói tên `@shared-next/*` và được cài bằng
+phụ thuộc git (`github:achoo254/shared-next#<tag>&path:…`); scope `@shared-next` trên npm không thuộc về chúng ta.
 
 ## Cách dùng trong một sản phẩm
 
 ### Khai báo phụ thuộc
 
-Trong `package.json` của workspace dùng gói (pnpm 11.9, đã thử cú pháp `#<tag>&path:` với cả `github:` lẫn
-`git+file:`):
-
-```json
-"@shared-next/brand": "github:achoo254/shared-next#v0.2.0&path:/packages/brand"
+```sh
+pnpm add @achoo254/brand            # hoặc npm install @achoo254/brand
 ```
 
-Lockfile ghi lại commit và đường dẫn, nên bản cài luôn đúng tag. Gói giao JavaScript ESM đã biên dịch kèm
-`.d.ts` (thư mục `packages/brand/dist`, commit vào git vì phụ thuộc git cài nguyên trạng repo), yêu cầu
-Node >=22.12. Mọi nơi dùng được như một gói npm thường: `node`, `vite.config.ts` với trình nạp cấu hình mặc định
-của Vite, Vitest, `tsc` (cả `NodeNext` lẫn `Bundler`). Mã nguồn TypeScript ở `packages/brand/src` để đọc và sửa;
-sản phẩm không import từ đó.
+pnpm 11 mặc định không cài bản phát hành chưa đủ 24 giờ (`minimumReleaseAge = 1440` phút). Muốn dùng một bản vừa
+phát hành, thêm **đúng version đó** (không dùng wildcard theo scope) vào `pnpm-workspace.yaml`, rồi gỡ khi bản đã quá
+24 giờ:
+
+```yaml
+minimumReleaseAgeExclude:
+  - "@achoo254/brand@0.3.0"
+```
+
+Gói giao JavaScript ESM đã biên dịch kèm `.d.ts` (thư mục `dist`), yêu cầu Node >=22.12. Mọi nơi dùng được như một
+gói npm thường: `node`, `vite.config.ts` với trình nạp cấu hình mặc định của Vite, Vitest, `tsc` (cả `NodeNext` lẫn
+`Bundler`). Mã nguồn TypeScript ở `packages/brand/src` để đọc và sửa; sản phẩm không import từ đó.
 
 ### Trỏ `$schema` về schema của gói
 
 Trong `brand.config.json` của sản phẩm, để trình soạn thảo gợi ý và báo lỗi theo đúng schema mà gói kiểm:
 
 ```json
-"$schema": "./node_modules/@shared-next/brand/brand.config.schema.json"
+"$schema": "./node_modules/@achoo254/brand/brand.config.schema.json"
 ```
 
 (đường dẫn tính từ thư mục chứa `brand.config.json`; sản phẩm xóa bản schema chép tay của mình.)
@@ -72,7 +77,7 @@ Trong `brand.config.json` của sản phẩm, để trình soạn thảo gợi �
 
 ```ts
 import config from "../brand.config.json" with { type: "json" };
-import { defineBrand } from "@shared-next/brand";
+import { defineBrand } from "@achoo254/brand";
 
 export const brand = defineBrand(config);
 ```
@@ -88,7 +93,7 @@ import {
 	loadBrandConfig,
 	svgManifestIcons,
 	writeBrandFiles,
-} from "@shared-next/brand/build";
+} from "@achoo254/brand/build";
 
 const root = new URL("../../../", import.meta.url); // thư mục chứa brand.config.json
 const brand = loadBrandConfig(root, {
@@ -130,7 +135,7 @@ Tùy chọn của bốn sản phẩm (đúng như `packages/brand/test/consumers
 | localman | như chat nhưng `lang "en"`, `categories ["productivity", "utilities"]`; `require` thêm `"webInstall"` | `true` | `"\t"` | Chromium từ `playwright` |
 | miu | `lang "vi"`, `display "fullscreen"`, `orientation "any"`, `themeColor "theme"`, danh sách icon PNG của miu | `true` | `2` | không truyền (icon PNG vẽ sẵn bằng `pnpm assets:logo`) |
 
-`hostsFor` và `allowedOrigins` báo lỗi khi tên miền tenant không khớp mẫu `domain` của schema (chữ thường, không
+`hostsFor` và `allowedOrigins` báo lỗi khi tên miền gốc không khớp mẫu `domain` của schema (chữ thường, không
 cổng, không đường dẫn); sản phẩm nào đọc tên miền từ `location.host` (có thể kèm cổng) thì tách cổng trước khi gọi.
 
 Các phần còn lại thuộc từng sản phẩm, không nằm trong gói: bản sao tên cho server Go của chat
@@ -146,7 +151,7 @@ HTML, 0 vi phạm như lệnh cũ:
 **chat-next (thư mục gốc repo)**
 
 ```json
-"check:brand": "check-brand --config brand.config.json --dir apps --dir packages --dir server --dir proto --dir sdk --dir spec --dir deploy --skip-dir gen --banned chat-inet --test-file '/test/|_test\\.go$|\\.test\\.ts$' --hint 'read it from @shared-next/brand'"
+"check:brand": "check-brand --config brand.config.json --dir apps --dir packages --dir server --dir proto --dir sdk --dir spec --dir deploy --skip-dir gen --banned chat-inet --test-file '/test/|_test\\.go$|\\.test\\.ts$' --hint 'read it from @achoo254/brand'"
 ```
 
 **scribe-next (thư mục `web/`)**
@@ -158,13 +163,13 @@ HTML, 0 vi phạm như lệnh cũ:
 **localman-next**
 
 ```json
-"check:brand": "check-brand --config brand.config.json --dir apps --dir packages --skip-dir portal-dist --ignore-path apps/web/public --source-file '\\.(ts|tsx|js|mjs|cjs)$' --code-file '\\.(ts|tsx|js|mjs|cjs)$' --test-file '\\.test\\.[cm]?[jt]sx?$|/__tests__/|/testing/|/test-support/' --hint 'read brand.appName from @shared-next/brand'"
+"check:brand": "check-brand --config brand.config.json --dir apps --dir packages --skip-dir portal-dist --ignore-path apps/web/public --source-file '\\.(ts|tsx|js|mjs|cjs)$' --code-file '\\.(ts|tsx|js|mjs|cjs)$' --test-file '\\.test\\.[cm]?[jt]sx?$|/__tests__/|/testing/|/test-support/' --hint 'read brand.appName from @achoo254/brand'"
 ```
 
 **miu-world-next**
 
 ```json
-"check:brand": "check-brand --config brand.config.json --dir apps --dir packages --skip-dir test-results --skip-dir playwright-report --skip-dir e2e --skip-dir test --skip-dir testing --source-file '\\.(ts|tsx|js|mjs|cjs)$' --code-file '\\.(ts|tsx|js|mjs|cjs)$' --test-file '\\.(test|spec)\\.(ts|tsx|js|mjs)$' --jsx-text --skip-comment-lines --colour-dir apps/web/src/ui --colour-dir apps/web/src/seo --token-file apps/web/src/ui/tokens.css --hint 'read it from @shared-next/brand'"
+"check:brand": "check-brand --config brand.config.json --dir apps --dir packages --skip-dir test-results --skip-dir playwright-report --skip-dir e2e --skip-dir test --skip-dir testing --source-file '\\.(ts|tsx|js|mjs|cjs)$' --code-file '\\.(ts|tsx|js|mjs|cjs)$' --test-file '\\.(test|spec)\\.(ts|tsx|js|mjs)$' --jsx-text --skip-comment-lines --colour-dir apps/web/src/ui --colour-dir apps/web/src/seo --token-file apps/web/src/ui/tokens.css --hint 'read it from @achoo254/brand'"
 ```
 
 Ghi chú theo sản phẩm:
@@ -197,23 +202,27 @@ Các luật bật theo sản phẩm:
 
 ## Phát hành
 
-1. Sửa mã nguồn trong `packages/brand/src`, chạy `pnpm lint`, `pnpm typecheck`.
+Mỗi gói phát hành riêng, bằng tag `<gói>-v<version>`: `brand-v*`, `app-switcher-v*`, `capacitor-system-auth-v*`.
+Workflow `.github/workflows/publish.yml` chạy khi đẩy tag: kiểm tag khớp `version` của gói, chạy lint, typecheck,
+build (so `dist`), test, rồi `pnpm publish` qua trusted publishing (OIDC, có provenance; không có token npm nào).
+
+1. Sửa mã nguồn trong `packages/<gói>/src`, chạy `pnpm lint`, `pnpm typecheck`.
 2. Biên dịch lại `dist`: `pnpm build`, rồi `pnpm test` (có test nạp `dist` qua `exports` của gói bằng `node`).
-3. Tăng `version` trong `packages/brand/package.json` theo semver: sửa lỗi là patch, thêm tùy chọn hay trường tùy
+3. Tăng `version` trong `packages/<gói>/package.json` theo semver: sửa lỗi là patch, thêm tùy chọn hay trường tùy
    chọn là minor, đổi hay bỏ API, schema, hoặc làm đổi file sinh ra của một sản phẩm là major (khi còn `0.x` thì
    minor).
-4. Commit **cả `src` lẫn `dist`** trong cùng một commit. CI biên dịch lại và báo lỗi nếu `dist` khác bản đã commit.
-5. Gắn tag trùng version rồi đẩy lên `main`:
+4. Commit **cả `src` lẫn `dist`** trong cùng một commit, đẩy `main`, chờ CI xanh.
+5. Gắn tag và đẩy:
 
    ```sh
-   git tag v0.3.0
-   git push origin main v0.3.0
+   git tag brand-v0.3.0
+   git push origin brand-v0.3.0
    ```
 
-6. Ở từng sản phẩm, đổi tag trong dòng phụ thuộc của `package.json`, chạy `pnpm install`, `pnpm brand:gen` và các
-   bước kiểm của sản phẩm.
+6. Ở từng sản phẩm, nâng `@achoo254/<gói>` trong `package.json` (kèm `minimumReleaseAgeExclude` nếu chưa đủ 24 giờ),
+   chạy `pnpm install`, `pnpm brand:gen` và các bước kiểm của sản phẩm. Gói Capacitor thì chạy lại `cap sync`.
 
-Tag đã đẩy thì không sửa hay gắn lại: lockfile của các sản phẩm ghi commit của tag đó.
+Bản đã publish không unpublish: phát hành sai thì `npm deprecate` rồi publish bản patch qua CI.
 
 ## Quy tắc đồng bộ
 
@@ -226,7 +235,7 @@ Tag đã đẩy thì không sửa hay gắn lại: lockfile của các sản ph�
   sha256 ghi lại từ một lần vẽ thật bằng Chromium (`fixtures/placeholder/icons.sha256.json`). Mỗi sản phẩm tự chứng
   minh từng byte với logo thật trong repo của mình khi chuyển sang gói này. Khi một sản phẩm cố ý đổi file sinh ra, chép lại fixture của sản phẩm đó
   trong cùng commit.
-- Các sản phẩm nên dùng cùng một tag. Khi nâng tag cho một sản phẩm, mở việc nâng cho ba sản phẩm còn lại.
+- Các sản phẩm nên dùng cùng một version. Khi nâng version cho một sản phẩm, mở việc nâng cho ba sản phẩm còn lại.
 
 ## Giấy phép
 

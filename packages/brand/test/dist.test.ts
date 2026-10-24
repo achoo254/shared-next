@@ -1,6 +1,6 @@
 /**
  * The built package, loaded the way consumers load it: plain Node resolving
- * `@shared-next/brand/...` through package.json `exports` (no tsx, no Vite).
+ * `@achoo254/brand/...` through package.json `exports` (no tsx, no Vite).
  * CI rebuilds dist/ before this and fails when it differs from the commit.
  */
 import { execFileSync } from "node:child_process";
@@ -38,7 +38,7 @@ describe("dist", () => {
 				const entries = ["", "/hosts", "/build", "/check-brand"];
 				const out = {};
 				for (const entry of entries) {
-					out[entry] = Object.keys(await import("@shared-next/brand" + entry)).sort();
+					out[entry] = Object.keys(await import("@achoo254/brand" + entry)).sort();
 				}
 				process.stdout.write(JSON.stringify(out));
 			`),
@@ -54,7 +54,7 @@ describe("dist", () => {
 	it("validates a config and generates chat's committed manifests", () => {
 		const fixture = new URL("fixtures/chat/", import.meta.url).href;
 		const output = node(`
-			import { formatGenerated, generateManifests, loadBrandConfig, svgManifestIcons } from "@shared-next/brand/build";
+			import { formatGenerated, generateManifests, loadBrandConfig, svgManifestIcons } from "@achoo254/brand/build";
 			const brand = loadBrandConfig(new URL(${JSON.stringify(fixture)}), { require: ["colors.primary"] });
 			const manifests = generateManifests(brand, {
 				web: { id: "/", lang: "vi", dir: "ltr", themeColor: "primary", categories: ["social"], preferRelatedApplications: false, icons: svgManifestIcons() },

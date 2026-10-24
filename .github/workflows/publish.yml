@@ -1,0 +1,76 @@
+# Publish one package to npmjs when its release tag is pushed:
+#   brand-vX.Y.Z                  -> packages/brand                 (@achoo254/brand)
+#   app-switcher-vX.Y.Z           -> packages/app-switcher          (@achoo254/app-switcher)
+#   capacitor-system-auth-vX.Y.Z  -> packages/capacitor-system-auth (@achoo254/capacitor-system-auth)
+# The tag must match the package's version (README.md, "Phát hành"); a version
+# already on npmjs cannot be published again, so bump before tagging.
+#
+# Auth: npm trusted publishing (OIDC), no token anywhere. For each package,
+# npmjs.com > package > Settings > Trusted Publisher: GitHub Actions, user
+# achoo254, repository shared-next, workflow publish.yml. Provenance comes
+# with it (public repository, GitHub-hosted runner). Each package also has
+# "Require two-factor authentication and disallow tokens" on.
+name: publish
+
+on:
+  push:
+    tags:
+      - "brand-v*"
+      - "app-switcher-v*"
+      - "capacitor-system-auth-v*"
+
+permissions:
+  contents: read
+  # npm trusted publishing: npm signs in with this job's OIDC token.
+  id-token: write
+
+concurrency:
+  group: publish-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+
+      - uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v4.4.0
+
+      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5.0.0
+        with:
+          node-version: 22
+          cache: pnpm
+          registry-url: https://registry.npmjs.org
+
+      - name: Package of the tag, and tag matches its version
+        id: package
+        run: |
+          dir="${GITHUB_REF_NAME%-v*}"
+          case "$dir" in
+            brand|app-switcher|capacitor-system-auth) ;;
+            *) echo "unknown package in tag ${GITHUB_REF_NAME}"; exit 1 ;;
+          esac
+          version="$(node -p "require('./packages/${dir}/package.json').version")"
+          [ "${dir}-v${version}" = "${GITHUB_REF_NAME}" ] || { echo "tag ${GITHUB_REF_NAME} != ${dir}-v${version}"; exit 1; }
+          echo "dir=packages/${dir}" >> "$GITHUB_OUTPUT"
+
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm lint
+      - run: pnpm typecheck
+      - run: pnpm build
+      - name: dist matches src
+        run: |
+          git diff --exit-code -- packages/*/dist packages/*/LICENSE
+          untracked="$(git status --porcelain --untracked-files=all -- packages/*/dist)"
+          if [ -n "$untracked" ]; then echo "$untracked"; echo "dist is out of date"; exit 1; fi
+      - run: pnpm test
+
+      # pnpm pack replaces workspace:* ranges with real versions; npm publishes
+      # the tarball. Trusted publishing needs npm 11.5.1+ (Node 22 ships npm 10).
+      - run: npm install -g npm@11
+      - name: Pack
+        working-directory: ${{ steps.package.outputs.dir }}
+        run: pnpm pack --pack-destination "$RUNNER_TEMP/pack"
+      - name: Publish to npmjs (trusted publishing, no token)
+        run: npm publish "$RUNNER_TEMP"/pack/*.tgz --access public

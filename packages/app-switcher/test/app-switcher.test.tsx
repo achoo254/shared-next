@@ -11,8 +11,7 @@ import { AppSwitcher, type AppSwitcherProps } from "../src/app-switcher.js";
 
 const BASE: AppSwitcherProps = {
 	current: "scribe",
-	tenantDomain: "hoandat.com",
-	isPrimaryTenant: true,
+	domain: "hoandat.com",
 	locale: "en",
 };
 
@@ -204,15 +203,15 @@ describe("AppSwitcher", () => {
 		).toBe("right-end");
 	});
 
-	it("renders nothing and logs when the tenant domain is wrong", () => {
+	it("renders nothing and logs when the domain is wrong", () => {
 		const log = vi.spyOn(console, "error").mockImplementation(() => {});
 		const { container } = render(
-			<AppSwitcher {...BASE} tenantDomain="localhost:5173" />,
+			<AppSwitcher {...BASE} domain="localhost:5173" />,
 		);
 		expect(container.innerHTML).toBe("");
 		expect(log).toHaveBeenCalledWith(
 			expect.objectContaining({
-				message: expect.stringContaining("is not a tenant domain"),
+				message: expect.stringContaining("is not a root domain"),
 			}),
 		);
 	});

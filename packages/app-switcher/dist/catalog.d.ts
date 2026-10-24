@@ -1,10 +1,9 @@
 /**
  * The apps one account signs in to, in the order the switcher lists them.
  * Static on purpose: the IdP has no public catalog API, and the strict CSP
- * of Chat and Scribe blocks requests to it. Chat, Localman and Tunelo run on
- * every tenant (auth-next declares their clients per tenant, chat-clients.ts);
- * Scribe has clients on the primary tenant only (primary-app-clients.ts).
- * Miu World is left out: its players are children.
+ * of Chat and Scribe blocks requests to it. Every app lives under the same
+ * root domain, given by the caller. Miu World is left out: its players are
+ * children.
  */
 /** Locales the labels are written in. */
 export declare const APP_SWITCHER_LOCALES: readonly ["en", "vi", "zh-CN"];
@@ -21,11 +20,9 @@ export interface AppSwitcherCatalogEntry {
     readonly label: LocalizedText;
     /** One short line under the label. */
     readonly description: LocalizedText;
-    /** Host under the tenant's domain, e.g. `chat.{domain}`. */
+    /** Host under the root domain, e.g. `chat.{domain}`. */
     readonly hostTemplate: string;
     /** Path on that host, starting with `/`. */
     readonly path: string;
-    /** Listed only for the primary tenant (no host elsewhere yet). */
-    readonly primaryTenantOnly: boolean;
 }
 export declare const APP_SWITCHER_CATALOG: readonly AppSwitcherCatalogEntry[];
