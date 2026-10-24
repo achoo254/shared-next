@@ -1,0 +1,40 @@
+{
+	"name": "@shared-next/app-switcher",
+	"version": "0.1.0",
+	"description": "App switcher of the *-next products: static catalog of the apps one account signs in to, tenant-aware links with UTM tags, and an accessible React popover",
+	"type": "module",
+	"engines": {
+		"node": ">=22.12"
+	},
+	"types": "./dist/index.d.ts",
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"default": "./dist/index.js"
+		},
+		"./app-switcher.css": "./dist/app-switcher.css",
+		"./package.json": "./package.json"
+	},
+	"files": ["dist", "README.md"],
+	"sideEffects": ["*.css"],
+	"scripts": {
+		"build": "node --eval \"require('node:fs').rmSync('dist',{recursive:true,force:true})\" && tsc -p tsconfig.build.json && node --eval \"require('node:fs').copyFileSync('src/app-switcher.css','dist/app-switcher.css')\"",
+		"typecheck": "tsc -p tsconfig.json && tsc -p tsconfig.browser.json",
+		"test": "vitest run --maxWorkers=2"
+	},
+	"peerDependencies": {
+		"@shared-next/brand": ">=0.2.0 <1",
+		"react": "^19.0.0"
+	},
+	"devDependencies": {
+		"@shared-next/brand": "workspace:*",
+		"@testing-library/dom": "10.4.2",
+		"@testing-library/react": "16.3.3",
+		"@types/react": "19.3.0",
+		"@types/react-dom": "19.3.0",
+		"jsdom": "26.1.0",
+		"react": "19.3.0",
+		"react-dom": "19.3.0"
+	},
+	"license": "MIT"
+}

@@ -3,6 +3,7 @@ dist/
 # The built package is committed: git dependencies install the repository as is.
 !packages/brand/dist/
 !packages/capacitor-system-auth/dist/
+!packages/app-switcher/dist/
 coverage/
 *.tsbuildinfo
 .DS_Store

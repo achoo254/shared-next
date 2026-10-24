@@ -1,0 +1,108 @@
+# @shared-next/app-switcher
+
+The app switcher of the *-next products: a 9-dot button that opens a list of the other apps the same account
+signs in to, then the account page. One sign-in at the IdP covers every app, so a click lands the user in the
+other app without signing in again.
+
+- **Static catalog** (`APP_SWITCHER_CATALOG`): Chat, Scribe, Localman, Tunelo, then the account page
+  (`auth.<domain>/account`). Chat and Scribe are listed on the primary tenant only, as on auth-next's `/apps`
+  page. Miu World is never listed (its players are children). Labels and one-line descriptions in `en`, `vi`
+  and `zh-CN`; any other locale falls back to English.
+- **`appSwitcherLinks(options)`**: the list as plain data (no React, no DOM).
+- **`<AppSwitcher/>`**: the button and its popover, in React 19.
+
+Nothing is fetched and no image is loaded: the icons are inline SVG and the styles ship as a stylesheet the
+app bundles, so it works under Scribe's CSP (`default-src 'self'`, no inline styles either). No Tailwind or
+Radix dependency.
+
+## Install
+
+In the app's `package.json` (same git-tag scheme as `@shared-next/brand`; the tag is a release of this repo):
+
+```json
+"@shared-next/app-switcher": "github:achoo254/shared-next#<tag>&path:/packages/app-switcher"
+```
+
+Peer dependencies: `react` 19 and `@shared-next/brand` 0.x (host names come from its `hostsFor`, so the
+tenant domain is checked by the same rule as the brand config). Chat, Scribe and Localman already depend on
+`@shared-next/brand`; the switcher uses the copy the app has.
+
+## Usage
+
+```tsx
+import "@shared-next/app-switcher/app-switcher.css";
+import { AppSwitcher } from "@shared-next/app-switcher";
+
+<AppSwitcher
+	current="localman" // this app: left out of the list, sent as utm_source
+	tenantDomain="hoandat.com" // the tenant's root domain, no port or path
+	isPrimaryTenant={true} // Chat and Scribe only on the primary tenant
+	locale="vi" // "en" | "vi" | "zh-CN"
+	placement="bottom-end" // or "right-end" beside a side rail (Chat)
+	onOpen={native ? openInSystemBrowser : undefined}
+/>;
+```
+
+Every link is `https://<host>/<path>?utm_source=<current>&utm_medium=app_switcher`. Without `onOpen` it is a
+plain `<a href>` the browser follows; with `onOpen` the click is cancelled and the URL handed to it (native
+shells open the system browser). A `tenantDomain` that is not a lowercase registrable domain (for instance
+`localhost:5173` in development) renders nothing and logs the error with `console.error`; the rest of the app
+keeps working.
+
+Plain data, for a custom layout or a test:
+
+```ts
+import { appSwitcherLinks } from "@shared-next/app-switcher";
+
+appSwitcherLinks({
+	current: "chat",
+	tenantDomain: "hoandat.com",
+	isPrimaryTenant: true,
+	locale: "en",
+});
+// [{ id: "scribe", label: "Scribe", description: "...", href: "https://scribe.hoandat.com/?utm_source=chat&utm_medium=app_switcher" },
+//  ..., { id: "account", label: "Manage your account", href: "https://auth.hoandat.com/account?..." }]
+```
+
+It throws when `current` is not a catalog app or `tenantDomain` is not a tenant domain.
+
+## Keyboard and screen readers
+
+- The button has an accessible name ("Switch app" in the app's locale), `aria-expanded` and `aria-controls`.
+- The list is a non-modal `<dialog>` named "Apps". Opening it moves focus to the first link; Tab and
+  Shift+Tab cycle inside it.
+- Esc closes it and puts focus back on the button. A press outside closes it without moving focus. Following a
+  link closes it.
+
+## Theming
+
+The stylesheet uses classes prefixed `sn-app-switcher` and reads these CSS variables; the fallbacks are system
+colours (`Canvas`, `CanvasText`, `GrayText`, `Highlight`), never a brand colour. Map them to the app's tokens on
+`.sn-app-switcher` or any ancestor:
+
+| Variable | Used for | Fallback |
+|---|---|---|
+| `--app-switcher-button-size` | button width and height | `2.25rem` |
+| `--app-switcher-button-radius` | button corners | `9999px` |
+| `--app-switcher-button-text` | dots colour | `currentColor` |
+| `--app-switcher-hover` | button and link hover | `currentColor` at 10% |
+| `--app-switcher-focus-ring` | focus outline | `Highlight` |
+| `--app-switcher-surface` | panel background | `Canvas` |
+| `--app-switcher-text` | panel text | `CanvasText` |
+| `--app-switcher-muted` | descriptions | `GrayText` |
+| `--app-switcher-border` | panel border, divider before the account page | `CanvasText` at 15% |
+| `--app-switcher-shadow` | panel shadow | soft `CanvasText` shadow |
+| `--app-switcher-radius`, `--app-switcher-item-radius` | panel and link corners | `0.75rem`, `0.5rem` |
+| `--app-switcher-width` | panel width | `18rem` |
+| `--app-switcher-z-index` | panel stacking | `50` |
+| `--app-switcher-font` | panel font family | `inherit` |
+| `--app-switcher-label-size`, `--app-switcher-description-size` | text sizes | `0.875rem`, `0.8125rem` |
+| `--app-switcher-icon`, `--app-switcher-icon-stroke` | app icon colour and stroke width | `currentColor`, `1.75` |
+
+`className` adds a class to the root for the app's own layout (for example hiding the button on a narrow rail).
+
+## Changing the catalog
+
+Edit `src/catalog.ts` (and the icon in `src/icons.tsx`), keep it in line with auth-next's
+`src/app-directory/apps-catalog.ts`, run the gates in the repository README, commit `src` and `dist` together and
+release a new tag.

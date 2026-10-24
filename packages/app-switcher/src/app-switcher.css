@@ -1,0 +1,142 @@
+/*
+ * Styles of <AppSwitcher>. Each app maps the --app-switcher-* variables to
+ * its own tokens; the fallbacks are system colours, never a brand colour.
+ */
+.sn-app-switcher {
+	position: relative;
+	display: inline-flex;
+}
+
+.sn-app-switcher__button {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: var(--app-switcher-button-size, 2.25rem);
+	height: var(--app-switcher-button-size, 2.25rem);
+	padding: 0;
+	border: 0;
+	border-radius: var(--app-switcher-button-radius, 9999px);
+	background: transparent;
+	color: var(--app-switcher-button-text, currentColor);
+	cursor: pointer;
+}
+
+.sn-app-switcher__button:hover,
+.sn-app-switcher__button[aria-expanded="true"] {
+	background: var(
+		--app-switcher-hover,
+		color-mix(in srgb, currentColor 10%, transparent)
+	);
+}
+
+.sn-app-switcher__button:focus-visible,
+.sn-app-switcher__link:focus-visible {
+	outline: 2px solid var(--app-switcher-focus-ring, Highlight);
+	outline-offset: 2px;
+}
+
+.sn-app-switcher__grid {
+	width: 1.25rem;
+	height: 1.25rem;
+}
+
+/* A non-modal <dialog>: undo the user-agent centring, place it below. */
+.sn-app-switcher__panel {
+	position: absolute;
+	inset: auto;
+	margin: 0;
+	z-index: var(--app-switcher-z-index, 50);
+	width: var(--app-switcher-width, 18rem);
+	max-width: calc(100vw - 1rem);
+	padding: 0.375rem;
+	border: 1px solid
+		var(--app-switcher-border, color-mix(in srgb, CanvasText 15%, transparent));
+	border-radius: var(--app-switcher-radius, 0.75rem);
+	background: var(--app-switcher-surface, Canvas);
+	color: var(--app-switcher-text, CanvasText);
+	box-shadow: var(
+		--app-switcher-shadow,
+		0 8px 24px color-mix(in srgb, CanvasText 18%, transparent)
+	);
+	font-family: var(--app-switcher-font, inherit);
+}
+
+.sn-app-switcher[data-placement="bottom-end"] .sn-app-switcher__panel {
+	top: calc(100% + 0.375rem);
+	right: 0;
+}
+
+.sn-app-switcher[data-placement="right-end"] .sn-app-switcher__panel {
+	bottom: 0;
+	left: calc(100% + 0.375rem);
+}
+
+.sn-app-switcher__list {
+	display: flex;
+	flex-direction: column;
+	gap: 0.125rem;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+/* The account page closes the list, after a divider. */
+.sn-app-switcher__list > li[data-entry="account"] {
+	margin-top: 0.25rem;
+	padding-top: 0.25rem;
+	border-top: 1px solid
+		var(--app-switcher-border, color-mix(in srgb, CanvasText 15%, transparent));
+}
+
+.sn-app-switcher__link {
+	display: flex;
+	align-items: flex-start;
+	gap: 0.75rem;
+	padding: 0.5rem 0.625rem;
+	border-radius: var(--app-switcher-item-radius, 0.5rem);
+	color: inherit;
+	text-decoration: none;
+}
+
+.sn-app-switcher__link:hover,
+.sn-app-switcher__link:focus-visible {
+	background: var(
+		--app-switcher-hover,
+		color-mix(in srgb, currentColor 10%, transparent)
+	);
+}
+
+.sn-app-switcher__icon {
+	flex: none;
+	width: 1.375rem;
+	height: 1.375rem;
+	margin-top: 0.0625rem;
+	color: var(--app-switcher-icon, currentColor);
+	stroke-width: var(--app-switcher-icon-stroke, 1.75);
+}
+
+.sn-app-switcher__text {
+	display: flex;
+	flex-direction: column;
+	gap: 0.125rem;
+	min-width: 0;
+}
+
+.sn-app-switcher__label {
+	font-size: var(--app-switcher-label-size, 0.875rem);
+	font-weight: 600;
+	line-height: 1.3;
+}
+
+.sn-app-switcher__description {
+	color: var(--app-switcher-muted, GrayText);
+	font-size: var(--app-switcher-description-size, 0.8125rem);
+	line-height: 1.35;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+	.sn-app-switcher__button,
+	.sn-app-switcher__link {
+		transition: background-color 120ms ease;
+	}
+}

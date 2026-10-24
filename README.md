@@ -1,12 +1,16 @@
 # shared-next
 
 Các gói dùng chung của hệ sản phẩm *-next (chat-next, scribe-next, localman-next, miu-world-next).
-Hiện có hai gói:
+Hiện có ba gói:
 
 - **`@shared-next/brand`** (thư mục `packages/brand`): cấu hình thương hiệu, mô tả bên dưới.
 - **`@shared-next/capacitor-system-auth`** (thư mục `packages/capacitor-system-auth`): plugin Capacitor 8 mở
   trang đăng nhập trong trình duyệt hệ thống (iOS `ASWebAuthenticationSession`, Android Auth Tab / Custom Tabs)
   và trả URL callback. Cách dùng và cấu hình app: [`packages/capacitor-system-auth/README.md`](packages/capacitor-system-auth/README.md).
+- **`@shared-next/app-switcher`** (thư mục `packages/app-switcher`): nút 9 chấm chuyển sang app khác cùng tài
+  khoản (Chat, Scribe, Localman, Tunelo, rồi trang tài khoản), React 19, danh mục tĩnh theo tenant, link gắn
+  `utm_source`/`utm_medium=app_switcher`. Peer dependency `@shared-next/brand` (dựng host bằng `hostsFor`).
+  Cách dùng và biến CSS: [`packages/app-switcher/README.md`](packages/app-switcher/README.md).
 
 ## `@shared-next/brand` là gì
 
@@ -232,6 +236,6 @@ Auth Next) không thuộc phạm vi license này.
 pnpm install
 pnpm lint        # Biome
 pnpm typecheck   # tsc cho toàn bộ gói, rồi riêng hai entry trình duyệt với lib DOM và không có kiểu Node
-pnpm build       # tsc -> packages/brand/dist (commit kết quả)
+pnpm build       # tsc -> packages/*/dist (commit kết quả)
 pnpm test        # Vitest, kể cả test nạp dist bằng node
 ```
