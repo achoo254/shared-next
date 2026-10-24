@@ -5,8 +5,8 @@ signs in to, then the account page. One sign-in at the IdP covers every app, so 
 other app without signing in again.
 
 - **Static catalog** (`APP_SWITCHER_CATALOG`): Chat, Scribe, Localman, Tunelo, then the account page
-  (`auth.<domain>/account`). Chat and Scribe are listed on the primary tenant only, as on auth-next's `/apps`
-  page. Miu World is never listed (its players are children). Labels and one-line descriptions in `en`, `vi`
+  (`auth.<domain>/account`). Chat, Localman and Tunelo run on every tenant; Scribe is listed on the primary
+  tenant only (auth-next declares its clients there only). Miu World is never listed (its players are children). Labels and one-line descriptions in `en`, `vi`
   and `zh-CN`. `locale` takes any BCP 47 tag, matched by language and case-insensitively (`vi-VN` -> `vi`,
   `zh` or `zh-*` -> `zh-CN`); any other language falls back to English.
 - **`appSwitcherLinks(options)`**: the list as plain data (no React, no DOM).
@@ -41,7 +41,7 @@ import { AppSwitcher } from "@shared-next/app-switcher";
 <AppSwitcher
 	current="localman" // this app: left out of the list, sent as utm_source
 	tenantDomain="hoandat.com" // the tenant's root domain, no port or path
-	isPrimaryTenant={true} // Chat and Scribe only on the primary tenant
+	isPrimaryTenant={true} // Scribe only on the primary tenant
 	locale="vi-VN" // any BCP 47 tag: vi*, zh*, else English
 	placement="bottom-end" // or "right-end" beside a side rail (Chat)
 	onOpen={native ? openInSystemBrowser : undefined}

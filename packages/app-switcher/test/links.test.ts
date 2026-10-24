@@ -27,15 +27,18 @@ describe("appSwitcherLinks", () => {
 		]);
 	});
 
-	it("leaves out Chat and Scribe on another tenant", () => {
+	it("leaves out Scribe on another tenant and keeps Chat", () => {
 		const links = appSwitcherLinks({
 			current: "localman",
 			tenantDomain: "inetdev.io.vn",
 			isPrimaryTenant: false,
 			locale: "vi",
 		});
-		expect(ids(links)).toEqual(["tunelo", "account"]);
+		expect(ids(links)).toEqual(["chat", "tunelo", "account"]);
 		expect(links[0]?.href).toBe(
+			"https://chat.inetdev.io.vn/?utm_source=localman&utm_medium=app_switcher",
+		);
+		expect(links[1]?.href).toBe(
 			"https://tunnel.inetdev.io.vn/?utm_source=localman&utm_medium=app_switcher",
 		);
 	});

@@ -1,9 +1,10 @@
 /**
  * The apps one account signs in to, in the order the switcher lists them.
  * Static on purpose: the IdP has no public catalog API, and the strict CSP
- * of Chat and Scribe blocks requests to it. Mirrors auth-next's /apps page
- * (src/app-directory/apps-catalog.ts): Chat and Scribe exist on the primary
- * tenant only. Miu World is left out: its players are children.
+ * of Chat and Scribe blocks requests to it. Chat, Localman and Tunelo run on
+ * every tenant (auth-next declares their clients per tenant, chat-clients.ts);
+ * Scribe has clients on the primary tenant only (primary-app-clients.ts).
+ * Miu World is left out: its players are children.
  */
 /** Locales the labels are written in. */
 export declare const APP_SWITCHER_LOCALES: readonly ["en", "vi", "zh-CN"];
