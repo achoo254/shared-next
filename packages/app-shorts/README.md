@@ -36,6 +36,23 @@ có ở app iPhone, vì video dẫn về bản web). Short giới thiệu gắn 
 `auth.hoandat.com/apps`. `posted.json` ghi các video đã đăng theo `short`; `upload` từ chối đăng lại một Short
 đã có trừ khi thêm `--again`, `weekly` chọn tính năng đầu tiên (theo thứ tự trong `features.ts`) chưa đăng.
 
+## Lịch hằng tuần (máy Windows `hoandat-pc`)
+
+Task Scheduler chạy `weekly-task.ps1` lúc 9 giờ thứ Hai (máy tắt thì chạy bù khi bật, chỉ khi người dùng đã
+đăng nhập): đăng Short tính năng kế tiếp của Hoandat Apps, rồi clip bài của tuần học lên kênh Miu World
+(`pnpm marketing:weekly -- --publish --channel youtube`; Facebook thêm khi Fanpage có Page token). Sau mỗi
+lần đăng, script commit và push riêng sổ đăng (`posted.json` của gói này, `content/marketing/posted.json` và
+báo cáo tuần của miu-world-next) lên `main`. Nhật ký ở `out/weekly-task.log`.
+
+```powershell
+$action = New-ScheduledTaskAction -Execute "powershell.exe" -Argument '-NoProfile -ExecutionPolicy Bypass -File "<shared-next>\packages\app-shorts\weekly-task.ps1" -TokenFile "<access-tokens.json>"'
+$trigger = New-ScheduledTaskTrigger -Weekly -DaysOfWeek Monday -At 9am
+$settings = New-ScheduledTaskSettingsSet -StartWhenAvailable -ExecutionTimeLimit (New-TimeSpan -Hours 2)
+Register-ScheduledTask -TaskName "Hoandat weekly Shorts" -Action $action -Trigger $trigger -Settings $settings
+```
+
+Gỡ: `Unregister-ScheduledTask -TaskName "Hoandat weekly Shorts"`. Chạy ngay: `Start-ScheduledTask -TaskName "Hoandat weekly Shorts"`.
+
 ## Credential
 
 Token đọc lúc chạy từ `access-tokens.json` của người phụ trách (iCloud, thư mục `ENV production`), trỏ tới
