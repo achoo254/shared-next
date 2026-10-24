@@ -1,5 +1,6 @@
 [
 	{
+		"short": "chat",
 		"app": "chat",
 		"videoId": "a60EZuXn2jA",
 		"url": "https://youtube.com/shorts/a60EZuXn2jA",
@@ -7,6 +8,7 @@
 		"postedAt": "2026-10-24T13:25:00.000Z"
 	},
 	{
+		"short": "scribe",
 		"app": "scribe",
 		"videoId": "jJDJxpN1YdU",
 		"url": "https://youtube.com/shorts/jJDJxpN1YdU",
@@ -14,6 +16,7 @@
 		"postedAt": "2026-10-24T13:25:00.000Z"
 	},
 	{
+		"short": "localman",
 		"app": "localman",
 		"videoId": "_TXfdyCQmsU",
 		"url": "https://youtube.com/shorts/_TXfdyCQmsU",
@@ -21,6 +24,7 @@
 		"postedAt": "2026-10-24T13:25:00.000Z"
 	},
 	{
+		"short": "tunelo",
 		"app": "tunelo",
 		"videoId": "ziV01Xe55LU",
 		"url": "https://youtube.com/shorts/ziV01Xe55LU",

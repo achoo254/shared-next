@@ -1,14 +1,14 @@
-// Posts one app's Short to the Hoandat Apps channel through the YouTube Data API v3, with `fetch`
-// alone: the saved refresh token becomes a short-lived access token, then the video goes up as one
-// resumable upload and is recorded in `posted.json`. Without `--publish` it only describes the post
-// and touches neither the token file nor the network.
+// Posts a Short to the Hoandat Apps channel through the YouTube Data API v3, with `fetch` alone: the
+// saved refresh token becomes a short-lived access token, then the video goes up as one resumable upload
+// and is recorded in `posted.json`. Without `--publish` it only describes the post and touches neither
+// the token file nor the network.
 //
-//   node src/youtube-upload.ts --app chat [--file out/chat.mp4] [--privacy private] [--publish]
+//   node src/youtube-upload.ts --short chat [--file out/chat.mp4] [--privacy private] [--publish]
 import { openAsBlob, readFileSync, statSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { parseArgs } from "node:util";
-import { type AppShort, describe, findApp } from "./apps.ts";
 import { inPackage, isEntryPoint, outDir } from "./paths.ts";
+import { type Short, findShort } from "./shorts.ts";
 import { readYoutubeSecret, tokenFilePath } from "./token-file.ts";
 
 export const USED_BY = "hoandat-apps marketing";
@@ -24,6 +24,8 @@ export const PRIVACY = ["private", "unlisted", "public"] as const;
 export type Privacy = (typeof PRIVACY)[number];
 
 export interface PostedShort {
+	/** The Short's id: the app id for an overview Short, the feature id for a feature Short. */
+	short: string;
 	app: string;
 	videoId: string;
 	url: string;
@@ -33,14 +35,14 @@ export interface PostedShort {
 
 /** The metadata the upload starts with. The apps are tools for adults, so not made for kids. */
 export function videoResource(
-	app: AppShort,
+	short: Short,
 	privacy: Privacy,
 ): Record<string, unknown> {
 	return {
 		snippet: {
-			title: app.title,
-			description: describe(app),
-			tags: app.hashtags,
+			title: short.title,
+			description: short.description,
+			tags: short.app.hashtags,
 			categoryId: SCIENCE_AND_TECHNOLOGY,
 			defaultLanguage: "vi",
 			defaultAudioLanguage: "vi",
@@ -66,7 +68,7 @@ async function failure(
 }
 
 async function upload(
-	app: AppShort,
+	short: Short,
 	file: string,
 	privacy: Privacy,
 	tokenFile: string,
@@ -109,7 +111,7 @@ async function upload(
 			"X-Upload-Content-Length": String(size),
 			"X-Upload-Content-Type": "video/mp4",
 		},
-		body: JSON.stringify(videoResource(app, privacy)),
+		body: JSON.stringify(videoResource(short, privacy)),
 	});
 	const session = start.headers.get("location");
 	if (!start.ok || !session) {
@@ -138,10 +140,62 @@ async function upload(
 	return video.id;
 }
 
+export interface PostOptions {
+	privacy: Privacy;
+	/** Post for real; otherwise only say what would be sent. */
+	publish: boolean;
+	/** Post even though the ledger already has this Short. */
+	again?: boolean;
+	file?: string;
+	tokenFile?: string;
+}
+
+/** Posts `short` (or describes the post in a dry run) and records it in the ledger; returns what it did. */
+export async function postShort(
+	short: Short,
+	options: PostOptions,
+): Promise<string> {
+	const file = options.file ?? path.join(outDir, `${short.id}.mp4`);
+	const ledger = readLedger();
+	const earlier = ledger.find((entry) => entry.short === short.id);
+	if (earlier && !options.again) {
+		throw new Error(
+			`${short.id} was posted on ${earlier.postedAt} (${earlier.url}); pass --again to post another`,
+		);
+	}
+	if (!options.publish) {
+		return `dry run: would upload ${path.basename(file)} as ${options.privacy} "${short.title}"; nothing was sent`;
+	}
+	const videoId = await upload(
+		short,
+		file,
+		options.privacy,
+		tokenFilePath(options.tokenFile),
+	);
+	const url = `https://youtube.com/shorts/${videoId}`;
+	ledger.push({
+		short: short.id,
+		app: short.app.id,
+		videoId,
+		url,
+		privacy: options.privacy,
+		postedAt: new Date().toISOString(),
+	});
+	writeFileSync(LEDGER, `${JSON.stringify(ledger, null, "\t")}\n`);
+	return `posted ${short.id} as ${options.privacy}: ${url}`;
+}
+
+export function parsePrivacy(value: string): Privacy {
+	if (!(PRIVACY as readonly string[]).includes(value)) {
+		throw new Error(`--privacy is one of ${PRIVACY.join(", ")}`);
+	}
+	return value as Privacy;
+}
+
 async function main(): Promise<void> {
 	const { values } = parseArgs({
 		options: {
-			app: { type: "string" },
+			short: { type: "string" },
 			file: { type: "string" },
 			privacy: { type: "string", default: "private" },
 			publish: { type: "boolean", default: false },
@@ -149,43 +203,17 @@ async function main(): Promise<void> {
 			"token-file": { type: "string" },
 		},
 	});
-	if (!values.app)
-		throw new Error("usage: youtube-upload --app <id> [--publish]");
-	const app = findApp(values.app);
-	const privacy = values.privacy as Privacy;
-	if (!PRIVACY.includes(privacy)) {
-		throw new Error(`--privacy is one of ${PRIVACY.join(", ")}`);
+	if (!values.short) {
+		throw new Error("usage: youtube-upload --short <id> [--publish]");
 	}
-	const file = values.file ?? path.join(outDir, `${app.id}.mp4`);
-	const ledger = readLedger();
-	const earlier = ledger.find((entry) => entry.app === app.id);
-	if (earlier && !values.again) {
-		throw new Error(
-			`${app.id} was posted on ${earlier.postedAt} (${earlier.url}); pass --again to post another`,
-		);
-	}
-	if (!values.publish) {
-		console.log(
-			`dry run: would upload ${path.basename(file)} as ${privacy} "${app.title}"; nothing was sent`,
-		);
-		return;
-	}
-	const videoId = await upload(
-		app,
-		file,
-		privacy,
-		tokenFilePath(values["token-file"]),
-	);
-	const url = `https://youtube.com/shorts/${videoId}`;
-	ledger.push({
-		app: app.id,
-		videoId,
-		url,
-		privacy,
-		postedAt: new Date().toISOString(),
+	const message = await postShort(findShort(values.short), {
+		privacy: parsePrivacy(values.privacy),
+		publish: values.publish,
+		again: values.again,
+		...(values.file ? { file: values.file } : {}),
+		...(values["token-file"] ? { tokenFile: values["token-file"] } : {}),
 	});
-	writeFileSync(LEDGER, `${JSON.stringify(ledger, null, "\t")}\n`);
-	console.log(`posted ${app.id} as ${privacy}: ${url}`);
+	console.log(message);
 }
 
 if (isEntryPoint(import.meta.url)) {

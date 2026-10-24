@@ -1,12 +1,13 @@
-// Joins `out/<app>/sNN.png` into a 1080×1920, 30 fps Short with ffmpeg: a slow zoom on each slide,
-// 0.5 s fades between them, and the app's track from Miu World's CC0 music pack. Writes `out/<app>.mp4`.
+// Joins `out/<id>/sNN.png` into a 1080×1920, 30 fps Short with ffmpeg: a slow zoom on each slide,
+// 0.5 s fades between them, and the app's track from Miu World's CC0 music pack. Writes `out/<id>.mp4`.
 //
-//   node src/build-video.ts [app]
+//   node src/build-video.ts [short id …]   (no id: the four overview Shorts)
 import { spawnSync } from "node:child_process";
 import { readdirSync, statSync } from "node:fs";
 import path from "node:path";
-import { type AppShort, apps } from "./apps.ts";
+import { apps } from "./apps.ts";
 import { isEntryPoint, musicDir, outDir } from "./paths.ts";
+import { type Short, findShort } from "./shorts.ts";
 
 const FPS = 30;
 const FADE = 0.5;
@@ -60,8 +61,8 @@ export function filterGraph(durations: number[]): {
 	return { graph: parts.join(";"), video: previous, total };
 }
 
-export function buildVideo(app: AppShort): string {
-	const dir = path.join(outDir, app.id);
+export function buildVideo(short: Short): string {
+	const dir = path.join(outDir, short.id);
 	const slides = readdirSync(dir)
 		.filter((name) => /^s\d+\.png$/.test(name))
 		.sort();
@@ -70,7 +71,7 @@ export function buildVideo(app: AppShort): string {
 	}
 	const durations = slideDurations(slides.length);
 	const { graph, video, total } = filterGraph(durations);
-	const output = path.join(outDir, `${app.id}.mp4`);
+	const output = path.join(outDir, `${short.id}.mp4`);
 	const inputs = slides.flatMap((name, index) => [
 		"-loop",
 		"1",
@@ -87,7 +88,7 @@ export function buildVideo(app: AppShort): string {
 			"-y",
 			...inputs,
 			"-i",
-			path.join(musicDir, `${app.music}.m4a`),
+			path.join(musicDir, `${short.app.music}.m4a`),
 			"-filter_complex",
 			graph,
 			"-map",
@@ -103,18 +104,16 @@ export function buildVideo(app: AppShort): string {
 		{ stdio: "inherit" },
 	);
 	if (result.status !== 0) {
-		throw new Error(`ffmpeg failed for ${app.id} (exit ${result.status})`);
+		throw new Error(`ffmpeg failed for ${short.id} (exit ${result.status})`);
 	}
 	const kb = Math.round(statSync(output).size / 1024);
-	console.log(`${app.id}.mp4 ${total}s ${kb} KB`);
+	console.log(`${short.id}.mp4 ${total}s ${kb} KB`);
 	return output;
 }
 
 if (isEntryPoint(import.meta.url)) {
-	const only = process.argv[2];
-	for (const app of apps.filter(
-		(candidate) => !only || candidate.id === only,
-	)) {
-		buildVideo(app);
+	const ids = process.argv.slice(2);
+	for (const id of ids.length > 0 ? ids : apps.map((app) => app.id)) {
+		buildVideo(findShort(id));
 	}
 }

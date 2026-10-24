@@ -2,8 +2,10 @@
 
 Dựng và đăng Shorts dọc (1080 × 1920, khoảng 21 giây) cho kênh YouTube **Hoandat Apps**
 (`@hoandatapps`, kênh `UC5kF-54QdobLrtQ94tgVLmg`): mỗi app một video gồm logo và tagline, năm cảnh
-ảnh chụp store (Tunelo dùng cảnh terminal) có tiêu đề tiếng Việt, và cảnh cuối có link. Gói riêng tư,
-không publish, chỉ chạy trên máy dev.
+ảnh chụp store (Tunelo dùng cảnh terminal) có tiêu đề tiếng Việt, và cảnh cuối có link. Thêm một loạt
+**Short tính năng hằng tuần** (khoảng 12 giây): câu mở đầu nêu vấn đề, ảnh hoặc terminal của tính năng, ba
+ý chính, cảnh cuối có link; bốn app lần lượt, mỗi app năm tính năng, tổng 20 tuần. Gói riêng tư, không
+publish, chỉ chạy trên máy dev.
 
 ## Cần có
 
@@ -19,16 +21,20 @@ Chạy trong `packages/app-shorts`:
 
 | Lệnh | Làm gì |
 | --- | --- |
-| `pnpm render [app]` | Dựng slide PNG vào `out/<app>/` (không commit) |
-| `pnpm video [app]` | Ghép slide thành `out/<app>.mp4` (zoom chậm, chuyển cảnh mờ 0,5 s, nhạc) |
-| `pnpm upload --app <app>` | Chạy khô: in ra sẽ đăng gì, không đọc token, không gọi mạng |
-| `pnpm upload --app <app> --publish [--privacy private\|unlisted\|public]` | Đăng thật, ghi vào `posted.json` |
+| `pnpm render [id …]` | Dựng slide PNG vào `out/<id>/` (không commit); không có id thì bốn Short giới thiệu |
+| `pnpm video [id …]` | Ghép slide thành `out/<id>.mp4` (zoom chậm, chuyển cảnh mờ 0,5 s, nhạc của app) |
+| `pnpm upload --short <id>` | Chạy khô: in ra sẽ đăng gì, không đọc token, không gọi mạng |
+| `pnpm upload --short <id> --publish [--privacy private\|unlisted\|public]` | Đăng thật, ghi vào `posted.json` |
+| `pnpm weekly [--publish] [--privacy …]` | Dựng và (với `--publish`) đăng Short tính năng kế tiếp chưa có trong `posted.json` |
 | `pnpm grant --client <file> --used-by <tên> --channel <UC…>` | Cấp quyền YouTube một lần cho một kênh |
 
-`app` là `chat`, `scribe`, `localman` hoặc `tunelo`. Nội dung và lời mô tả nằm ở `src/apps.ts`; mọi câu
-phải đối chiếu được với store listing hoặc README của app. Mô tả gắn
-`utm_source=youtube&utm_medium=social&utm_campaign=app-short` và link danh mục `auth.hoandat.com/apps`.
-`posted.json` ghi các video đã đăng; `upload` từ chối đăng lại app đã có trong đó trừ khi thêm `--again`.
+`id` của Short giới thiệu là id app (`chat`, `scribe`, `localman`, `tunelo`); của Short tính năng là id trong
+`src/features.ts` (ví dụ `chat-search`). Lời của Short giới thiệu ở `src/apps.ts`, của Short tính năng ở
+`src/features.ts`; mọi câu phải đối chiếu được với store listing hoặc README của app (không dùng tính năng chỉ
+có ở app iPhone, vì video dẫn về bản web). Short giới thiệu gắn `utm_campaign=app-short`, Short tính năng gắn
+`utm_campaign=feature-short&utm_content=<id>`, cùng `utm_source=youtube&utm_medium=social` và link danh mục
+`auth.hoandat.com/apps`. `posted.json` ghi các video đã đăng theo `short`; `upload` từ chối đăng lại một Short
+đã có trừ khi thêm `--again`, `weekly` chọn tính năng đầu tiên (theo thứ tự trong `features.ts`) chưa đăng.
 
 ## Credential
 

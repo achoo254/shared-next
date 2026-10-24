@@ -2,6 +2,7 @@ import { existsSync } from "node:fs";
 import { expect, describe as group, it } from "vitest";
 import { UTM, apps, describe } from "../src/apps.ts";
 import { inWorkspace } from "../src/paths.ts";
+import { overviewShort } from "../src/shorts.ts";
 import { readLedger, videoResource } from "../src/youtube-upload.ts";
 
 group("app Shorts", () => {
@@ -43,7 +44,7 @@ group("app Shorts", () => {
 	it("declares the upload as not made for kids, in Vietnamese, under Science & Technology", () => {
 		const [first] = apps;
 		if (!first) throw new Error("no apps");
-		const resource = videoResource(first, "private") as {
+		const resource = videoResource(overviewShort(first), "private") as {
 			snippet: { categoryId: string; defaultLanguage: string };
 			status: { privacyStatus: string; selfDeclaredMadeForKids: boolean };
 		};
@@ -60,6 +61,7 @@ group("app Shorts", () => {
 		const ids = new Set(apps.map((app) => app.id));
 		for (const entry of ledger) {
 			expect(ids.has(entry.app)).toBe(true);
+			expect(entry.short).toBeTruthy();
 			expect(entry.url).toBe(`https://youtube.com/shorts/${entry.videoId}`);
 		}
 		expect(new Set(ledger.map((entry) => entry.videoId)).size).toBe(

@@ -12,6 +12,7 @@
 		"video": "node src/build-video.ts",
 		"grant": "node src/youtube-grant.ts",
 		"upload": "node src/youtube-upload.ts",
+		"weekly": "node src/weekly.ts",
 		"typecheck": "tsc -p tsconfig.json",
 		"test": "vitest run --maxWorkers=2"
 	},
