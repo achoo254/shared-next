@@ -197,7 +197,7 @@ async function main(): Promise<void> {
 		options: {
 			short: { type: "string" },
 			file: { type: "string" },
-			privacy: { type: "string", default: "private" },
+			privacy: { type: "string", default: "public" },
 			publish: { type: "boolean", default: false },
 			again: { type: "boolean", default: false },
 			"token-file": { type: "string" },

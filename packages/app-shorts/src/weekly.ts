@@ -24,7 +24,7 @@ export function nextFeature(ledger: PostedShort[]): Feature | undefined {
 async function main(): Promise<void> {
 	const { values } = parseArgs({
 		options: {
-			privacy: { type: "string", default: "private" },
+			privacy: { type: "string", default: "public" },
 			publish: { type: "boolean", default: false },
 			"token-file": { type: "string" },
 		},

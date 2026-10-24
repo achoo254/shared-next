@@ -24,7 +24,7 @@ Chạy trong `packages/app-shorts`:
 | `pnpm render [id …]` | Dựng slide PNG vào `out/<id>/` (không commit); không có id thì bốn Short giới thiệu |
 | `pnpm video [id …]` | Ghép slide thành `out/<id>.mp4` (zoom chậm, chuyển cảnh mờ 0,5 s, nhạc của app) |
 | `pnpm upload --short <id>` | Chạy khô: in ra sẽ đăng gì, không đọc token, không gọi mạng |
-| `pnpm upload --short <id> --publish [--privacy private\|unlisted\|public]` | Đăng thật, ghi vào `posted.json` |
+| `pnpm upload --short <id> --publish [--privacy private\|unlisted\|public]` | Đăng thật (mặc định `public`), ghi vào `posted.json` |
 | `pnpm weekly [--publish] [--privacy …]` | Dựng và (với `--publish`) đăng Short tính năng kế tiếp chưa có trong `posted.json` |
 | `pnpm grant --client <file> --used-by <tên> --channel <UC…>` | Cấp quyền YouTube một lần cho một kênh |
 
@@ -52,6 +52,8 @@ Cả hai dùng chung OAuth client loại Desktop app "YouTube Shorts uploader" c
 hết hạn sau 7 ngày). Cấp lại quyền khi token bị thu hồi: tải JSON của client từ Cloud Console rồi chạy
 `pnpm grant`. Script mở cổng tạm trên `127.0.0.1`, in địa chỉ trang đồng ý, buộc chọn lại tài khoản và kênh,
 và chỉ lưu khi kênh được cấp đúng là `--channel`.
+
+**Quyền xem mặc định là `public`** (người sở hữu chốt 24/10/2026); `--privacy private` để xem trước.
 
 **Giới hạn của Google:** video tải lên qua API từ project chưa qua kiểm tra tuân thủ (API Compliance Audit)
 bị khóa ở chế độ riêng tư dù gửi `public`. Muốn API đăng công khai thì nộp mẫu kiểm tra trong Cloud Console;
