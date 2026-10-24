@@ -1,7 +1,7 @@
 # shared-next
 
 Các gói dùng chung của hệ sản phẩm *-next (chat-next, scribe-next, localman-next, miu-world-next).
-Hiện có ba gói:
+Hiện có ba gói dùng trong sản phẩm và một gói công cụ:
 
 - **`@shared-next/brand`** (thư mục `packages/brand`): cấu hình thương hiệu, mô tả bên dưới.
 - **`@shared-next/capacitor-system-auth`** (thư mục `packages/capacitor-system-auth`): plugin Capacitor 8 mở
@@ -11,6 +11,9 @@ Hiện có ba gói:
   khoản (Chat, Scribe, Localman, Tunelo, rồi trang tài khoản), React 19, danh mục tĩnh theo tenant, link gắn
   `utm_source`/`utm_medium=app_switcher`. Peer dependency `@shared-next/brand` (dựng host bằng `hostsFor`).
   Cách dùng và biến CSS: [`packages/app-switcher/README.md`](packages/app-switcher/README.md).
+- **`@shared-next/app-shorts`** (thư mục `packages/app-shorts`, riêng tư, không publish): dựng Shorts dọc
+  cho kênh YouTube Hoandat Apps từ ảnh store của từng app và đăng bằng YouTube Data API; cũng là nơi có
+  script cấp quyền YouTube cho cả kênh Miu World. Cách chạy: [`packages/app-shorts/README.md`](packages/app-shorts/README.md).
 
 ## `@shared-next/brand` là gì
 
