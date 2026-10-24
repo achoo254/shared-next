@@ -7,7 +7,8 @@ other app without signing in again.
 - **Static catalog** (`APP_SWITCHER_CATALOG`): Chat, Scribe, Localman, Tunelo, then the account page
   (`auth.<domain>/account`). Chat and Scribe are listed on the primary tenant only, as on auth-next's `/apps`
   page. Miu World is never listed (its players are children). Labels and one-line descriptions in `en`, `vi`
-  and `zh-CN`; any other locale falls back to English.
+  and `zh-CN`. `locale` takes any BCP 47 tag, matched by language and case-insensitively (`vi-VN` -> `vi`,
+  `zh` or `zh-*` -> `zh-CN`); any other language falls back to English.
 - **`appSwitcherLinks(options)`**: the list as plain data (no React, no DOM).
 - **`<AppSwitcher/>`**: the button and its popover, in React 19.
 
@@ -27,6 +28,10 @@ Peer dependencies: `react` 19 and `@shared-next/brand` 0.x (host names come from
 tenant domain is checked by the same rule as the brand config). Chat, Scribe and Localman already depend on
 `@shared-next/brand`; the switcher uses the copy the app has.
 
+Declare `@shared-next/brand` yourself, as a git dependency (see its README). The `@shared-next` npm scope is
+not registered to us: a peer that pnpm installs on its own would come from the registry, i.e. someone else's
+package.
+
 ## Usage
 
 ```tsx
@@ -37,15 +42,16 @@ import { AppSwitcher } from "@shared-next/app-switcher";
 	current="localman" // this app: left out of the list, sent as utm_source
 	tenantDomain="hoandat.com" // the tenant's root domain, no port or path
 	isPrimaryTenant={true} // Chat and Scribe only on the primary tenant
-	locale="vi" // "en" | "vi" | "zh-CN"
+	locale="vi-VN" // any BCP 47 tag: vi*, zh*, else English
 	placement="bottom-end" // or "right-end" beside a side rail (Chat)
 	onOpen={native ? openInSystemBrowser : undefined}
 />;
 ```
 
 Every link is `https://<host>/<path>?utm_source=<current>&utm_medium=app_switcher`. Without `onOpen` it is a
-plain `<a href>` the browser follows; with `onOpen` the click is cancelled and the URL handed to it (native
-shells open the system browser). A `tenantDomain` that is not a lowercase registrable domain (for instance
+plain `<a href>` the browser follows, with `target="_blank" rel="noopener"` when the page runs as an installed
+PWA (`display-mode: standalone`) so the other app does not load inside this app's window; with `onOpen` the
+click is cancelled and the URL handed to it (native shells open the system browser). A `tenantDomain` that is not a lowercase registrable domain (for instance
 `localhost:5173` in development) renders nothing and logs the error with `console.error`; the rest of the app
 keeps working.
 
@@ -68,11 +74,12 @@ It throws when `current` is not a catalog app or `tenantDomain` is not a tenant 
 
 ## Keyboard and screen readers
 
-- The button has an accessible name ("Switch app" in the app's locale), `aria-expanded` and `aria-controls`.
+- The button has an accessible name ("Switch app" in the app's locale), `aria-haspopup="dialog"`,
+  `aria-expanded` and `aria-controls`.
 - The list is a non-modal `<dialog>` named "Apps". Opening it moves focus to the first link; Tab and
   Shift+Tab cycle inside it.
 - Esc closes it and puts focus back on the button. A press outside closes it without moving focus. Following a
-  link closes it.
+  link closes it; a link handed to `onOpen` also puts focus back on the button.
 
 ## Theming
 

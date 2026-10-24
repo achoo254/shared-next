@@ -10,6 +10,7 @@ import { useCallback, useEffect, useId, useMemo, useRef, useState, } from "react
 import { EntryIcon, GridIcon } from "./icons.js";
 import { appSwitcherLinks, resolveAppSwitcherLocale, } from "./links.js";
 import { usePopoverDismiss } from "./use-popover-dismiss.js";
+import { useStandaloneDisplay } from "./use-standalone-display.js";
 const BUTTON_LABEL = {
     en: "Switch app",
     vi: "Chuyển ứng dụng",
@@ -39,6 +40,8 @@ export function AppSwitcher(props) {
     const close = useCallback(() => setOpen(false), []);
     const refs = useMemo(() => ({ root, trigger, panel }), []);
     usePopoverDismiss(open, close, refs);
+    // An installed PWA would load the other app in its own window.
+    const newContext = useStandaloneDisplay() && !onOpen;
     const { links, error } = useMemo(() => safeLinks({ current, tenantDomain, isPrimaryTenant, locale }), [current, tenantDomain, isPrimaryTenant, locale]);
     useEffect(() => {
         // A wrong tenant domain hides the switcher; the app keeps working.
@@ -52,10 +55,12 @@ export function AppSwitcher(props) {
         if (!onOpen)
             return;
         event.preventDefault();
+        // The page stays: focus goes back to the button, as on Esc.
+        trigger.current?.focus();
         onOpen(href);
     }
     const rootClass = ["sn-app-switcher", props.className]
         .filter(Boolean)
         .join(" ");
-    return (_jsxs("div", { ref: root, className: rootClass, "data-placement": props.placement ?? "bottom-end", children: [_jsx("button", { ref: trigger, type: "button", className: "sn-app-switcher__button", "aria-label": BUTTON_LABEL[locale], title: BUTTON_LABEL[locale], "aria-expanded": open, "aria-controls": panelId, onClick: () => setOpen((value) => !value), children: _jsx(GridIcon, {}) }), _jsx("dialog", { ref: panel, id: panelId, "aria-label": PANEL_LABEL[locale], className: "sn-app-switcher__panel", open: open, children: _jsx("ul", { className: "sn-app-switcher__list", children: links.map((link) => (_jsx("li", { "data-entry": link.id, children: _jsxs("a", { className: "sn-app-switcher__link", href: link.href, onClick: (event) => follow(event, link.href), children: [_jsx(EntryIcon, { id: link.id }), _jsxs("span", { className: "sn-app-switcher__text", children: [_jsx("span", { className: "sn-app-switcher__label", children: link.label }), _jsx("span", { className: "sn-app-switcher__description", children: link.description })] })] }) }, link.id))) }) })] }));
+    return (_jsxs("div", { ref: root, className: rootClass, "data-placement": props.placement ?? "bottom-end", children: [_jsx("button", { ref: trigger, type: "button", className: "sn-app-switcher__button", "aria-label": BUTTON_LABEL[locale], title: BUTTON_LABEL[locale], "aria-haspopup": "dialog", "aria-expanded": open, "aria-controls": panelId, onClick: () => setOpen((value) => !value), children: _jsx(GridIcon, {}) }), _jsx("dialog", { ref: panel, id: panelId, "aria-label": PANEL_LABEL[locale], className: "sn-app-switcher__panel", open: open, children: _jsx("ul", { className: "sn-app-switcher__list", children: links.map((link) => (_jsx("li", { "data-entry": link.id, children: _jsxs("a", { className: "sn-app-switcher__link", href: link.href, target: newContext ? "_blank" : undefined, rel: newContext ? "noopener" : undefined, onClick: (event) => follow(event, link.href), children: [_jsx(EntryIcon, { id: link.id }), _jsxs("span", { className: "sn-app-switcher__text", children: [_jsx("span", { className: "sn-app-switcher__label", children: link.label }), _jsx("span", { className: "sn-app-switcher__description", children: link.description })] })] }) }, link.id))) }) })] }));
 }

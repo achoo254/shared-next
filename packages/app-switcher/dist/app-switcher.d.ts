@@ -4,7 +4,8 @@ export type AppSwitcherPlacement = "bottom-end" | "right-end";
 export interface AppSwitcherProps extends AppSwitcherLinksOptions {
     /**
      * Opens a link instead of the browser following it, e.g. in the system
-     * browser from a native shell. Without it the link is a plain `<a href>`.
+     * browser from a native shell. Without it the link is a plain `<a href>`,
+     * opened in a new browsing context when the page runs as an installed PWA.
      */
     readonly onOpen?: ((url: string) => void) | undefined;
     readonly placement?: AppSwitcherPlacement | undefined;

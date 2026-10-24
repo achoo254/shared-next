@@ -3,14 +3,22 @@
  * server or a test can build it too.
  */
 import { hostsFor } from "@shared-next/brand/hosts";
-import { APP_SWITCHER_APP_IDS, APP_SWITCHER_CATALOG, APP_SWITCHER_LOCALES, } from "./catalog.js";
+import { APP_SWITCHER_APP_IDS, APP_SWITCHER_CATALOG, } from "./catalog.js";
 /** `utm_medium` of every switcher link. */
 export const APP_SWITCHER_UTM_MEDIUM = "app_switcher";
-/** `locale` when the catalog has it, else English (labels never go missing). */
+/**
+ * The catalog locale for a BCP 47 tag, by its language, case-insensitively:
+ * `vi`, `vi-*` -> `vi`; `zh`, `zh-*` -> `zh-CN`; anything else -> English
+ * (labels never go missing).
+ */
 export function resolveAppSwitcherLocale(locale) {
-    return APP_SWITCHER_LOCALES.includes(locale)
-        ? locale
-        : "en";
+    const tag = locale.toLowerCase();
+    const isLanguage = (language) => tag === language || tag.startsWith(`${language}-`);
+    if (isLanguage("vi"))
+        return "vi";
+    if (isLanguage("zh"))
+        return "zh-CN";
+    return "en";
 }
 /**
  * Links to the other apps of the tenant, then the account page, in catalog

@@ -23,6 +23,7 @@ import {
 	resolveAppSwitcherLocale,
 } from "./links.js";
 import { usePopoverDismiss } from "./use-popover-dismiss.js";
+import { useStandaloneDisplay } from "./use-standalone-display.js";
 
 /** Where the panel opens: under a header button, or beside a side rail. */
 export type AppSwitcherPlacement = "bottom-end" | "right-end";
@@ -30,7 +31,8 @@ export type AppSwitcherPlacement = "bottom-end" | "right-end";
 export interface AppSwitcherProps extends AppSwitcherLinksOptions {
 	/**
 	 * Opens a link instead of the browser following it, e.g. in the system
-	 * browser from a native shell. Without it the link is a plain `<a href>`.
+	 * browser from a native shell. Without it the link is a plain `<a href>`,
+	 * opened in a new browsing context when the page runs as an installed PWA.
 	 */
 	readonly onOpen?: ((url: string) => void) | undefined;
 	readonly placement?: AppSwitcherPlacement | undefined;
@@ -73,6 +75,8 @@ export function AppSwitcher(props: AppSwitcherProps) {
 	const close = useCallback(() => setOpen(false), []);
 	const refs = useMemo(() => ({ root, trigger, panel }), []);
 	usePopoverDismiss(open, close, refs);
+	// An installed PWA would load the other app in its own window.
+	const newContext = useStandaloneDisplay() && !onOpen;
 
 	const { links, error } = useMemo(
 		() => safeLinks({ current, tenantDomain, isPrimaryTenant, locale }),
@@ -88,6 +92,8 @@ export function AppSwitcher(props: AppSwitcherProps) {
 		setOpen(false);
 		if (!onOpen) return;
 		event.preventDefault();
+		// The page stays: focus goes back to the button, as on Esc.
+		trigger.current?.focus();
 		onOpen(href);
 	}
 
@@ -106,6 +112,7 @@ export function AppSwitcher(props: AppSwitcherProps) {
 				className="sn-app-switcher__button"
 				aria-label={BUTTON_LABEL[locale]}
 				title={BUTTON_LABEL[locale]}
+				aria-haspopup="dialog"
 				aria-expanded={open}
 				aria-controls={panelId}
 				onClick={() => setOpen((value) => !value)}
@@ -125,6 +132,8 @@ export function AppSwitcher(props: AppSwitcherProps) {
 							<a
 								className="sn-app-switcher__link"
 								href={link.href}
+								target={newContext ? "_blank" : undefined}
+								rel={newContext ? "noopener" : undefined}
 								onClick={(event) => follow(event, link.href)}
 							>
 								<EntryIcon id={link.id} />

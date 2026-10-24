@@ -6,7 +6,6 @@ import { hostsFor } from "@shared-next/brand/hosts";
 import {
 	APP_SWITCHER_APP_IDS,
 	APP_SWITCHER_CATALOG,
-	APP_SWITCHER_LOCALES,
 	type AppSwitcherAppId,
 	type AppSwitcherEntryId,
 	type AppSwitcherLocale,
@@ -22,7 +21,8 @@ export interface AppSwitcherLinksOptions {
 	readonly tenantDomain: string;
 	/** Chat and Scribe are listed only for the primary tenant. */
 	readonly isPrimaryTenant: boolean;
-	readonly locale: AppSwitcherLocale;
+	/** A BCP 47 tag such as `vi-VN` or `zh` (see `resolveAppSwitcherLocale`). */
+	readonly locale: string;
 }
 
 export interface AppSwitcherLink {
@@ -33,11 +33,18 @@ export interface AppSwitcherLink {
 	readonly href: string;
 }
 
-/** `locale` when the catalog has it, else English (labels never go missing). */
+/**
+ * The catalog locale for a BCP 47 tag, by its language, case-insensitively:
+ * `vi`, `vi-*` -> `vi`; `zh`, `zh-*` -> `zh-CN`; anything else -> English
+ * (labels never go missing).
+ */
 export function resolveAppSwitcherLocale(locale: string): AppSwitcherLocale {
-	return (APP_SWITCHER_LOCALES as readonly string[]).includes(locale)
-		? (locale as AppSwitcherLocale)
-		: "en";
+	const tag = locale.toLowerCase();
+	const isLanguage = (language: string) =>
+		tag === language || tag.startsWith(`${language}-`);
+	if (isLanguage("vi")) return "vi";
+	if (isLanguage("zh")) return "zh-CN";
+	return "en";
 }
 
 /**

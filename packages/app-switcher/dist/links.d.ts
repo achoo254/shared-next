@@ -8,7 +8,8 @@ export interface AppSwitcherLinksOptions {
     readonly tenantDomain: string;
     /** Chat and Scribe are listed only for the primary tenant. */
     readonly isPrimaryTenant: boolean;
-    readonly locale: AppSwitcherLocale;
+    /** A BCP 47 tag such as `vi-VN` or `zh` (see `resolveAppSwitcherLocale`). */
+    readonly locale: string;
 }
 export interface AppSwitcherLink {
     readonly id: AppSwitcherEntryId;
@@ -17,7 +18,11 @@ export interface AppSwitcherLink {
     /** Absolute https URL carrying `utm_source` and `utm_medium`. */
     readonly href: string;
 }
-/** `locale` when the catalog has it, else English (labels never go missing). */
+/**
+ * The catalog locale for a BCP 47 tag, by its language, case-insensitively:
+ * `vi`, `vi-*` -> `vi`; `zh`, `zh-*` -> `zh-CN`; anything else -> English
+ * (labels never go missing).
+ */
 export declare function resolveAppSwitcherLocale(locale: string): AppSwitcherLocale;
 /**
  * Links to the other apps of the tenant, then the account page, in catalog

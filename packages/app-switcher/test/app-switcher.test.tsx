@@ -37,14 +37,26 @@ function panel(): HTMLDialogElement {
 	return element;
 }
 
+/** Runs the page as an installed PWA, or in a browser tab. */
+function displayStandalone(standalone: boolean): void {
+	vi.stubGlobal("matchMedia", (query: string) => ({
+		matches: standalone && query === "(display-mode: standalone)",
+		media: query,
+		addEventListener: () => {},
+		removeEventListener: () => {},
+	}));
+}
+
 afterEach(() => {
 	cleanup();
 	vi.restoreAllMocks();
+	vi.unstubAllGlobals();
 });
 
 describe("AppSwitcher", () => {
 	it("starts closed, with the panel wired to the button", () => {
 		const { button } = setup();
+		expect(button.getAttribute("aria-haspopup")).toBe("dialog");
 		expect(button.getAttribute("aria-expanded")).toBe("false");
 		expect(button.getAttribute("aria-controls")).toBe(panel().id);
 		expect(panel().open).toBe(false);
@@ -121,6 +133,43 @@ describe("AppSwitcher", () => {
 			"https://auth.hoandat.com/account?utm_source=scribe&utm_medium=app_switcher",
 		);
 		expect(panel().open).toBe(false);
+	});
+
+	it("gives focus back to the button after handing a link to onOpen", () => {
+		const onOpen = vi.fn();
+		const { button } = setup({ onOpen });
+		fireEvent.click(button);
+		const chat = within(panel()).getByRole("link", { name: /Chat/ });
+		expect(document.activeElement).toBe(chat);
+		fireEvent.click(chat);
+		expect(onOpen).toHaveBeenCalledTimes(1);
+		expect(document.activeElement).toBe(button);
+	});
+
+	it("opens links in a new browsing context in an installed PWA", () => {
+		displayStandalone(true);
+		const { button } = setup();
+		fireEvent.click(button);
+		for (const link of within(panel()).getAllByRole("link")) {
+			expect(link.getAttribute("target")).toBe("_blank");
+			expect(link.getAttribute("rel")).toBe("noopener");
+		}
+	});
+
+	it("keeps links in the same tab in a browser, or when onOpen handles them", () => {
+		displayStandalone(false);
+		const { button, unmount } = setup();
+		fireEvent.click(button);
+		for (const link of within(panel()).getAllByRole("link")) {
+			expect(link.hasAttribute("target")).toBe(false);
+			expect(link.hasAttribute("rel")).toBe(false);
+		}
+		unmount();
+		displayStandalone(true);
+		setup({ onOpen: vi.fn() });
+		for (const link of within(panel()).getAllByRole("link", { hidden: true })) {
+			expect(link.hasAttribute("target")).toBe(false);
+		}
 	});
 
 	it("lets a plain link navigate when there is no onOpen", () => {

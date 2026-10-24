@@ -85,9 +85,37 @@ describe("appSwitcherLinks", () => {
 		});
 	});
 
-	it("falls back to English for a locale it has no labels for", () => {
-		expect(resolveAppSwitcherLocale("fr")).toBe("en");
-		expect(resolveAppSwitcherLocale("zh-CN")).toBe("zh-CN");
+	it.each([
+		["vi", "vi"],
+		["vi-VN", "vi"],
+		["VI-vn", "vi"],
+		["zh", "zh-CN"],
+		["zh-CN", "zh-CN"],
+		["zh-cn", "zh-CN"],
+		["zh-Hans-CN", "zh-CN"],
+		["en", "en"],
+		["EN-us", "en"],
+	])("resolves the BCP 47 tag %j to the %j labels", (tag, locale) => {
+		expect(resolveAppSwitcherLocale(tag)).toBe(locale);
+	});
+
+	it.each(["fr", "fr-FR", "vie", "zhx", ""])(
+		"falls back to English for %j, a locale it has no labels for",
+		(tag) => {
+			expect(resolveAppSwitcherLocale(tag)).toBe("en");
+		},
+	);
+
+	it("labels the links of a regional tag such as vi-VN", () => {
+		const [first] = appSwitcherLinks({
+			current: "chat",
+			tenantDomain: "hoandat.com",
+			isPrimaryTenant: true,
+			locale: "vi-VN",
+		});
+		expect(first?.description).toBe(
+			"Ghi âm và chuyển thành bản chép lời để tìm kiếm, chỉnh sửa.",
+		);
 	});
 
 	it.each([
