@@ -11,9 +11,6 @@ Hiện có ba gói dùng trong sản phẩm và một gói công cụ:
   khoản (Chat, Scribe, Localman, Tunelo, rồi trang tài khoản), React 19, danh mục tĩnh dưới một tên miền gốc, link gắn
   `utm_source`/`utm_medium=app_switcher`. Peer dependency `@achoo254/brand` (dựng host bằng `hostsFor`).
   Cách dùng và biến CSS: [`packages/app-switcher/README.md`](packages/app-switcher/README.md).
-- **`@achoo254/app-shorts`** (thư mục `packages/app-shorts`, riêng tư, không publish): dựng Shorts dọc
-  cho kênh YouTube Hoandat Apps từ ảnh store của từng app và đăng bằng YouTube Data API; cũng là nơi có
-  script cấp quyền YouTube cho cả kênh Miu World. Cách chạy: [`packages/app-shorts/README.md`](packages/app-shorts/README.md).
 
 ## `@achoo254/brand` là gì
 
