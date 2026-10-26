@@ -2,8 +2,10 @@
  * The 9-dot button and its popover of links to the other apps: a
  * non-modal <dialog> shown with the `open` attribute (never showModal, so
  * the page stays usable and the popover sits next to its button).
- * No inline styles (Scribe's CSP has no style-src 'unsafe-inline'), no
- * network: classes come from app-switcher.css, themed by CSS variables.
+ * No inline styles (Scribe's CSP has no style-src 'unsafe-inline'): classes
+ * come from app-switcher.css, themed by CSS variables. The only request is
+ * the app's own chunk of app marks, loaded when the button is hovered,
+ * focused or opened.
  */
 import {
 	type MouseEvent,
@@ -22,6 +24,7 @@ import {
 	appSwitcherLinks,
 	resolveAppSwitcherLocale,
 } from "./links.js";
+import { loadAppMarks } from "./mark-loader.js";
 import { usePopoverDismiss } from "./use-popover-dismiss.js";
 import { useStandaloneDisplay } from "./use-standalone-display.js";
 
@@ -56,6 +59,11 @@ type LinksResult =
 	| { readonly links: AppSwitcherLink[]; readonly error?: undefined }
 	| { readonly links: []; readonly error: unknown };
 
+/** Fetches the marks chunk; a failure only leaves the placeholders. */
+function prefetchMarks(): void {
+	loadAppMarks().catch((error: unknown) => console.error(error));
+}
+
 function safeLinks(options: AppSwitcherLinksOptions): LinksResult {
 	try {
 		return { links: appSwitcherLinks(options) };
@@ -86,6 +94,9 @@ export function AppSwitcher(props: AppSwitcherProps) {
 		// A wrong domain hides the switcher; the app keeps working.
 		if (error !== undefined) console.error(error);
 	}, [error]);
+	useEffect(() => {
+		if (open) prefetchMarks();
+	}, [open]);
 	if (links.length === 0) return null;
 
 	function follow(event: MouseEvent<HTMLAnchorElement>, href: string): void {
@@ -116,6 +127,8 @@ export function AppSwitcher(props: AppSwitcherProps) {
 				aria-expanded={open}
 				aria-controls={panelId}
 				onClick={() => setOpen((value) => !value)}
+				onPointerEnter={prefetchMarks}
+				onFocus={prefetchMarks}
 			>
 				<GridIcon />
 			</button>

@@ -58,4 +58,25 @@ describe("dist", () => {
 			css: true,
 		});
 	});
+
+	it("keeps the marks out of the main entry's static imports (own chunk)", () => {
+		const read = (file: string) =>
+			readFileSync(new URL(`../dist/${file}`, import.meta.url), "utf8");
+		const reached = new Set<string>();
+		const queue = ["index.js"];
+		for (let file = queue.shift(); file; file = queue.shift()) {
+			if (reached.has(file)) continue;
+			reached.add(file);
+			for (const match of read(file).matchAll(STATIC_IMPORT)) {
+				if (match[1]) queue.push(match[1]);
+			}
+		}
+		expect(reached).toContain("icons.js");
+		expect(reached).toContain("mark-loader.js");
+		expect(reached).not.toContain("marks.js");
+		expect(read("mark-loader.js")).toContain('import("./marks.js")');
+	});
 });
+
+/** `import … from "./x.js"` and `export … from "./x.js"`, not `import()`. */
+const STATIC_IMPORT = /^(?:import|export)\b[^;]*?\bfrom\s+"\.\/([^"]+)"/gm;

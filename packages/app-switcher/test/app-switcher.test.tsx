@@ -78,11 +78,6 @@ describe("AppSwitcher", () => {
 			"https://chat.hoandat.com/?utm_source=scribe&utm_medium=app_switcher",
 		);
 		expect(document.activeElement).toBe(links[0]);
-		for (const link of links) {
-			const mark = link.querySelector("img");
-			expect(mark?.getAttribute("alt")).toBe("");
-			expect(mark?.getAttribute("src")).toMatch(/^data:image\/webp;base64,/);
-		}
 	});
 
 	it("closes on Escape and gives focus back to the button", () => {

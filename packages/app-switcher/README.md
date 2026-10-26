@@ -12,8 +12,10 @@ other app without signing in again.
 - **`appSwitcherLinks(options)`**: the list as plain data (no React, no DOM).
 - **`<AppSwitcher/>`**: the button and its popover, in React 19.
 
-Nothing is fetched: each app shows its AI-drawn mark (64 px WebP, from `assets/marks/`; AI-generated with OpenAI gpt-image for the hoandat ecosystem; owned by hoandat, all rights reserved (not CC0), outside this package's MIT licence) inlined in the
-JavaScript as a `data:` URI, the button's 9 dots are inline SVG, and the styles ship as a stylesheet the app
+No image file is fetched: each app shows its AI-drawn mark (64 px WebP, from `assets/marks/`; AI-generated with OpenAI gpt-image for the hoandat ecosystem; owned by hoandat, all rights reserved (not CC0), outside this package's MIT licence) as a
+`data:` URI. The marks sit in their own module, loaded with a dynamic `import()` when the button is first hovered,
+focused or opened, so the app's bundler puts them in a separate chunk outside its startup JavaScript; until then a
+box of the same size holds each place. The button's 9 dots are inline SVG, and the styles ship as a stylesheet the app
 bundles. The app's CSP must allow `img-src data:` for the marks; no inline styles are needed. No Tailwind or
 Radix dependency.
 
@@ -31,7 +33,7 @@ install a release on its first day, list that exact version in `pnpm-workspace.y
 
 ```yaml
 minimumReleaseAgeExclude:
-  - "@achoo254/app-switcher@0.3.0"
+  - "@achoo254/app-switcher@0.3.1"
 ```
 
 ## Usage

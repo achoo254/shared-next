@@ -1,8 +1,15 @@
 import { jsx as _jsx } from "react/jsx-runtime";
-import { APP_MARKS } from "./marks.js";
-/** Mark of one catalog entry, decorative (the link text names it). */
+import { useAppMarks } from "./mark-loader.js";
+/**
+ * Mark of one catalog entry, decorative (the link text names it). Until the
+ * marks are loaded an empty box of the same size holds its place.
+ */
 export function EntryIcon({ id }) {
-    return (_jsx("img", { className: "sn-app-switcher__icon", src: APP_MARKS[id], alt: "", width: 22, height: 22 }));
+    const marks = useAppMarks();
+    if (!marks) {
+        return _jsx("span", { className: "sn-app-switcher__icon", "aria-hidden": "true" });
+    }
+    return (_jsx("img", { className: "sn-app-switcher__icon", src: marks[id], alt: "", width: 22, height: 22 }));
 }
 const GRID = [5, 12, 19];
 /** The 3×3 dots of the switcher button. */

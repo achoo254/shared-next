@@ -1,4 +1,4 @@
-/** The inlined marks are exactly the WebP files in assets/marks/. */
+/** The marks chunk holds exactly the WebP files in assets/marks/. */
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import { APP_SWITCHER_CATALOG } from "../src/catalog.js";
