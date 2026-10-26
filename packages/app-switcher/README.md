@@ -21,20 +21,12 @@ Radix dependency.
 
 ## Install
 
-```sh
-npm install @achoo254/app-switcher @achoo254/brand react
-```
+Not on npm yet (the npm account is locked): install `@achoo254/app-switcher` and `@achoo254/brand` as git
+dependencies on a release tag of this repository, as the repository README describes ("Cách dùng trong một sản
+phẩm"), plus `react`.
 
-Peer dependencies: `react` 19 and `@achoo254/brand` 0.3 or later 0.x (host names come from its `hostsFor`, so
-the domain is checked by the same rule as the brand config).
-
-pnpm 11 refuses versions published less than 24 hours ago (`minimumReleaseAge`, 1440 minutes by default). To
-install a release on its first day, list that exact version in `pnpm-workspace.yaml`:
-
-```yaml
-minimumReleaseAgeExclude:
-  - "@achoo254/app-switcher@0.3.1"
-```
+Peer dependencies: `react` 19 and `@achoo254/brand` (range in `package.json`; host names come from its `hostsFor`,
+so the domain is checked by the same rule as the brand config).
 
 ## Usage
 

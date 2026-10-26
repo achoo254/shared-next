@@ -12,18 +12,8 @@ The plugin only runs the browser part. PKCE, `state`/`nonce` checks and the code
 
 ## Install
 
-```sh
-npm install @achoo254/capacitor-system-auth
-npx cap sync
-```
-
-pnpm 11 refuses versions published less than 24 hours ago (`minimumReleaseAge`, 1440 minutes by default). To
-install a release on its first day, list that exact version in `pnpm-workspace.yaml`:
-
-```yaml
-minimumReleaseAgeExclude:
-  - "@achoo254/capacitor-system-auth@0.2.0"
-```
+Not on npm yet (the npm account is locked): install it as a git dependency on a release tag of this repository,
+as the repository README describes ("Cách dùng trong một sản phẩm"), then run `npx cap sync`.
 
 The Capacitor CLI names the Swift package after the npm name: `Achoo254CapacitorSystemAuth` (`Package.swift`
 must keep that name). The package ships built JS (`dist/`) plus the native

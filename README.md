@@ -12,9 +12,11 @@ có README riêng:
 
 ## Quyết định
 
-- **Scope `@achoo254`**: các gói từng tên `@shared-next/*` và được cài bằng phụ thuộc git
-  (`github:achoo254/shared-next#<tag>&path:…`); scope `@shared-next` trên npm không thuộc về chúng ta nên đổi sang
-  `@achoo254`. Sản phẩm nào còn tên cũ thì phiên bản đang dùng ghi trong `package.json` của sản phẩm đó.
+- **Scope `@achoo254`**: các gói từng tên `@shared-next/*`; scope `@shared-next` trên npm không thuộc về chúng ta nên
+  đổi sang `@achoo254`. Đích là gói npm công khai, nhưng tài khoản npm đang bị tạm khoá nên chưa gói nào lên npm
+  (workflow publish chạy lỗi). Trong lúc đó sản phẩm cài bằng phụ thuộc git từ tag của repo này (xem "Cách dùng trong
+  một sản phẩm"). Sản phẩm nào còn tên cũ `@shared-next/*` ở tag cũ thì tên và tag đang dùng ghi trong `package.json`
+  của sản phẩm đó.
 - **Desktop chỉ là PWA**: hệ sinh thái không có Tauri hay app desktop native, nên gói brand không sinh `tauri.json`
   và schema không có `appIds.desktop`.
 - **Gói brand không phụ thuộc Playwright**: icon vẽ qua một renderer do sản phẩm truyền vào (Chromium mà sản phẩm đã
@@ -24,13 +26,15 @@ có README riêng:
 
 ## Cách dùng trong một sản phẩm
 
-Cài gói như một gói npm thường; cách import, entry và tùy chọn của từng gói ở README của gói. Gói giao JavaScript ESM
-đã biên dịch kèm `.d.ts` trong `dist/`; sản phẩm không import từ `src/`. Yêu cầu Node theo `engines` của
-[`package.json`](package.json).
+Khi npm còn bị khoá, khai báo phụ thuộc git trỏ vào một tag `v<x.y.z>` của repo này và thư mục gói, dạng
+`"@achoo254/brand": "github:achoo254/shared-next#<tag>&path:/packages/brand"` (bên trái là tên gói trong
+`packages/<gói>/package.json`). Tag đang dùng của từng sản phẩm ghi trong `package.json` của sản phẩm đó. Cách import,
+entry và tùy chọn của từng gói ở README của gói. Gói giao JavaScript ESM đã biên dịch kèm `.d.ts` trong `dist/`; sản
+phẩm không import từ `src/`. Yêu cầu Node theo `engines` của [`package.json`](package.json).
 
-pnpm 11 không cài bản phát hành chưa đủ 24 giờ (`minimumReleaseAge`). Muốn dùng một bản vừa phát hành, thêm **đúng
-version đó** (không dùng wildcard theo scope) vào `minimumReleaseAgeExclude` trong `pnpm-workspace.yaml` của sản phẩm,
-rồi gỡ khi bản đã quá 24 giờ.
+Khi gói đã lên npm: pnpm 11 không cài bản phát hành chưa đủ 24 giờ (`minimumReleaseAge`). Muốn dùng một bản vừa phát
+hành, thêm **đúng version đó** (không dùng wildcard theo scope) vào `minimumReleaseAgeExclude` trong
+`pnpm-workspace.yaml` của sản phẩm, rồi gỡ khi bản đã quá 24 giờ.
 
 Với `@achoo254/brand`:
 
@@ -65,7 +69,9 @@ có token npm nào).
    báo đỏ khi `dist` lệch `src`.
 2. Tăng `version` theo semver: sửa lỗi là patch; thêm tùy chọn hay trường tùy chọn là minor; đổi hay bỏ API, schema,
    hoặc làm đổi file sinh ra của một sản phẩm là major (khi còn `0.x` thì minor).
-3. Commit **cả `src` lẫn `dist`** trong cùng một commit, đẩy `main`, chờ CI xanh, rồi gắn và đẩy tag.
+3. Commit **cả `src` lẫn `dist`** trong cùng một commit, đẩy `main`, chờ CI xanh, rồi gắn và đẩy tag. Khi npm còn bị
+   khoá, gắn thêm tag chung `v<x.y.z>` của repo (tăng so với tag `v*` mới nhất, ghi trong lời tag gói nào ở version
+   nào) để sản phẩm cài bằng phụ thuộc git.
 4. Ở từng sản phẩm, nâng phiên bản gói, chạy `pnpm brand:gen` và các bước kiểm của sản phẩm; gói Capacitor thì chạy
    lại `cap sync`.
 
