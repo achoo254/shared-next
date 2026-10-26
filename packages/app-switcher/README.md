@@ -12,8 +12,9 @@ other app without signing in again.
 - **`appSwitcherLinks(options)`**: the list as plain data (no React, no DOM).
 - **`<AppSwitcher/>`**: the button and its popover, in React 19.
 
-Nothing is fetched and no image is loaded: the icons are inline SVG and the styles ship as a stylesheet the
-app bundles, so it works under Scribe's CSP (`default-src 'self'`, no inline styles either). No Tailwind or
+Nothing is fetched: each app shows its AI-drawn mark (64 px WebP, from `assets/marks/`; AI-generated with OpenAI gpt-image for the hoandat ecosystem; owned by hoandat, all rights reserved (not CC0), outside this package's MIT licence) inlined in the
+JavaScript as a `data:` URI, the button's 9 dots are inline SVG, and the styles ship as a stylesheet the app
+bundles. The app's CSP must allow `img-src data:` for the marks; no inline styles are needed. No Tailwind or
 Radix dependency.
 
 ## Install
@@ -30,7 +31,7 @@ install a release on its first day, list that exact version in `pnpm-workspace.y
 
 ```yaml
 minimumReleaseAgeExclude:
-  - "@achoo254/app-switcher@0.2.0"
+  - "@achoo254/app-switcher@0.3.0"
 ```
 
 ## Usage
@@ -103,12 +104,12 @@ colours (`Canvas`, `CanvasText`, `GrayText`, `Highlight`), never a brand colour.
 | `--app-switcher-z-index` | panel stacking | `50` |
 | `--app-switcher-font` | panel font family | `inherit` |
 | `--app-switcher-label-size`, `--app-switcher-description-size` | text sizes | `0.875rem`, `0.8125rem` |
-| `--app-switcher-icon`, `--app-switcher-icon-stroke` | app icon colour and stroke width | `currentColor`, `1.75` |
 
 `className` adds a class to the root for the app's own layout (for example hiding the button on a narrow rail).
 
 ## Changing the catalog
 
-Edit `src/catalog.ts` (and the icon in `src/icons.tsx`), keep it in line with auth-next's
+Edit `src/catalog.ts` (and the entry's mark: a 64 px WebP in `assets/marks/` and its `data:` URI in
+`src/marks.ts`, kept equal by `test/marks.test.ts`), keep it in line with auth-next's
 `src/app-directory/apps-catalog.ts`, run the gates in the repository README, commit `src` and `dist` together and
 release a new version (repository README, "Phát hành").

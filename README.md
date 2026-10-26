@@ -78,4 +78,4 @@ tự trong [`.github/workflows/ci.yml`](.github/workflows/ci.yml).
 
 ## Giấy phép
 
-Mã nguồn theo license MIT ([`LICENSE`](LICENSE)). Tên và logo của các sản phẩm không thuộc phạm vi license này.
+Mã nguồn theo license MIT ([`LICENSE`](LICENSE)). Tên và logo của các sản phẩm không thuộc phạm vi license này: logo và icon app (kể cả dấu app trong `packages/app-switcher/assets/marks/`) là AI-generated with OpenAI gpt-image for the hoandat ecosystem; owned by hoandat, all rights reserved (not CC0).

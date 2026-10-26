@@ -1,5 +1,10 @@
+/**
+ * Icons of the switcher. App entries show the AI-drawn app marks, inlined as
+ * data URIs (src/marks.ts) so no file is fetched; the button keeps its inline
+ * 3×3 dots in currentColor.
+ */
 import type { AppSwitcherEntryId } from "./catalog.js";
-/** Icon of one catalog entry, decorative (the link text names it). */
+/** Mark of one catalog entry, decorative (the link text names it). */
 export declare function EntryIcon({ id }: {
     readonly id: AppSwitcherEntryId;
 }): import("react").JSX.Element;
