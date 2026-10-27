@@ -3,7 +3,7 @@
  * Static on purpose: the IdP has no public catalog API, and the strict CSP
  * of Chat and Scribe blocks requests to it. Every app lives under the same
  * root domain, given by the caller. Miu World is left out: its players are
- * children.
+ * children. Tiểu Đệ is listed but does not show the switcher itself.
  */
 /** Locales the labels are written in. */
 export const APP_SWITCHER_LOCALES = ["en", "vi", "zh-CN"];
@@ -60,6 +60,17 @@ export const APP_SWITCHER_CATALOG = [
             "zh-CN": "在浏览器中查看你的隧道。",
         },
         hostTemplate: "tunnel.{domain}",
+        path: "/",
+    },
+    {
+        id: "tieude",
+        label: same("Tiểu Đệ"),
+        description: {
+            en: "An AI bot that does small writing jobs for free and lives on voluntary tips.",
+            vi: "Bot AI làm giúp miễn phí các việc viết nhỏ, sống nhờ tiền ủng hộ tự nguyện.",
+            "zh-CN": "免费帮你写些小东西的 AI 机器人，靠自愿打赏维持运行。",
+        },
+        hostTemplate: "tieude.{domain}",
         path: "/",
     },
     {

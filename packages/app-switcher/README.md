@@ -4,7 +4,7 @@ The app switcher of the *-next products: a 9-dot button that opens a list of the
 signs in to, then the account page. One sign-in at the IdP covers every app, so a click lands the user in the
 other app without signing in again.
 
-- **Static catalog** (`APP_SWITCHER_CATALOG`): Chat, Scribe, Localman, Tunelo, then the account page
+- **Static catalog** (`APP_SWITCHER_CATALOG`): Chat, Scribe, Localman, Tunelo, Tiểu Đệ, then the account page
   (`auth.<domain>/account`), every host under the one root domain the app passes. Miu World is never listed
   (its players are children). Labels and one-line descriptions in `en`, `vi`
   and `zh-CN`. `locale` takes any BCP 47 tag, matched by language and case-insensitively (`vi-VN` -> `vi`,

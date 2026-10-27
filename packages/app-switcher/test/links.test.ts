@@ -17,11 +17,18 @@ describe("appSwitcherLinks", () => {
 			domain: "hoandat.com",
 			locale: "en",
 		});
-		expect(ids(links)).toEqual(["chat", "scribe", "tunelo", "account"]);
+		expect(ids(links)).toEqual([
+			"chat",
+			"scribe",
+			"tunelo",
+			"tieude",
+			"account",
+		]);
 		expect(links.map((link) => link.href)).toEqual([
 			"https://chat.hoandat.com/?utm_source=localman&utm_medium=app_switcher",
 			"https://scribe.hoandat.com/?utm_source=localman&utm_medium=app_switcher",
 			"https://tunnel.hoandat.com/?utm_source=localman&utm_medium=app_switcher",
+			"https://tieude.hoandat.com/?utm_source=localman&utm_medium=app_switcher",
 			"https://auth.hoandat.com/account?utm_source=localman&utm_medium=app_switcher",
 		]);
 	});
@@ -32,7 +39,13 @@ describe("appSwitcherLinks", () => {
 			domain: "example.org",
 			locale: "vi",
 		});
-		expect(ids(links)).toEqual(["chat", "scribe", "tunelo", "account"]);
+		expect(ids(links)).toEqual([
+			"chat",
+			"scribe",
+			"tunelo",
+			"tieude",
+			"account",
+		]);
 		expect(links[0]?.href).toBe(
 			"https://chat.example.org/?utm_source=localman&utm_medium=app_switcher",
 		);

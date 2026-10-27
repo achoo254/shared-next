@@ -23,7 +23,7 @@ describe("lazy app marks", () => {
 		const links = () =>
 			Array.from(document.querySelectorAll(".sn-app-switcher__link"));
 
-		expect(links()).toHaveLength(4);
+		expect(links()).toHaveLength(5);
 		for (const link of links()) {
 			expect(link.querySelector("img")).toBeNull();
 			const placeholder = link.querySelector(".sn-app-switcher__icon");
@@ -35,7 +35,7 @@ describe("lazy app marks", () => {
 		await waitFor(() =>
 			expect(
 				document.querySelectorAll("img.sn-app-switcher__icon"),
-			).toHaveLength(4),
+			).toHaveLength(5),
 		);
 		for (const link of links()) {
 			const mark = link.querySelector("img");

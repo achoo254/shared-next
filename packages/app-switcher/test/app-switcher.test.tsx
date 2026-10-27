@@ -72,6 +72,7 @@ describe("AppSwitcher", () => {
 			"ChatFast messaging with searchable history and bots.",
 			"LocalmanMock APIs and an API client in your browser.",
 			"TuneloYour tunnels in the browser.",
+			"Tiểu ĐệAn AI bot that does small writing jobs for free and lives on voluntary tips.",
 			"Manage your accountSign-in, devices and app access.",
 		]);
 		expect(links[0]?.getAttribute("href")).toBe(
