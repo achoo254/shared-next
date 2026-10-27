@@ -47,8 +47,5 @@
 	"bugs": {
 		"url": "https://github.com/achoo254/shared-next/issues"
 	},
-	"keywords": ["react", "app-switcher"],
-	"publishConfig": {
-		"access": "public"
-	}
+	"keywords": ["react", "app-switcher"]
 }

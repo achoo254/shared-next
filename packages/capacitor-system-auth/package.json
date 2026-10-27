@@ -53,8 +53,5 @@
 	"homepage": "https://github.com/achoo254/shared-next/tree/main/packages/capacitor-system-auth#readme",
 	"bugs": {
 		"url": "https://github.com/achoo254/shared-next/issues"
-	},
-	"publishConfig": {
-		"access": "public"
 	}
 }

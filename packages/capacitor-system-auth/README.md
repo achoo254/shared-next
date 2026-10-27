@@ -12,10 +12,10 @@ The plugin only runs the browser part. PKCE, `state`/`nonce` checks and the code
 
 ## Install
 
-Not on npm yet (the npm account is locked): install it as a git dependency on a release tag of this repository,
+Not published to npm: install it as a git dependency on a release tag of this repository,
 as the repository README describes ("Cách dùng trong một sản phẩm"), then run `npx cap sync`.
 
-The Capacitor CLI names the Swift package after the npm name: `Achoo254CapacitorSystemAuth` (`Package.swift`
+The Capacitor CLI names the Swift package after the package name: `Achoo254CapacitorSystemAuth` (`Package.swift`
 must keep that name). The package ships built JS (`dist/`) plus the native
 sources the Capacitor CLI links: `Package.swift` + `ios/Sources` (Swift Package Manager) and the Gradle module
 in `android/`. Requires `@capacitor/core` 8.
@@ -132,7 +132,7 @@ The Android module has no Gradle wrapper of its own; it compiles inside the cons
 
 Native naming the Capacitor CLI depends on:
 
-- SPM package and product are `Achoo254CapacitorSystemAuth`, the name the CLI derives from the npm name.
+- SPM package and product are `Achoo254CapacitorSystemAuth`, the name the CLI derives from the package name.
 - `SystemAuthPlugin.swift` must stay the only Swift file with an `@objc(...)` class name; the CLI registers the
   first one of each file.
 - The Android plugin class is `com.hoandat.capacitor.systemauth.SystemAuthPlugin` (JS name `SystemAuth`).

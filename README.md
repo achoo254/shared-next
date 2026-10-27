@@ -13,10 +13,9 @@ có README riêng:
 ## Quyết định
 
 - **Scope `@achoo254`**: các gói từng tên `@shared-next/*`; scope `@shared-next` trên npm không thuộc về chúng ta nên
-  đổi sang `@achoo254`. Đích là gói npm công khai, nhưng tài khoản npm đang bị tạm khoá nên chưa gói nào lên npm
-  (workflow publish chạy lỗi). Trong lúc đó sản phẩm cài bằng phụ thuộc git từ tag của repo này (xem "Cách dùng trong
-  một sản phẩm"). Sản phẩm nào còn tên cũ `@shared-next/*` ở tag cũ thì tên và tag đang dùng ghi trong `package.json`
-  của sản phẩm đó.
+  đổi sang `@achoo254`.
+- **Không phát hành lên npm** (chốt 27/10/2026): gói chỉ phục vụ các sản phẩm `*-next`, nên sản phẩm cài bằng phụ
+  thuộc git từ tag của repo này (xem "Cách dùng trong một sản phẩm"). Không có registry nào phải vận hành hay chờ.
 - **Desktop chỉ là PWA**: hệ sinh thái không có Tauri hay app desktop native, nên gói brand không sinh `tauri.json`
   và schema không có `appIds.desktop`.
 - **Gói brand không phụ thuộc Playwright**: icon vẽ qua một renderer do sản phẩm truyền vào (Chromium mà sản phẩm đã
@@ -26,15 +25,11 @@ có README riêng:
 
 ## Cách dùng trong một sản phẩm
 
-Khi npm còn bị khoá, khai báo phụ thuộc git trỏ vào một tag `v<x.y.z>` của repo này và thư mục gói, dạng
+Khai báo phụ thuộc git trỏ vào một tag `v<x.y.z>` của repo này và thư mục gói, dạng
 `"@achoo254/brand": "github:achoo254/shared-next#<tag>&path:/packages/brand"` (bên trái là tên gói trong
 `packages/<gói>/package.json`). Tag đang dùng của từng sản phẩm ghi trong `package.json` của sản phẩm đó. Cách import,
 entry và tùy chọn của từng gói ở README của gói. Gói giao JavaScript ESM đã biên dịch kèm `.d.ts` trong `dist/`; sản
 phẩm không import từ `src/`. Yêu cầu Node theo `engines` của [`package.json`](package.json).
-
-Khi gói đã lên npm: pnpm 11 không cài bản phát hành chưa đủ 24 giờ (`minimumReleaseAge`). Muốn dùng một bản vừa phát
-hành, thêm **đúng version đó** (không dùng wildcard theo scope) vào `minimumReleaseAgeExclude` trong
-`pnpm-workspace.yaml` của sản phẩm, rồi gỡ khi bản đã quá 24 giờ.
 
 Với `@achoo254/brand`:
 
@@ -60,22 +55,18 @@ Với `@achoo254/brand`:
 
 ## Phát hành
 
-Mỗi gói phát hành riêng bằng tag `<thư-mục-gói>-v<version>`, khớp đúng `version` trong
-`packages/<gói>/package.json`. Workflow [`.github/workflows/publish.yml`](.github/workflows/publish.yml) chạy khi đẩy
-tag: kiểm tag, chạy lại các bước kiểm của CI, rồi publish lên npm qua trusted publishing (OIDC, có provenance; không
-có token npm nào).
+Một bản phát hành là một tag chung `v<x.y.z>` của repo, tăng so với tag `v*` mới nhất; lời tag ghi gói nào ở version
+nào. Sản phẩm trỏ phụ thuộc git vào tag đó.
 
 1. Sửa `packages/<gói>/src`, chạy `pnpm build` để biên dịch lại `dist`. CI ([`.github/workflows/ci.yml`](.github/workflows/ci.yml))
    báo đỏ khi `dist` lệch `src`.
-2. Tăng `version` theo semver: sửa lỗi là patch; thêm tùy chọn hay trường tùy chọn là minor; đổi hay bỏ API, schema,
-   hoặc làm đổi file sinh ra của một sản phẩm là major (khi còn `0.x` thì minor).
-3. Commit **cả `src` lẫn `dist`** trong cùng một commit, đẩy `main`, chờ CI xanh, rồi gắn và đẩy tag. Khi npm còn bị
-   khoá, gắn thêm tag chung `v<x.y.z>` của repo (tăng so với tag `v*` mới nhất, ghi trong lời tag gói nào ở version
-   nào) để sản phẩm cài bằng phụ thuộc git.
-4. Ở từng sản phẩm, nâng phiên bản gói, chạy `pnpm brand:gen` và các bước kiểm của sản phẩm; gói Capacitor thì chạy
-   lại `cap sync`.
+2. Tăng `version` trong `packages/<gói>/package.json` theo semver: sửa lỗi là patch; thêm tùy chọn hay trường tùy chọn
+   là minor; đổi hay bỏ API, schema, hoặc làm đổi file sinh ra của một sản phẩm là major (khi còn `0.x` thì minor).
+3. Commit **cả `src` lẫn `dist`** trong cùng một commit, đẩy `main`, chờ CI xanh, rồi gắn và đẩy tag `v<x.y.z>`.
+4. Ở từng sản phẩm, đổi tag trong phụ thuộc git, chạy `pnpm install`, `pnpm brand:gen` và các bước kiểm của sản phẩm;
+   gói Capacitor thì chạy lại `cap sync`.
 
-Bản đã publish không unpublish: phát hành sai thì `npm deprecate` rồi publish bản patch qua CI.
+Tag đã đẩy không sửa hay xoá: phát hành sai thì sửa và gắn tag mới.
 
 ## Phát triển
 

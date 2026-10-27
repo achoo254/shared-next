@@ -21,7 +21,7 @@ Radix dependency.
 
 ## Install
 
-Not on npm yet (the npm account is locked): install `@achoo254/app-switcher` and `@achoo254/brand` as git
+Not published to npm: install `@achoo254/app-switcher` and `@achoo254/brand` as git
 dependencies on a release tag of this repository, as the repository README describes ("Cách dùng trong một sản
 phẩm"), plus `react`.
 
