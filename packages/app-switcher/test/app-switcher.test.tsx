@@ -72,6 +72,7 @@ describe("AppSwitcher", () => {
 			"ChatFast messaging with searchable history and bots.",
 			"LocalmanMock APIs and an API client in your browser.",
 			"TuneloYour tunnels in the browser.",
+			"Web NhanhA website from a template, published at its own address.",
 			"Tiểu ĐệAn AI bot that does small writing jobs for free and lives on voluntary tips.",
 			"Manage your accountSign-in, devices and app access.",
 		]);

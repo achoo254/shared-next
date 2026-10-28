@@ -21,6 +21,7 @@ describe("appSwitcherLinks", () => {
 			"chat",
 			"scribe",
 			"tunelo",
+			"webnhanh",
 			"tieude",
 			"account",
 		]);
@@ -28,6 +29,7 @@ describe("appSwitcherLinks", () => {
 			"https://chat.hoandat.com/?utm_source=localman&utm_medium=app_switcher",
 			"https://scribe.hoandat.com/?utm_source=localman&utm_medium=app_switcher",
 			"https://tunnel.hoandat.com/?utm_source=localman&utm_medium=app_switcher",
+			"https://webnhanh.hoandat.com/?utm_source=localman&utm_medium=app_switcher",
 			"https://tieude.hoandat.com/?utm_source=localman&utm_medium=app_switcher",
 			"https://auth.hoandat.com/account?utm_source=localman&utm_medium=app_switcher",
 		]);
@@ -43,6 +45,7 @@ describe("appSwitcherLinks", () => {
 			"chat",
 			"scribe",
 			"tunelo",
+			"webnhanh",
 			"tieude",
 			"account",
 		]);

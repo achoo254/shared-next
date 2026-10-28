@@ -1,6 +1,6 @@
 {
 	"name": "@achoo254/app-switcher",
-	"version": "0.4.0",
+	"version": "0.5.0",
 	"description": "App switcher of the *-next products: static catalog of the apps one account signs in to, links under one root domain with UTM tags, and an accessible React popover",
 	"type": "module",
 	"engines": {

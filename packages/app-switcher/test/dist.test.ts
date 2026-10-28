@@ -53,6 +53,7 @@ describe("dist", () => {
 				"https://scribe.hoandat.com/?utm_source=chat&utm_medium=app_switcher",
 				"https://localman.hoandat.com/?utm_source=chat&utm_medium=app_switcher",
 				"https://tunnel.hoandat.com/?utm_source=chat&utm_medium=app_switcher",
+				"https://webnhanh.hoandat.com/?utm_source=chat&utm_medium=app_switcher",
 				"https://tieude.hoandat.com/?utm_source=chat&utm_medium=app_switcher",
 				"https://auth.hoandat.com/account?utm_source=chat&utm_medium=app_switcher",
 			],

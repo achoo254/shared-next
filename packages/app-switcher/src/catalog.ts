@@ -3,7 +3,8 @@
  * Static on purpose: the IdP has no public catalog API, and the strict CSP
  * of Chat and Scribe blocks requests to it. Every app lives under the same
  * root domain, given by the caller. Miu World is left out: its players are
- * children. Tiểu Đệ is listed but does not show the switcher itself.
+ * children. Web Nhanh and Tiểu Đệ are listed but do not show the switcher
+ * themselves.
  */
 
 /** Locales the labels are written in. */
@@ -19,8 +20,12 @@ export const APP_SWITCHER_APP_IDS = [
 ] as const;
 export type AppSwitcherAppId = (typeof APP_SWITCHER_APP_IDS)[number];
 
-/** Every entry of the list: the apps, Tiểu Đệ, then the account page. */
-export type AppSwitcherEntryId = AppSwitcherAppId | "tieude" | "account";
+/** Every entry of the list: the apps, Web Nhanh, Tiểu Đệ, then the account page. */
+export type AppSwitcherEntryId =
+	| AppSwitcherAppId
+	| "webnhanh"
+	| "tieude"
+	| "account";
 
 export type LocalizedText = Readonly<Record<AppSwitcherLocale, string>>;
 
@@ -83,6 +88,17 @@ export const APP_SWITCHER_CATALOG: readonly AppSwitcherCatalogEntry[] = [
 			"zh-CN": "在浏览器中查看你的隧道。",
 		},
 		hostTemplate: "tunnel.{domain}",
+		path: "/",
+	},
+	{
+		id: "webnhanh",
+		label: same("Web Nhanh"),
+		description: {
+			en: "A website from a template, published at its own address.",
+			vi: "Làm website từ mẫu có sẵn và đăng ngay ở địa chỉ riêng.",
+			"zh-CN": "用现成模板制作网站，并发布到专属地址。",
+		},
+		hostTemplate: "webnhanh.{domain}",
 		path: "/",
 	},
 	{
