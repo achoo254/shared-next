@@ -4,6 +4,7 @@ dist/
 !packages/brand/dist/
 !packages/capacitor-system-auth/dist/
 !packages/app-switcher/dist/
+!packages/app-shell/dist/
 coverage/
 *.tsbuildinfo
 .DS_Store

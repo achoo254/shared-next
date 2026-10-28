@@ -1,0 +1,8 @@
+import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
+import { SHELL_MESSAGES } from "./messages.js";
+import { ShellAnchor, classes, handOver, } from "./shell-link.js";
+export function PublicHeader(props) {
+    const { brand, linkComponent, navLinks = [] } = props;
+    const t = SHELL_MESSAGES[props.locale];
+    return (_jsx("header", { className: "shell-topbar", "data-id": "public-header", children: _jsxs("div", { className: "shell-topbar-inner shell-container", children: [_jsxs(ShellAnchor, { href: props.homeHref ?? "/", className: "shell-brand", "data-id": "public-home", linkComponent: linkComponent, children: [_jsx("img", { className: "shell-brand-mark", src: brand.markSrc, width: 24, height: 24, alt: "", "aria-hidden": "true" }), _jsx("b", { className: "shell-brand-name", children: brand.appName })] }), _jsxs("div", { className: "shell-topbar-end", children: [navLinks.length > 0 ? (_jsx("nav", { className: "shell-topbar-nav", "aria-label": t.nav, children: navLinks.map((link) => (_jsx(ShellAnchor, { href: link.href, className: classes("shell-topbar-link", link.hideOnPhones === true && "shell-hide-phone"), "data-id": link.dataId, "aria-current": link.current === true ? "page" : undefined, linkComponent: linkComponent, children: link.label }, link.dataId))) })) : null, props.accountSlot ?? (_jsx(ShellAnchor, { href: props.signInHref, className: "shell-topbar-link shell-topbar-cta", "data-id": "public-sign-in", "aria-current": props.signInCurrent === true ? "page" : undefined, onClick: handOver(props.signInHref, props.onSignIn), linkComponent: linkComponent, children: t.signIn }))] })] }) }));
+}

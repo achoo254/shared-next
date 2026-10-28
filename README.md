@@ -9,6 +9,9 @@ có README riêng:
 - [`@achoo254/capacitor-system-auth`](packages/capacitor-system-auth/README.md): plugin Capacitor mở trang đăng nhập
   trong trình duyệt hệ thống, không bao giờ trong WebView.
 - [`@achoo254/app-switcher`](packages/app-switcher/README.md): nút chuyển sang app khác cùng tài khoản.
+- [`@achoo254/app-shell`](packages/app-shell/README.md): khung giao diện chung của trang chưa đăng nhập (header,
+  thẻ đăng nhập, footer, nút đổi ngôn ngữ và giao diện), cookie lựa chọn dùng chung `hd_lang`/`hd_theme` và
+  `tokens.css`.
 
 ## Quyết định
 

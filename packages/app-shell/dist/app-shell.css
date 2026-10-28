@@ -1,0 +1,485 @@
+/* @achoo254/app-shell: the signed-out chrome of every app, the layout of
+   the account app (auth-next src/ui/layout.ts and static/css/app.css:
+   .topbar, .idp-brand, .topbar-link, .container, .card, .auth-card, .btn,
+   .page-foot, .lang-switch, .foot-link). Every colour, radius, duration and
+   spacing step is a tokens.css variable; load tokens.css first. Classes all
+   start with "shell-" and no element is styled outside them, so the file
+   sits next to Tailwind (unlayered, it wins over its preflight) or plain CSS.
+   Breakpoints: 900px (hero beside its card), 640px, 480px (phones), 380px
+   and 360px (narrow phones); touch screens get 44px targets. */
+
+.shell {
+	display: flex;
+	flex-direction: column;
+	min-height: 100vh;
+	min-height: 100dvh;
+	font-family: var(--font-sans);
+	font-size: 1rem;
+	line-height: 1.55;
+	color: var(--c-text);
+	background-color: var(--c-bg);
+	background-image: linear-gradient(var(--c-grid) 1px, transparent 1px),
+		linear-gradient(90deg, var(--c-grid) 1px, transparent 1px);
+	background-size: var(--grid-size) var(--grid-size);
+	background-position: -1px -1px;
+	-webkit-font-smoothing: antialiased;
+}
+.shell *,
+.shell *::before,
+.shell *::after {
+	box-sizing: border-box;
+}
+.shell :focus-visible {
+	outline: 2px solid var(--c-primary);
+	outline-offset: 2px;
+}
+.shell-container {
+	width: 100%;
+	max-width: var(--container);
+	margin-inline: auto;
+	padding-inline: var(--gutter);
+}
+.shell-main {
+	flex: 1 0 auto;
+}
+/* /login: one card in the middle of the page */
+.shell-main-center {
+	display: grid;
+	place-items: center;
+	padding-block: var(--space-7) var(--space-8);
+}
+.shell-sr-only {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	padding: 0;
+	margin: -1px;
+	overflow: hidden;
+	clip: rect(0, 0, 0, 0);
+	white-space: nowrap;
+	border: 0;
+}
+.shell-icon {
+	flex: none;
+	stroke-width: var(--icon-stroke);
+}
+
+/* top bar + wordmark */
+.shell-topbar {
+	position: sticky;
+	top: 0;
+	z-index: 30;
+	padding-top: env(safe-area-inset-top, 0px);
+	background: color-mix(in srgb, var(--c-bg) 82%, transparent);
+	backdrop-filter: blur(10px);
+	border-bottom: 1px solid var(--c-border-subtle);
+}
+.shell-topbar-inner {
+	min-height: var(--topbar-h);
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: var(--space-3);
+}
+.shell-brand {
+	display: inline-flex;
+	align-items: center;
+	gap: var(--space-2);
+	min-width: 0;
+	min-height: 44px;
+	font-family: var(--font-sans);
+	font-size: 1rem;
+	color: var(--c-text);
+	text-decoration: none;
+}
+.shell-brand-mark {
+	flex: none;
+	display: block;
+	width: 24px;
+	height: 24px;
+}
+.shell-brand-name {
+	font-weight: 700;
+	color: var(--c-primary);
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+.shell-topbar-end,
+.shell-topbar-nav {
+	display: flex;
+	align-items: center;
+	gap: var(--space-1);
+	flex: none;
+}
+.shell-topbar-link {
+	font-family: var(--font-mono);
+	font-size: 13px;
+	font-weight: 600;
+	line-height: 1.55;
+	color: var(--c-text-muted);
+	text-decoration: none;
+	white-space: nowrap;
+	padding: var(--space-2) var(--space-3);
+	border-radius: var(--radius-sm);
+	transition: background-color var(--dur-fast) var(--ease-standard), color
+		var(--dur-fast) var(--ease-standard);
+}
+.shell-topbar-link:hover {
+	color: var(--c-text);
+	background: color-mix(in srgb, var(--c-text) 6%, transparent);
+}
+/* the current page, and the call to sign in: the tinted pill */
+.shell-topbar-link[aria-current="page"],
+.shell-topbar-cta {
+	color: var(--c-primary);
+	background: color-mix(in srgb, var(--c-primary) 10%, transparent);
+}
+.shell-topbar-cta:hover {
+	color: var(--c-primary);
+	background: color-mix(in srgb, var(--c-primary) 16%, transparent);
+}
+
+/* card + the one call to action */
+.shell-card {
+	background: var(--c-surface);
+	border: 1px solid var(--c-border);
+	border-radius: var(--radius-xl);
+	box-shadow: var(--shadow-sm);
+}
+.shell-sign-in-card {
+	width: 100%;
+	max-width: 420px;
+	padding: var(--space-6) var(--space-5);
+	display: grid;
+	gap: var(--space-4);
+}
+.shell-card-title {
+	margin: 0;
+	font-family: var(--font-mono);
+	font-weight: 700;
+	font-size: 22px;
+	line-height: 1.25;
+	letter-spacing: -0.01em;
+	color: var(--c-text);
+}
+.shell-card-sub {
+	margin: var(--space-1) 0 0;
+	font-size: 14px;
+	color: var(--c-text-muted);
+}
+.shell-card-note {
+	margin: 0;
+	font-size: 13px;
+	line-height: 1.5;
+	text-align: center;
+	color: var(--c-text-muted);
+}
+.shell-btn {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: var(--space-2);
+	min-height: 44px;
+	padding: 0 var(--space-4);
+	border-radius: var(--radius-md);
+	font-family: var(--font-mono);
+	font-weight: 600;
+	font-size: 14px;
+	line-height: 1;
+	border: 1px solid transparent;
+	cursor: pointer;
+	text-decoration: none;
+	white-space: nowrap;
+	transition: background-color var(--dur-fast) var(--ease-standard),
+		border-color var(--dur-fast) var(--ease-standard), color var(--dur-fast)
+		var(--ease-standard);
+}
+.shell-btn-primary {
+	background: var(--c-primary-solid);
+	color: var(--c-on-primary);
+	box-shadow: var(--shadow-glow-primary);
+}
+.shell-btn-primary:hover {
+	background: var(--c-primary-solid-hover);
+	color: var(--c-on-primary);
+}
+/* full width, one line: "Đăng nhập bằng hoandat.com" fits a 320px phone */
+.shell-btn-cta {
+	width: 100%;
+}
+
+/* welcome page: hero, then the features */
+.shell-hero {
+	display: grid;
+	align-items: center;
+	gap: var(--space-6);
+	padding-block: var(--space-7) var(--space-6);
+}
+.shell-hero-intro {
+	display: grid;
+	gap: var(--space-4);
+	min-width: 0;
+}
+.shell-hero-aside {
+	display: grid;
+	justify-items: center;
+	min-width: 0;
+}
+.shell-eyebrow {
+	justify-self: start;
+	margin: 0;
+	padding: var(--space-1) var(--space-3);
+	font-family: var(--font-mono);
+	font-size: 12px;
+	font-weight: 600;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+	color: var(--c-primary);
+	border: 1px solid color-mix(in srgb, var(--c-primary) 30%, var(--c-surface));
+	border-radius: var(--radius-full);
+	background: color-mix(in srgb, var(--c-primary) 8%, var(--c-surface));
+}
+.shell-hero-title {
+	margin: 0;
+	font-family: var(--font-mono);
+	font-weight: 700;
+	letter-spacing: -0.02em;
+	font-size: clamp(1.75rem, 1.2rem + 2.4vw, 3rem);
+	line-height: 1.12;
+	color: var(--c-text);
+}
+.shell-lede {
+	margin: 0;
+	max-width: 34em;
+	font-size: 1.125rem;
+	color: var(--c-text-muted);
+}
+.shell-features {
+	display: grid;
+	gap: var(--space-5);
+	padding-block: var(--space-6) var(--space-7);
+	scroll-margin-top: calc(var(--topbar-h) + var(--space-4));
+}
+.shell-features-head {
+	display: grid;
+	gap: var(--space-3);
+}
+.shell-section-title {
+	margin: 0;
+	font-family: var(--font-mono);
+	font-weight: 700;
+	font-size: clamp(1.375rem, 1.1rem + 1.2vw, 2rem);
+	line-height: 1.2;
+	letter-spacing: -0.01em;
+	color: var(--c-text);
+}
+.shell-feature-grid {
+	display: grid;
+	gap: var(--space-4);
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+.shell-feature {
+	display: grid;
+	align-content: start;
+	gap: var(--space-2);
+	padding: var(--space-5);
+	border-radius: var(--radius-lg);
+}
+.shell-feature-title {
+	display: flex;
+	align-items: center;
+	gap: var(--space-2);
+	margin: 0;
+	font-family: var(--font-mono);
+	font-weight: 700;
+	font-size: 16px;
+	line-height: 1.3;
+	color: var(--c-text);
+}
+.shell-feature-icon {
+	display: inline-flex;
+	flex: none;
+	color: var(--c-primary);
+}
+.shell-feature-text {
+	margin: 0;
+	font-size: 15px;
+	color: var(--c-text-muted);
+}
+@media (min-width: 640px) {
+	.shell-feature-grid {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
+}
+@media (min-width: 900px) {
+	.shell-hero {
+		padding-block: var(--space-9) var(--space-7);
+	}
+	.shell-hero-split {
+		grid-template-columns: minmax(0, 1fr) minmax(0, 420px);
+		gap: var(--space-8);
+	}
+	.shell-feature-grid {
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+	}
+}
+
+/* footer: the two switches, then one quiet row of links */
+.shell-foot {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: var(--space-3);
+	padding-top: var(--space-6);
+	padding-bottom: calc(var(--space-7) + env(safe-area-inset-bottom, 0px));
+}
+.shell-foot-switches {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: center;
+	gap: var(--space-3);
+}
+.shell-lang-switch {
+	display: inline-flex;
+	min-width: 0;
+	margin: 0;
+	flex-wrap: wrap;
+	justify-content: center;
+	gap: 2px;
+	padding: 2px;
+	border: 1px solid var(--c-border);
+	border-radius: var(--radius-full);
+	background: var(--c-surface);
+}
+.shell-lang-option {
+	margin: 0;
+	font-family: var(--font-mono);
+	font-size: 13px;
+	font-weight: 600;
+	line-height: 1.55;
+	color: var(--c-text-muted);
+	text-decoration: none;
+	padding: var(--space-1) var(--space-3);
+	border: 1px solid transparent;
+	border-radius: var(--radius-full);
+	background: none;
+	cursor: pointer;
+}
+.shell-lang-option:hover {
+	color: var(--c-text);
+}
+.shell-lang-option[aria-current="true"],
+.shell-lang-option[aria-pressed="true"] {
+	color: var(--c-primary);
+	background: color-mix(in srgb, var(--c-primary) 8%, var(--c-surface));
+	border-color: color-mix(in srgb, var(--c-primary) 30%, var(--c-surface));
+}
+.shell-theme-switch {
+	display: inline-flex;
+	gap: var(--space-1);
+	min-width: 0;
+	margin: 0;
+	padding: var(--space-1);
+	border: 1px solid var(--c-border);
+	border-radius: var(--radius-full);
+	background: var(--c-surface);
+}
+.shell-theme-option {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 32px;
+	height: 32px;
+	margin: 0;
+	padding: 0;
+	border: 0;
+	border-radius: var(--radius-full);
+	background: none;
+	color: var(--c-text-muted);
+	cursor: pointer;
+	transition: background-color var(--dur-fast) var(--ease-standard), color
+		var(--dur-fast) var(--ease-standard);
+}
+.shell-theme-option:hover {
+	color: var(--c-text);
+	background: color-mix(in srgb, var(--c-text) 6%, transparent);
+}
+.shell-theme-option[aria-pressed="true"] {
+	color: var(--c-on-primary);
+	background: var(--c-primary-solid);
+}
+.shell-foot-links {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	column-gap: var(--space-4);
+	margin: 0;
+}
+.shell-foot-link {
+	font-size: 13px;
+	color: var(--c-text-muted);
+	text-decoration: none;
+}
+.shell-foot-link:hover,
+.shell-foot-link[aria-current="page"] {
+	color: var(--c-text);
+	text-decoration: underline;
+	text-underline-offset: 2px;
+}
+
+/* touch screens and phones: every header and footer control is a 44px target */
+@media (pointer: coarse), (max-width: 479px) {
+	.shell-topbar-link,
+	.shell-foot-link,
+	.shell-lang-option {
+		display: inline-flex;
+		align-items: center;
+		min-height: 44px;
+	}
+	.shell-theme-option {
+		width: 44px;
+		height: 44px;
+	}
+}
+@media (min-width: 480px) {
+	.shell-sign-in-card {
+		padding: var(--space-6);
+	}
+}
+/* phones */
+@media (max-width: 479px) {
+	.shell-hide-phone {
+		display: none;
+	}
+	.shell-topbar-link {
+		padding-inline: var(--space-2);
+	}
+	.shell-hero {
+		padding-block: var(--space-6) var(--space-5);
+	}
+	.shell-main-center {
+		padding-block: var(--space-6) var(--space-7);
+	}
+}
+/* narrow phones */
+@media (max-width: 379px) {
+	.shell-topbar-link {
+		padding-inline: var(--space-1);
+	}
+	.shell-sign-in-card {
+		padding: var(--space-5) var(--space-4);
+	}
+}
+@media (max-width: 359px) {
+	.shell-topbar-inner {
+		gap: var(--space-2);
+	}
+	.shell-topbar-link,
+	.shell-btn {
+		font-size: 12px;
+	}
+}

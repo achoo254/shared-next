@@ -1,0 +1,8 @@
+{
+	"$comment": "Proves the sources compile with the DOM library and without Node types, as a web app's tsconfig sees them.",
+	"extends": "./tsconfig.json",
+	"compilerOptions": {
+		"types": []
+	},
+	"include": ["src"]
+}

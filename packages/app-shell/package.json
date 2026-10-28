@@ -1,0 +1,56 @@
+{
+	"name": "@achoo254/app-shell",
+	"version": "0.1.0",
+	"description": "Signed-out shell of the *-next products: header, page frame, sign-in card, hero, feature list, footer, language and theme switches, shared preference cookies and design tokens",
+	"type": "module",
+	"engines": {
+		"node": ">=22.12"
+	},
+	"types": "./dist/index.d.ts",
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"default": "./dist/index.js"
+		},
+		"./preferences": {
+			"types": "./dist/preferences.d.ts",
+			"default": "./dist/preferences.js"
+		},
+		"./tokens.css": "./dist/tokens.css",
+		"./app-shell.css": "./dist/app-shell.css",
+		"./package.json": "./package.json"
+	},
+	"files": ["dist", "README.md", "LICENSE"],
+	"sideEffects": ["*.css"],
+	"scripts": {
+		"build": "node --eval \"require('node:fs').rmSync('dist',{recursive:true,force:true})\" && tsc -p tsconfig.build.json && node --eval \"for (const f of ['tokens.css','app-shell.css']) require('node:fs').copyFileSync('src/'+f,'dist/'+f)\" && node --eval \"require('node:fs').copyFileSync('../../LICENSE','LICENSE')\"",
+		"typecheck": "tsc -p tsconfig.json && tsc -p tsconfig.browser.json",
+		"test": "vitest run --maxWorkers=2"
+	},
+	"peerDependencies": {
+		"@achoo254/brand": ">=0.3.0 <1",
+		"react": "^19.0.0"
+	},
+	"devDependencies": {
+		"@achoo254/brand": "workspace:*",
+		"@testing-library/dom": "10.4.2",
+		"@testing-library/react": "16.3.3",
+		"@types/react": "19.3.0",
+		"@types/react-dom": "19.3.0",
+		"jsdom": "26.1.0",
+		"react": "19.3.0",
+		"react-dom": "19.3.0"
+	},
+	"license": "MIT",
+	"author": "achoo254",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/achoo254/shared-next.git",
+		"directory": "packages/app-shell"
+	},
+	"homepage": "https://github.com/achoo254/shared-next/tree/main/packages/app-shell#readme",
+	"bugs": {
+		"url": "https://github.com/achoo254/shared-next/issues"
+	},
+	"keywords": ["react", "app-shell", "design-tokens"]
+}
