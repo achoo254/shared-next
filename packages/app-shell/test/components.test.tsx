@@ -218,6 +218,19 @@ describe("PublicFooter", () => {
 		);
 		expect(byDataId("foot-terms").getAttribute("href")).toBe("/legal/terms");
 	});
+
+	it("leaves terms out for an app without them", () => {
+		render(
+			<PublicFooter
+				brand={BRAND}
+				locale="en"
+				onLocaleChange={() => {}}
+				termsHref={null}
+			/>,
+		);
+		expect(document.querySelector('[data-id="foot-terms"]')).toBeNull();
+		expect(byDataId("foot-privacy").getAttribute("href")).toBe("/privacy");
+	});
 });
 
 describe("LanguageSwitch", () => {

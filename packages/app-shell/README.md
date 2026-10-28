@@ -192,7 +192,7 @@ bắt đầu bằng `/`, nên khi đó `signInHref` của header phải là rout
 | `accountSlot` | `PublicHeader` | Thay nút đăng nhập khi khách đã đăng nhập (mở app, menu tài khoản, nút đăng xuất); `null` không hiện gì, bỏ trống thì hiện nút "Đăng nhập" |
 | `homeHref` | `PublicHeader` | Đích của dấu và tên app, mặc định `/` |
 | `onLocaleChange(locale)` hoặc `languageHref(locale)` | `PublicFooter`, `LanguageSwitch` | Bắt buộc một trong hai: callback (nút bấm, gói lưu cookie) hoặc URL của server (link, không cần script) |
-| `privacyHref`, `termsHref` | `PublicFooter` | Mặc định `/privacy`, `/terms` |
+| `privacyHref`, `termsHref` | `PublicFooter` | Mặc định `/privacy`, `/terms`; `termsHref: null` bỏ link điều khoản cho app không có trang điều khoản riêng (như trang tài khoản) |
 | `footerLinks` | `PublicFooter` | Link (`{ href, label, dataId, current? }`) và nút (`{ label, dataId, onClick? }`) riêng của app sau Điều khoản |
 | `footerNote` | `PublicFooter` | Dòng ghi chú nhỏ của app dưới hàng link |
 | `legacyThemeKey` | `PublicFooter`, `ThemeSwitch` | Key localStorage cũ của app, đọc khi chưa có cookie chung |

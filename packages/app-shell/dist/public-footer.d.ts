@@ -13,8 +13,8 @@ export type PublicFooterProps<L extends ShellLocale = ShellLocale> = LanguageSwi
     readonly locale: L;
     /** "/privacy" by default. */
     readonly privacyHref?: string | undefined;
-    /** "/terms" by default. */
-    readonly termsHref?: string | undefined;
+    /** "/terms" by default; null for an app without terms of its own (no link). */
+    readonly termsHref?: string | null | undefined;
     /**
      * After the shared links: links (Docs, Delete account) and buttons
      * (`{ label, dataId, onClick }`, e.g. Feedback opening a form).

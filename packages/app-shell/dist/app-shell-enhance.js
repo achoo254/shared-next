@@ -1,4 +1,4 @@
-/* @achoo254/app-shell 0.3.0 app-shell-enhance.js: theme switch of server-rendered pages (README, "Trang dựng trên server"). MIT. */
+/* @achoo254/app-shell 0.3.1 app-shell-enhance.js: theme switch of server-rendered pages (README, "Trang dựng trên server"). MIT. */
 "use strict";
 (() => {
   // ../brand/dist/hosts.js

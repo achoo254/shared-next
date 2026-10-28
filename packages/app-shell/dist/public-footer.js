@@ -15,7 +15,15 @@ export function PublicFooter(props) {
             label: t.privacy,
             dataId: "foot-privacy",
         },
-        { href: props.termsHref ?? "/terms", label: t.terms, dataId: "foot-terms" },
+        ...(props.termsHref === null
+            ? []
+            : [
+                {
+                    href: props.termsHref ?? "/terms",
+                    label: t.terms,
+                    dataId: "foot-terms",
+                },
+            ]),
         ...(props.footerLinks ?? []),
     ];
     // The header's links, on phones only, unless the footer has the place already.
