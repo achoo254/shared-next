@@ -19,11 +19,17 @@ export interface FeatureListProps {
 	readonly title?: ReactNode;
 	/** `id` of the section, the target of a "#features" header link. */
 	readonly id?: string | undefined;
+	/** `data-id` of the section, "features" by default; one per list on a page. */
+	readonly dataId?: string | undefined;
 }
 
 export function FeatureList(props: FeatureListProps): ReactNode {
 	return (
-		<section className="shell-features" id={props.id} data-id="features">
+		<section
+			className="shell-features"
+			id={props.id}
+			data-id={props.dataId ?? "features"}
+		>
 			{props.eyebrow === undefined && props.title === undefined ? null : (
 				<div className="shell-features-head">
 					{props.eyebrow === undefined ? null : (

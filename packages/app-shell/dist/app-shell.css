@@ -42,6 +42,27 @@
 .shell-main {
 	flex: 1 0 auto;
 }
+/* focused by the skip link, not by a click: no ring around the whole body */
+.shell-main:focus {
+	outline: none;
+}
+/* skip link: off screen until a keyboard user tabs onto it */
+.shell-skip-link {
+	position: absolute;
+	top: var(--space-2);
+	left: var(--space-2);
+	z-index: 40;
+	padding: var(--space-2) var(--space-4);
+	border-radius: var(--radius-sm);
+	background: var(--c-primary-solid);
+	color: var(--c-on-primary);
+	font-weight: 600;
+	text-decoration: none;
+	transform: translateY(calc(-100% - var(--space-4)));
+}
+.shell-skip-link:focus {
+	transform: none;
+}
 /* /login: one card in the middle of the page */
 .shell-main-center {
 	display: grid;
@@ -207,6 +228,11 @@
 /* full width, one line: "Đăng nhập bằng hoandat.com" fits a 320px phone */
 .shell-btn-cta {
 	width: 100%;
+}
+/* sign-in under way: same label and size, dimmed, clicks ignored */
+.shell-btn[aria-busy="true"] {
+	cursor: progress;
+	opacity: 0.7;
 }
 
 /* welcome page: hero, then the features */

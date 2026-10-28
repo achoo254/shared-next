@@ -27,6 +27,8 @@ export type PublicFooterProps = LanguageSwitchMode & {
 	/** The app's localStorage key of the theme before the shared cookie. */
 	readonly legacyThemeKey?: string | undefined;
 	readonly linkComponent?: ShellLinkComponent | undefined;
+	/** The app's languages in switch order; vi and en by default. */
+	readonly locales?: readonly ShellLocale[] | undefined;
 };
 
 export function PublicFooter(props: PublicFooterProps): ReactNode {
@@ -47,7 +49,12 @@ export function PublicFooter(props: PublicFooterProps): ReactNode {
 	return (
 		<footer className="shell-foot shell-container" data-id="public-footer">
 			<div className="shell-foot-switches">
-				<LanguageSwitch {...language} locale={locale} domain={brand.domain} />
+				<LanguageSwitch
+					{...language}
+					locale={locale}
+					locales={props.locales}
+					domain={brand.domain}
+				/>
 				<ThemeSwitch
 					locale={locale}
 					domain={brand.domain}

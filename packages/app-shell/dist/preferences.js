@@ -11,7 +11,7 @@
  * defaults and every write is a no-op.
  */
 import { DOMAIN_PATTERN } from "@achoo254/brand/hosts";
-import { matchShellLocale } from "./locale.js";
+import { DEFAULT_SHELL_LOCALES, SHELL_LOCALES, matchShellLocale, } from "./locale.js";
 export const THEME_PREFERENCES = [
     "light",
     "dark",
@@ -53,7 +53,7 @@ export function isThemePreference(value) {
     return value === "light" || value === "dark" || value === "system";
 }
 const PARSERS = {
-    lang: matchShellLocale,
+    lang: (raw) => matchShellLocale(raw, SHELL_LOCALES),
     theme: (raw) => (isThemePreference(raw) ? raw : undefined),
 };
 /** A stored string as a choice, or undefined when it is none. */
@@ -129,27 +129,24 @@ function writeStorage(storage, key, value) {
         return false;
     }
 }
-function readOne(name, env, legacyKey) {
+/** The first stored value `accept` takes, in the order readPreferences documents. */
+function readOne(name, accept, env, legacyKey) {
     const key = PREFERENCE_KEYS[name];
     const storage = env.storage();
     return ((cookiesApply(env)
-        ? parse(name, readCookie(env.readCookies(), key))
+        ? accept(readCookie(env.readCookies(), key))
         : undefined) ??
-        parse(name, readStorage(storage, key)) ??
-        parse(name, env.memory.get(name)) ??
-        parse(name, readStorage(storage, legacyKey)));
+        accept(readStorage(storage, key)) ??
+        accept(env.memory.get(name)) ??
+        accept(readStorage(storage, legacyKey)));
 }
-/**
- * The visitor's choices: the shared cookie, else this WebView's storage,
- * else a pick made earlier in this page view, else the app's legacy key.
- * Theme defaults to "system"; language stays undefined for the app to pick.
- */
 export function readPreferences(options, env = browserEnvironment()) {
     if (!env)
         return { lang: undefined, theme: "system" };
+    const locales = options.locales ?? DEFAULT_SHELL_LOCALES;
     return {
-        lang: readOne("lang", env, options.legacyLangKey),
-        theme: readOne("theme", env, options.legacyThemeKey) ?? "system",
+        lang: readOne("lang", (raw) => matchShellLocale(raw, locales), env, options.legacyLangKey),
+        theme: readOne("theme", (raw) => parse("theme", raw), env, options.legacyThemeKey) ?? "system",
     };
 }
 const listeners = new Set();

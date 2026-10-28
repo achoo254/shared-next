@@ -1,6 +1,6 @@
 {
 	"name": "@achoo254/app-shell",
-	"version": "0.1.0",
+	"version": "0.2.0",
 	"description": "Signed-out shell of the *-next products: header, page frame, sign-in card, hero, feature list, footer, language and theme switches, shared preference cookies and design tokens",
 	"type": "module",
 	"engines": {

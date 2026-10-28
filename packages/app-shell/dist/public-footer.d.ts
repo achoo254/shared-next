@@ -19,5 +19,7 @@ export type PublicFooterProps = LanguageSwitchMode & {
     /** The app's localStorage key of the theme before the shared cookie. */
     readonly legacyThemeKey?: string | undefined;
     readonly linkComponent?: ShellLinkComponent | undefined;
+    /** The app's languages in switch order; vi and en by default. */
+    readonly locales?: readonly ShellLocale[] | undefined;
 };
 export declare function PublicFooter(props: PublicFooterProps): ReactNode;

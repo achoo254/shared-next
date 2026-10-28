@@ -1,4 +1,4 @@
-import { type ShellLocale } from "./locale.js";
+import { type DefaultShellLocale, type ShellLocale } from "./locale.js";
 export type ThemePreference = "light" | "dark" | "system";
 export declare const THEME_PREFERENCES: readonly ThemePreference[];
 /** Cookie (and storage key) of each preference; auth-next reads `hd_lang` too. */
@@ -11,9 +11,12 @@ export interface PreferenceValues {
     readonly lang: ShellLocale;
     readonly theme: ThemePreference;
 }
-export interface Preferences {
-    /** Undefined until someone picks a language: the app chooses its default. */
-    readonly lang: ShellLocale | undefined;
+export interface Preferences<L extends ShellLocale = ShellLocale> {
+    /**
+     * Undefined until someone picks one of the app's languages: the app
+     * chooses its default.
+     */
+    readonly lang: L | undefined;
     readonly theme: ThemePreference;
 }
 export interface PreferenceOptions {
@@ -23,6 +26,14 @@ export interface PreferenceOptions {
     readonly legacyThemeKey?: string | undefined;
     /** The app's own localStorage key of the language before the shared cookie. */
     readonly legacyLangKey?: string | undefined;
+}
+/** PreferenceOptions of an app that names its languages. */
+export interface LocalePreferenceOptions<L extends ShellLocale> extends PreferenceOptions {
+    /**
+     * The app's languages: a stored language outside them (`zh-CN` from
+     * Localman in an app without Chinese) counts as no choice.
+     */
+    readonly locales: readonly L[];
 }
 type KeyValueStorage = Pick<Storage, "getItem" | "setItem">;
 /**
@@ -53,9 +64,12 @@ export declare function preferenceCookie(name: PreferenceName, value: string, en
 /**
  * The visitor's choices: the shared cookie, else this WebView's storage,
  * else a pick made earlier in this page view, else the app's legacy key.
- * Theme defaults to "system"; language stays undefined for the app to pick.
+ * Theme defaults to "system"; language stays undefined for the app to pick,
+ * also when the stored one is not among the app's `locales` (vi and en
+ * when not given).
  */
-export declare function readPreferences(options: PreferenceOptions, env?: PreferenceEnvironment | undefined): Preferences;
+export declare function readPreferences<L extends ShellLocale>(options: LocalePreferenceOptions<L>, env?: PreferenceEnvironment | undefined): Preferences<L>;
+export declare function readPreferences(options: PreferenceOptions, env?: PreferenceEnvironment | undefined): Preferences<DefaultShellLocale>;
 /**
  * Stores one choice for every app under the root domain, falling back to
  * this WebView's localStorage when the cookie does not stick, then tells

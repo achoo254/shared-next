@@ -11,7 +11,13 @@
  * defaults and every write is a no-op.
  */
 import { DOMAIN_PATTERN } from "@achoo254/brand/hosts";
-import { type ShellLocale, matchShellLocale } from "./locale.js";
+import {
+	DEFAULT_SHELL_LOCALES,
+	type DefaultShellLocale,
+	SHELL_LOCALES,
+	type ShellLocale,
+	matchShellLocale,
+} from "./locale.js";
 
 export type ThemePreference = "light" | "dark" | "system";
 
@@ -34,9 +40,12 @@ export interface PreferenceValues {
 	readonly theme: ThemePreference;
 }
 
-export interface Preferences {
-	/** Undefined until someone picks a language: the app chooses its default. */
-	readonly lang: ShellLocale | undefined;
+export interface Preferences<L extends ShellLocale = ShellLocale> {
+	/**
+	 * Undefined until someone picks one of the app's languages: the app
+	 * chooses its default.
+	 */
+	readonly lang: L | undefined;
 	readonly theme: ThemePreference;
 }
 
@@ -47,6 +56,16 @@ export interface PreferenceOptions {
 	readonly legacyThemeKey?: string | undefined;
 	/** The app's own localStorage key of the language before the shared cookie. */
 	readonly legacyLangKey?: string | undefined;
+}
+
+/** PreferenceOptions of an app that names its languages. */
+export interface LocalePreferenceOptions<L extends ShellLocale>
+	extends PreferenceOptions {
+	/**
+	 * The app's languages: a stored language outside them (`zh-CN` from
+	 * Localman in an app without Chinese) counts as no choice.
+	 */
+	readonly locales: readonly L[];
 }
 
 /** One year, as auth-next keeps its language cookie. */
@@ -104,7 +123,7 @@ const PARSERS: {
 		raw: string,
 	) => PreferenceValues[N] | undefined;
 } = {
-	lang: matchShellLocale,
+	lang: (raw) => matchShellLocale(raw, SHELL_LOCALES),
 	theme: (raw) => (isThemePreference(raw) ? raw : undefined),
 };
 
@@ -197,36 +216,62 @@ function writeStorage(
 	}
 }
 
-function readOne<N extends PreferenceName>(
-	name: N,
+/** The first stored value `accept` takes, in the order readPreferences documents. */
+function readOne<T>(
+	name: PreferenceName,
+	accept: (raw: string | null | undefined) => T | undefined,
 	env: PreferenceEnvironment,
 	legacyKey: string | undefined,
-): PreferenceValues[N] | undefined {
+): T | undefined {
 	const key = PREFERENCE_KEYS[name];
 	const storage = env.storage();
 	return (
 		(cookiesApply(env)
-			? parse(name, readCookie(env.readCookies(), key))
+			? accept(readCookie(env.readCookies(), key))
 			: undefined) ??
-		parse(name, readStorage(storage, key)) ??
-		parse(name, env.memory.get(name)) ??
-		parse(name, readStorage(storage, legacyKey))
+		accept(readStorage(storage, key)) ??
+		accept(env.memory.get(name)) ??
+		accept(readStorage(storage, legacyKey))
 	);
 }
 
 /**
  * The visitor's choices: the shared cookie, else this WebView's storage,
  * else a pick made earlier in this page view, else the app's legacy key.
- * Theme defaults to "system"; language stays undefined for the app to pick.
+ * Theme defaults to "system"; language stays undefined for the app to pick,
+ * also when the stored one is not among the app's `locales` (vi and en
+ * when not given).
  */
+export function readPreferences<L extends ShellLocale>(
+	options: LocalePreferenceOptions<L>,
+	env?: PreferenceEnvironment | undefined,
+): Preferences<L>;
 export function readPreferences(
 	options: PreferenceOptions,
+	env?: PreferenceEnvironment | undefined,
+): Preferences<DefaultShellLocale>;
+export function readPreferences(
+	options: PreferenceOptions & {
+		readonly locales?: readonly ShellLocale[] | undefined;
+	},
 	env: PreferenceEnvironment | undefined = browserEnvironment(),
 ): Preferences {
 	if (!env) return { lang: undefined, theme: "system" };
+	const locales = options.locales ?? DEFAULT_SHELL_LOCALES;
 	return {
-		lang: readOne("lang", env, options.legacyLangKey),
-		theme: readOne("theme", env, options.legacyThemeKey) ?? "system",
+		lang: readOne(
+			"lang",
+			(raw) => matchShellLocale(raw, locales),
+			env,
+			options.legacyLangKey,
+		),
+		theme:
+			readOne(
+				"theme",
+				(raw) => parse("theme", raw),
+				env,
+				options.legacyThemeKey,
+			) ?? "system",
 	};
 }
 

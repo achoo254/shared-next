@@ -30,6 +30,8 @@ export interface ShellAnchorProps {
     readonly children: ReactNode;
     readonly "data-id"?: string | undefined;
     readonly "aria-current"?: "page" | undefined;
+    readonly "aria-busy"?: true | undefined;
+    readonly "aria-disabled"?: true | undefined;
     readonly onClick?: ((event: MouseEvent<HTMLAnchorElement>) => void) | undefined;
 }
 /**

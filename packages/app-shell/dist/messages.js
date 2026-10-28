@@ -1,5 +1,6 @@
 export const SHELL_MESSAGES = {
     vi: {
+        skipToContent: "Bỏ qua tới nội dung",
         nav: "Điều hướng",
         signIn: "Đăng nhập",
         signInWith: (domain) => `Đăng nhập bằng ${domain}`,
@@ -13,6 +14,7 @@ export const SHELL_MESSAGES = {
         themes: { light: "Sáng", dark: "Tối", system: "Theo máy" },
     },
     en: {
+        skipToContent: "Skip to content",
         nav: "Navigation",
         signIn: "Sign in",
         signInWith: (domain) => `Sign in with ${domain}`,
@@ -24,5 +26,20 @@ export const SHELL_MESSAGES = {
         language: "Language",
         theme: "Theme",
         themes: { light: "Light", dark: "Dark", system: "System" },
+    },
+    // Worded as the account app and Localman word the same things.
+    "zh-CN": {
+        skipToContent: "跳到主要内容",
+        nav: "站点导航",
+        signIn: "登录",
+        signInWith: (domain) => `使用 ${domain} 登录`,
+        signInNote: (domain) => `使用你的 ${domain} 账号：通过 Google 或 GitHub 登录。应用永远看不到你的密码。`,
+        ecosystem: (domain) => `${domain} 旗下应用`,
+        privacy: "隐私政策",
+        terms: "使用条款",
+        footLinks: "页脚链接",
+        language: "语言",
+        theme: "颜色模式",
+        themes: { light: "浅色主题", dark: "深色主题", system: "跟随系统" },
     },
 };

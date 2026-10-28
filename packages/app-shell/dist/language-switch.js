@@ -1,12 +1,13 @@
 import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
 import { createElement as _createElement } from "react";
-import { SHELL_LOCALES, SHELL_LOCALE_NAMES, } from "./locale.js";
+import { DEFAULT_SHELL_LOCALES, SHELL_LOCALE_NAMES, } from "./locale.js";
 import { SHELL_MESSAGES } from "./messages.js";
 import { writePreference } from "./preferences.js";
 export function LanguageSwitch(props) {
     const { locale, domain, languageHref, onLocaleChange } = props;
     const label = SHELL_MESSAGES[locale].language;
-    const options = SHELL_LOCALES.map((option) => {
+    const locales = props.locales ?? DEFAULT_SHELL_LOCALES;
+    const options = locales.map((option) => {
         const common = {
             className: "shell-lang-option",
             lang: option,

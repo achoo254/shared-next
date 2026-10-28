@@ -5,6 +5,8 @@
 import type { ShellLocale } from "./locale.js";
 import type { ThemePreference } from "./preferences.js";
 export interface ShellMessages {
+    /** First stop of the keyboard: jumps past the header to the page body. */
+    readonly skipToContent: string;
     /** Accessible name of the header links. */
     readonly nav: string;
     /** The header pill. */

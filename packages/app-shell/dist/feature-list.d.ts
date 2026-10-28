@@ -17,5 +17,7 @@ export interface FeatureListProps {
     readonly title?: ReactNode;
     /** `id` of the section, the target of a "#features" header link. */
     readonly id?: string | undefined;
+    /** `data-id` of the section, "features" by default; one per list on a page. */
+    readonly dataId?: string | undefined;
 }
 export declare function FeatureList(props: FeatureListProps): ReactNode;

@@ -10,6 +10,8 @@ export {
 	type LanguageSwitchProps,
 } from "./language-switch.js";
 export {
+	DEFAULT_SHELL_LOCALES,
+	type DefaultShellLocale,
 	SHELL_LOCALES,
 	SHELL_LOCALE_NAMES,
 	type ShellLocale,
@@ -17,6 +19,7 @@ export {
 	matchShellLocale,
 } from "./locale.js";
 export {
+	type LocalePreferenceOptions,
 	PREFERENCE_KEYS,
 	type PreferenceName,
 	type PreferenceOptions,

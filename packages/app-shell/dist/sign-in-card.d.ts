@@ -19,7 +19,16 @@ export interface SignInCardProps {
     readonly headingLevel?: 1 | 2 | undefined;
     /** Opens sign-in instead of following the link (system browser in a native shell). */
     readonly onSignIn?: ((href: string) => void) | undefined;
+    /**
+     * The app's router link. Not for the CTA when `signInHref` is a server
+     * route (`/api/auth/login`): the router would try to render it.
+     */
     readonly linkComponent?: ShellLinkComponent | undefined;
+    /**
+     * Sign-in has started and not come back yet (e.g. the system browser is
+     * open): the CTA is busy and ignores clicks, with the same label.
+     */
+    readonly pending?: boolean | undefined;
     /** After the note, e.g. an error from the last sign-in. */
     readonly children?: ReactNode;
 }

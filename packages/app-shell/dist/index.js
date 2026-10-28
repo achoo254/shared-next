@@ -1,7 +1,7 @@
 export { FeatureList, } from "./feature-list.js";
 export { Hero } from "./hero.js";
 export { LanguageSwitch, } from "./language-switch.js";
-export { SHELL_LOCALES, SHELL_LOCALE_NAMES, isShellLocale, matchShellLocale, } from "./locale.js";
+export { DEFAULT_SHELL_LOCALES, SHELL_LOCALES, SHELL_LOCALE_NAMES, isShellLocale, matchShellLocale, } from "./locale.js";
 export { PREFERENCE_KEYS, THEME_PREFERENCES, applyTheme, cookieDomainFor, isThemePreference, readPreferences, subscribePreferences, themeBootstrapScript, writePreference, } from "./preferences.js";
 export { PublicFooter } from "./public-footer.js";
 export { PublicHeader } from "./public-header.js";

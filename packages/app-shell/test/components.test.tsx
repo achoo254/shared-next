@@ -54,6 +54,7 @@ describe("PublicHeader", () => {
 	it.each([
 		["vi", "Đăng nhập", "Điều hướng"],
 		["en", "Sign in", "Navigation"],
+		["zh-CN", "登录", "站点导航"],
 	] as const)(
 		"shows the mark, the name and the sign-in pill in %s",
 		(locale, signIn, nav) => {
@@ -172,6 +173,7 @@ describe("PublicFooter", () => {
 			["Một app của hoandat.com", "Quyền riêng tư", "Điều khoản", "Tài liệu"],
 		],
 		["en", ["An app from hoandat.com", "Privacy", "Terms", "Tài liệu"]],
+		["zh-CN", ["hoandat.com 旗下应用", "隐私政策", "使用条款", "Tài liệu"]],
 	] as const)(
 		"shows the switches, then the shared links in %s",
 		(locale, labels) => {
@@ -269,12 +271,49 @@ describe("LanguageSwitch", () => {
 		expect(byDataId("lang-vi").hasAttribute("aria-current")).toBe(false);
 		expect(byDataId("lang-vi").getAttribute("hreflang")).toBe("vi");
 	});
+
+	it("shows only the app's languages, in its order, and stores zh-CN", () => {
+		const onLocaleChange = vi.fn();
+		render(
+			<LanguageSwitch
+				locale="zh-CN"
+				locales={["en", "zh-CN", "vi"]}
+				domain="hoandat.com"
+				onLocaleChange={onLocaleChange}
+			/>,
+		);
+		const group = screen.getByRole("group", { name: "语言" });
+		expect(
+			within(group)
+				.getAllByRole("button")
+				.map((button) => button.textContent),
+		).toEqual(["English", "中文", "Tiếng Việt"]);
+		expect(byDataId("lang-zh-CN").getAttribute("aria-pressed")).toBe("true");
+		expect(byDataId("lang-zh-CN").getAttribute("lang")).toBe("zh-CN");
+		fireEvent.click(byDataId("lang-en"));
+		expect(onLocaleChange).toHaveBeenCalledWith("en");
+		fireEvent.click(byDataId("lang-zh-CN"));
+		expect(onLocaleChange).toHaveBeenLastCalledWith("zh-CN");
+		expect(document.cookie).toContain("hd_lang=zh-CN");
+	});
+
+	it("has no Chinese option in an app without it", () => {
+		render(
+			<LanguageSwitch
+				locale="vi"
+				domain="hoandat.com"
+				onLocaleChange={() => {}}
+			/>,
+		);
+		expect(document.querySelector('[data-id="lang-zh-CN"]')).toBeNull();
+	});
 });
 
 describe("ThemeSwitch", () => {
 	it.each([
 		["vi", "Giao diện", ["Sáng", "Tối", "Theo máy"]],
 		["en", "Theme", ["Light", "Dark", "System"]],
+		["zh-CN", "颜色模式", ["浅色主题", "深色主题", "跟随系统"]],
 	] as const)(
 		"names the switch and its options in %s",
 		(locale, legend, labels) => {
@@ -351,6 +390,7 @@ describe("SignInCard", () => {
 	it.each([
 		["vi", "Đăng nhập bằng hoandat.com", "Google hoặc GitHub"],
 		["en", "Sign in with hoandat.com", "Google or GitHub"],
+		["zh-CN", "使用 hoandat.com 登录", "Google 或 GitHub"],
 	] as const)("has one call to action in %s", (locale, cta, note) => {
 		render(
 			<SignInCard
@@ -392,6 +432,50 @@ describe("SignInCard", () => {
 		expect(screen.getByRole("heading", { level: 2 }).textContent).toBe("Chat");
 		fireEvent.click(byDataId("sign-in-cta"));
 		expect(onSignIn).toHaveBeenCalledWith("https://auth.hoandat.com/x");
+	});
+
+	it("is busy and ignores clicks while sign-in is pending, label unchanged", () => {
+		const onSignIn = vi.fn();
+		const card = (pending: boolean) => (
+			<SignInCard
+				brand={BRAND}
+				locale="vi"
+				signInHref="https://auth.hoandat.com/x"
+				title="Chat"
+				onSignIn={onSignIn}
+				pending={pending}
+			/>
+		);
+		const { rerender } = render(card(true));
+		const cta = byDataId("sign-in-cta");
+		expect(cta.getAttribute("aria-busy")).toBe("true");
+		expect(cta.getAttribute("aria-disabled")).toBe("true");
+		expect(cta.textContent).toBe("Đăng nhập bằng hoandat.com");
+		const event = new MouseEvent("click", { bubbles: true, cancelable: true });
+		cta.dispatchEvent(event);
+		expect(event.defaultPrevented).toBe(true);
+		expect(onSignIn).not.toHaveBeenCalled();
+
+		rerender(card(false));
+		expect(cta.hasAttribute("aria-busy")).toBe(false);
+		expect(cta.hasAttribute("aria-disabled")).toBe(false);
+		fireEvent.click(cta);
+		expect(onSignIn).toHaveBeenCalledTimes(1);
+	});
+
+	it("blocks a plain link while pending (no onSignIn)", () => {
+		render(
+			<SignInCard
+				brand={BRAND}
+				locale="en"
+				signInHref="/api/auth/login"
+				title="Scribe"
+				pending
+			/>,
+		);
+		const event = new MouseEvent("click", { bubbles: true, cancelable: true });
+		byDataId("sign-in-cta").dispatchEvent(event);
+		expect(event.defaultPrevented).toBe(true);
 	});
 });
 
@@ -442,6 +526,27 @@ describe("Hero and FeatureList", () => {
 		expect(within(section).getAllByRole("listitem")).toHaveLength(2);
 		expect(byDataId("feature-search").textContent).toBe("Tìm kiếmTìm mọi lời.");
 	});
+
+	it("takes a data-id per list, so two lists on a page differ", () => {
+		render(
+			<>
+				<FeatureList
+					items={[{ id: "record", title: "Ghi âm", description: "Web." }]}
+				/>
+				<FeatureList
+					dataId="features-mobile"
+					items={[{ id: "offline", title: "Ngoại tuyến", description: "App." }]}
+				/>
+			</>,
+		);
+		expect(document.querySelectorAll('[data-id="features"]')).toHaveLength(1);
+		expect(
+			within(byDataId("features-mobile")).getAllByRole("listitem"),
+		).toHaveLength(1);
+		expect(byDataId("feature-record").closest("section")).toBe(
+			byDataId("features"),
+		);
+	});
 });
 
 describe("PublicPage", () => {
@@ -460,6 +565,7 @@ describe("PublicPage", () => {
 		const root = byDataId("public-header").parentElement;
 		expect(root?.className).toBe("shell");
 		expect([...(root?.children ?? [])].map((child) => child.tagName)).toEqual([
+			"A",
 			"HEADER",
 			"MAIN",
 			"FOOTER",
@@ -469,5 +575,70 @@ describe("PublicPage", () => {
 		);
 		expect(byDataId("body").closest("main")).toBeTruthy();
 		expect(byDataId("public-footer")).toBeTruthy();
+	});
+
+	it.each([
+		["vi", "Bỏ qua tới nội dung"],
+		["en", "Skip to content"],
+		["zh-CN", "跳到主要内容"],
+	] as const)(
+		"starts with a skip link to the focusable main in %s",
+		(locale, label) => {
+			render(
+				<PublicPage
+					brand={BRAND}
+					locale={locale}
+					signInHref="/login"
+					onLocaleChange={() => {}}
+				>
+					<p>Nội dung</p>
+				</PublicPage>,
+			);
+			const skip = byDataId("skip-link");
+			expect(skip.parentElement?.firstElementChild).toBe(skip);
+			expect(skip.textContent).toBe(label);
+			expect(skip.getAttribute("href")).toBe("#main");
+			const main = screen.getByRole("main");
+			expect(main.id).toBe("main");
+			expect(main.tabIndex).toBe(-1);
+			main.focus();
+			expect(document.activeElement).toBe(main);
+		},
+	);
+
+	it("takes the app's id for main", () => {
+		render(
+			<PublicPage
+				brand={BRAND}
+				locale="en"
+				signInHref="/login"
+				onLocaleChange={() => {}}
+				mainId="content"
+			>
+				<p>Body</p>
+			</PublicPage>,
+		);
+		expect(byDataId("skip-link").getAttribute("href")).toBe("#content");
+		expect(screen.getByRole("main").id).toBe("content");
+	});
+
+	it("passes the app's languages to the footer switch", () => {
+		render(
+			<PublicPage
+				brand={BRAND}
+				locale="en"
+				locales={["en", "zh-CN", "vi"]}
+				signInHref="/login"
+				onLocaleChange={() => {}}
+			>
+				<p>Body</p>
+			</PublicPage>,
+		);
+		const group = screen.getByRole("group", { name: "Language" });
+		expect(
+			within(group)
+				.getAllByRole("button")
+				.map((button) => button.textContent),
+		).toEqual(["English", "中文", "Tiếng Việt"]);
 	});
 });

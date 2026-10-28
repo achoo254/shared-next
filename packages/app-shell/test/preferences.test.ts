@@ -1,5 +1,12 @@
 // @vitest-environment jsdom
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { afterEach, describe, expect, expectTypeOf, it, vi } from "vitest";
+import {
+	type DefaultShellLocale,
+	SHELL_LOCALES,
+	type ShellLocale,
+	isShellLocale,
+	matchShellLocale,
+} from "../src/locale.js";
 import {
 	type PreferenceEnvironment,
 	applyTheme,
@@ -198,6 +205,40 @@ describe("writePreference and readPreferences", () => {
 		).toEqual({ theme: "system", lang: undefined });
 	});
 
+	it("reads zh-CN for an app with Chinese, and for no other app", () => {
+		const storage = new Map([["localman-lang", "vi"]]);
+		const page = fakePage("https://localman.hoandat.com/", { storage });
+		writePreference("lang", "zh-CN", OPTIONS, page.env);
+		expect(page.written).toEqual([
+			"hd_lang=zh-CN; Path=/; Max-Age=31536000; SameSite=Lax; Domain=hoandat.com; Secure",
+		]);
+		const localman = {
+			...OPTIONS,
+			locales: ["en", "zh-CN", "vi"] as const,
+		};
+		expect(readPreferences(localman, page.env).lang).toBe("zh-CN");
+		// An app with vi and en: the shared zh-CN is no choice, so the
+		// app's own fallbacks (legacy key, then its default) apply.
+		expect(readPreferences(OPTIONS, page.env).lang).toBeUndefined();
+		expect(
+			readPreferences({ ...OPTIONS, legacyLangKey: "localman-lang" }, page.env)
+				.lang,
+		).toBe("vi");
+		expect(
+			readPreferences({ ...OPTIONS, locales: ["vi", "en"] }, page.env).lang,
+		).toBeUndefined();
+	});
+
+	it("types the language by the app's locales", () => {
+		const page = fakePage("https://chat.hoandat.com/");
+		expectTypeOf(readPreferences(OPTIONS, page.env).lang).toEqualTypeOf<
+			DefaultShellLocale | undefined
+		>();
+		expectTypeOf(
+			readPreferences({ ...OPTIONS, locales: ["en", "zh-CN"] }, page.env).lang,
+		).toEqualTypeOf<"en" | "zh-CN" | undefined>();
+	});
+
 	it("rejects a value that is not a choice", () => {
 		const page = fakePage("https://chat.hoandat.com/");
 		expect(() =>
@@ -205,6 +246,9 @@ describe("writePreference and readPreferences", () => {
 		).toThrow(RangeError);
 		expect(() =>
 			writePreference("lang", "vi-VN" as "vi", OPTIONS, page.env),
+		).toThrow(RangeError);
+		expect(() =>
+			writePreference("lang", "zh" as "zh-CN", OPTIONS, page.env),
 		).toThrow(RangeError);
 		expect(page.written).toEqual([]);
 	});
@@ -320,5 +364,36 @@ describe("themeBootstrapScript", () => {
 		expect(script).not.toContain("</script>");
 		localStorage.setItem("</script><b>", "dark");
 		expect(run(script)).toBe("dark");
+	});
+});
+
+describe("matchShellLocale", () => {
+	it("matches vi and en only when the app names no languages (as in 0.1)", () => {
+		expect(matchShellLocale("vi-VN")).toBe("vi");
+		expect(matchShellLocale("en_GB")).toBe("en");
+		expect(matchShellLocale("zh-CN")).toBeUndefined();
+		expect(matchShellLocale("fr")).toBeUndefined();
+		expect(matchShellLocale(undefined)).toBeUndefined();
+		expectTypeOf(matchShellLocale("vi")).toEqualTypeOf<
+			DefaultShellLocale | undefined
+		>();
+	});
+
+	it("matches every Chinese tag to zh-CN among the app's languages", () => {
+		for (const tag of ["zh", "zh-CN", "zh-Hans", "zh-TW", "ZH_cn"]) {
+			expect(matchShellLocale(tag, SHELL_LOCALES), tag).toBe("zh-CN");
+		}
+		expect(matchShellLocale("zh-CN", ["vi", "en"])).toBeUndefined();
+		expect(matchShellLocale("vi", ["en", "zh-CN"])).toBeUndefined();
+		expectTypeOf(matchShellLocale("x", ["en", "zh-CN"])).toEqualTypeOf<
+			"en" | "zh-CN" | undefined
+		>();
+	});
+
+	it("knows the exact shell locales", () => {
+		expect(SHELL_LOCALES.every((locale) => isShellLocale(locale))).toBe(true);
+		expect(isShellLocale("zh")).toBe(false);
+		expect(isShellLocale("zh-cn")).toBe(false);
+		expectTypeOf<ShellLocale>().toEqualTypeOf<"vi" | "en" | "zh-CN">();
 	});
 });

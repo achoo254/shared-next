@@ -1,9 +1,10 @@
 /**
- * A whole signed-out page: header, the app's body in the shared container,
- * footer, on the grid backdrop of the account app. Renders the same on a
- * server (renderToStaticMarkup) as in the browser.
+ * A whole signed-out page: a skip link, header, the app's body in the
+ * shared container, footer, on the grid backdrop of the account app.
+ * Renders the same on a server (renderToStaticMarkup) as in the browser.
  */
 import type { ReactNode } from "react";
+import { SHELL_MESSAGES } from "./messages.js";
 import { PublicFooter, type PublicFooterProps } from "./public-footer.js";
 import { PublicHeader, type PublicHeaderProps } from "./public-header.js";
 
@@ -15,14 +16,22 @@ export type PublicPageProps = PublicHeaderProps &
 		 * "center": one card centred in the page, for /login.
 		 */
 		readonly layout?: "flow" | "center" | undefined;
+		/** `id` of `<main>`, the skip link's target; "main" by default. */
+		readonly mainId?: string | undefined;
 	};
 
 export function PublicPage(props: PublicPageProps): ReactNode {
-	const { children, layout, ...rest } = props;
+	const { children, layout, mainId = "main", ...rest } = props;
 	return (
 		<div className="shell">
+			<a className="shell-skip-link" href={`#${mainId}`} data-id="skip-link">
+				{SHELL_MESSAGES[props.locale].skipToContent}
+			</a>
 			<PublicHeader {...rest} />
 			<main
+				id={mainId}
+				// Focusable by the skip link only, not in the tab order.
+				tabIndex={-1}
 				className={
 					layout === "center"
 						? "shell-main shell-container shell-main-center"

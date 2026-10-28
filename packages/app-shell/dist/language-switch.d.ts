@@ -1,5 +1,5 @@
 /**
- * The language pill: one option per shell language, the current one
+ * The language pill: one option per language of the app, the current one
  * marked. In an app it is a fieldset of buttons that store the shared
  * `hd_lang` cookie and tell the app; on a page without script (auth-next)
  * it is a nav of links to a URL that sets the cookie on the server.
@@ -20,5 +20,10 @@ export type LanguageSwitchProps = LanguageSwitchMode & {
     readonly locale: ShellLocale;
     /** The brand's root domain, for the shared cookie. */
     readonly domain: string;
+    /**
+     * The app's languages in switch order; vi and en by default. Localman
+     * and the account app pass `["en", "zh-CN", "vi"]`.
+     */
+    readonly locales?: readonly ShellLocale[] | undefined;
 };
 export declare function LanguageSwitch(props: LanguageSwitchProps): ReactNode;
