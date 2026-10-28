@@ -1,1 +1,0 @@
-- [Reading node_modules source](reference-node-modules-access.md) — Read/Bash blocked by scout-block hook; use Grep content mode on .pnpm path
