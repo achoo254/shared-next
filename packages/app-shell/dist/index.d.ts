@@ -6,6 +6,6 @@ export { type LocalePreferenceOptions, PREFERENCE_KEYS, type PreferenceName, typ
 export { PublicFooter, type PublicFooterProps } from "./public-footer.js";
 export { PublicHeader, type PublicHeaderProps } from "./public-header.js";
 export { PublicPage, type PublicPageProps } from "./public-page.js";
-export type { ShellAnchorProps, ShellBrand, ShellLink, ShellLinkComponent, } from "./shell-link.js";
+export type { ShellAction, ShellAnchorProps, ShellBrand, ShellLink, ShellLinkComponent, } from "./shell-link.js";
 export { SignInCard, type SignInCardProps } from "./sign-in-card.js";
 export { ThemeSwitch, type ThemeSwitchProps, useThemePreference, } from "./theme-switch.js";

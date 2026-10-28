@@ -64,7 +64,12 @@ export function ThemeSwitch(props: ThemeSwitchProps): ReactNode {
 	}
 
 	return (
-		<fieldset className="shell-theme-switch" data-id="theme-switch">
+		<fieldset
+			className="shell-theme-switch"
+			data-id="theme-switch"
+			// Read by app-shell-enhance.js on pages without React.
+			data-domain={domain}
+		>
 			<legend className="shell-sr-only">{t.theme}</legend>
 			{THEME_PREFERENCES.map((theme) => (
 				<button

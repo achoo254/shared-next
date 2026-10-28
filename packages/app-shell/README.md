@@ -9,6 +9,9 @@ lệch nhau.
 - **Component React 19**: `PublicPage`, `PublicHeader`, `PublicFooter`, `SignInCard`, `Hero`, `FeatureList`,
   `LanguageSwitch`, `ThemeSwitch`. Render được trên server bằng `renderToStaticMarkup` (không cần DOM).
 - **Lựa chọn dùng chung** (`@achoo254/app-shell/preferences`, không phụ thuộc React): cookie `hd_lang` và `hd_theme`.
+- **Trang dựng trên server không có React phía trình duyệt** (auth-next, Tunelo): `app-shell-enhance.js`, một file
+  script thường không import gì, làm nút đổi giao diện chạy dưới CSP `script-src 'self'` (xem "Trang dựng trên
+  server").
 - **CSS**: `tokens.css` (bản chuyển nguyên văn từ `localman-next/packages/design-tokens/tokens.css`) và
   `app-shell.css` (class tiền tố `shell-`, chỉ dùng biến của `tokens.css`, không phụ thuộc Tailwind).
 - **Chữ**: vi, en và zh-CN (tiếng Trung giản thể) cho phần khung. App chọn ngôn ngữ trang và truyền `locale` vào, cùng
@@ -39,7 +42,9 @@ import "@achoo254/app-shell/app-shell.css";
 
 - `tokens.css` thay bản `tokens.css` chép tay của app; xoá bản chép đó.
 - `app-shell.css` không nằm trong `@layer` nào, nên thắng preflight của Tailwind; nó chỉ chọn class `shell-*`, không
-  đụng tới phần tử nào khác của app.
+  đụng tới phần tử nào khác của app. Từ 0.3.0 cả `box-sizing: border-box` và vòng focus cũng chỉ áp cho phần tử có
+  class `shell-*` (bọc trong `:where()`, CSS của app ghi đè dễ); nội dung của app trong `<main>` giữ box-sizing và
+  vòng focus của app.
 - Font `Inter` và `JetBrains Mono` (biến `--font-sans`, `--font-mono`) do app tự nạp.
 
 ## Dùng trong một app React
@@ -112,6 +117,54 @@ const localmanLocale =
 
 Trang `/login`: `<PublicPage layout="center" signInCurrent …><SignInCard … /></PublicPage>`.
 
+`onLocaleChange` và `languageHref` nhận đúng kiểu ngôn ngữ của app (theo `locales` và `locale`): app vi/en truyền
+thẳng `setLocale: (locale: "vi" | "en") => void`, không cần kiểm `isLocale` nữa. App có ngôn ngữ khác vi và en phải
+truyền `locales`, để gói chỉ gọi callback với ngôn ngữ của app.
+
+### Header trên điện thoại: giữ nguyên tên app
+
+Dưới 480 px header chỉ đủ chỗ cho dấu, **trọn tên app**, nhiều nhất một link ngắn và nút đăng nhập hoặc một control tài
+khoản. Có hơn thế thì tên app bị cắt (Clip ở 390 px với hai link và "Đăng xuất"). Khi đó chọn một trong hai:
+
+- `hideOnPhones: true` trên từng link: link đó ẩn dưới 480 px (như 0.2).
+- `hideNavOnPhones` trên `PublicPage`: ẩn cả dãy link của header dưới 480 px, và footer hiện lại chúng trong hàng link
+  (chỉ trên điện thoại, `data-id="foot-<dataId>"`; link nào footer đã có cùng `href` thì không lặp).
+
+### Ô tài khoản: nút đăng xuất, ẩn nút đăng nhập
+
+`accountSlot` thay nút "Đăng nhập". Gói không có logic đăng nhập; app tự dựng control, dùng class của gói để trông như
+link header:
+
+```tsx
+// App React: đăng xuất bằng script của app.
+accountSlot={<button type="button" className="shell-topbar-link" data-id="sign-out" onClick={signOut}>{t("signOut")}</button>}
+
+// Trang server (Tunelo): đăng xuất bằng POST có CSRF, không cần script.
+accountSlot={
+	<form className="shell-topbar-form" method="post" action="/auth/logout">
+		<input type="hidden" name="csrf" value={csrfToken} />
+		<button type="submit" className="shell-topbar-link" data-id="sign-out">{t("signOut")}</button>
+	</form>
+}
+```
+
+- `shell-topbar-link` trên `<button>` đã bỏ viền, nền và margin mặc định của nút: app xoá CSS reset riêng (Tử Vi, Clip
+  đang có `topbar-button`).
+- `shell-topbar-form` (`display: contents`) để form không chen thêm hộp vào hàng header.
+- Chữ phụ chỉ hiện từ 480 px (ví dụ tên người dùng): thêm class `shell-hide-phone`.
+- `accountSlot={null}`: không hiện gì ở chỗ đó (đăng nhập chưa cấu hình trên server), thay cho `<></>`. Bỏ trống
+  (`undefined`) thì vẫn hiện nút "Đăng nhập".
+
+### Footer: nút và ghi chú của app
+
+`footerLinks` nhận cả link `{ href, label, dataId }` lẫn nút `{ label, dataId, onClick }` (không có `href`). Nút là
+`<button type="button" class="shell-foot-link">`, trông như link, dùng cho việc mở form trên trang (Feedback của
+Localman) thay cho link giả `#feedback`. Trên trang server không có React, bỏ `onClick` và gắn sự kiện theo `data-id`
+trong file script của trang.
+
+`footerNote`: một dòng chữ nhỏ của app dưới hàng link (`<p class="shell-foot-note" data-id="foot-note">`), ví dụ "Nội
+dung mang tính giải trí, tham khảo" của Tử Vi.
+
 `PublicPage` tự đặt link "Bỏ qua tới nội dung" (en "Skip to content", zh-CN "跳到主要内容") đầu trang, chỉ hiện khi
 người dùng bàn phím tab tới, trỏ tới `<main id="main" tabindex="-1">`. App không tự đặt skip link hay bọc body trong
 một `div id="main"` nữa; trang đã có phần tử `id="main"` khác thì đổi bằng `mainId`.
@@ -135,11 +188,13 @@ bắt đầu bằng `/`, nên khi đó `signInHref` của header phải là rout
 | `onSignIn(href)` | `PublicHeader`, `SignInCard` | Thay vì đi theo link (app native mở trình duyệt hệ thống bằng `@achoo254/capacitor-system-auth`) |
 | `signInCurrent` | `PublicHeader` | Đánh dấu nút "Đăng nhập" là trang hiện tại (trên `/login`) |
 | `navLinks` | `PublicHeader` | Vài link trước nút đăng nhập; `hideOnPhones` ẩn dưới 480 px; `current` đánh dấu trang hiện tại |
-| `accountSlot` | `PublicHeader` | Thay nút đăng nhập khi khách đã đăng nhập (mở app, menu tài khoản) |
+| `hideNavOnPhones` | `PublicHeader`, `PublicPage` | Ẩn mọi link của header dưới 480 px; `PublicPage` hiện lại chúng ở footer trên điện thoại |
+| `accountSlot` | `PublicHeader` | Thay nút đăng nhập khi khách đã đăng nhập (mở app, menu tài khoản, nút đăng xuất); `null` không hiện gì, bỏ trống thì hiện nút "Đăng nhập" |
 | `homeHref` | `PublicHeader` | Đích của dấu và tên app, mặc định `/` |
 | `onLocaleChange(locale)` hoặc `languageHref(locale)` | `PublicFooter`, `LanguageSwitch` | Bắt buộc một trong hai: callback (nút bấm, gói lưu cookie) hoặc URL của server (link, không cần script) |
 | `privacyHref`, `termsHref` | `PublicFooter` | Mặc định `/privacy`, `/terms` |
-| `footerLinks` | `PublicFooter` | Link riêng của app sau Điều khoản |
+| `footerLinks` | `PublicFooter` | Link (`{ href, label, dataId, current? }`) và nút (`{ label, dataId, onClick? }`) riêng của app sau Điều khoản |
+| `footerNote` | `PublicFooter` | Dòng ghi chú nhỏ của app dưới hàng link |
 | `legacyThemeKey` | `PublicFooter`, `ThemeSwitch` | Key localStorage cũ của app, đọc khi chưa có cookie chung |
 | `linkComponent` | header, footer, thẻ | Link của router cho đường dẫn nội bộ; URL khác luôn là `<a>`. Không dùng cho route server (`/api/...`) và không truyền cho `SignInCard`, xem trên |
 | `layout` | `PublicPage` | `"flow"` (mặc định) cho trang giới thiệu và pháp lý, `"center"` cho `/login` |
@@ -150,7 +205,7 @@ bắt đầu bằng `/`, nên khi đó `signInHref` của header phải là rout
 | `items`, `eyebrow`, `title`, `id`, `dataId` | `FeatureList` | `items`: `{ id, title, description, icon? }`; `dataId` mặc định `features`, mỗi danh sách trên một trang một giá trị |
 
 Mỗi khối có `data-id`: `skip-link`, `public-header`, `public-home`, `public-sign-in`, `public-footer`, `foot-home`,
-`foot-privacy`, `foot-terms`, `lang-switch`, `lang-<locale>` (`lang-vi`, `lang-en`, `lang-zh-CN`), `theme-switch`, `theme-light`, `theme-dark`,
+`foot-privacy`, `foot-terms`, `foot-note`, `foot-<dataId>` (link header lặp lại ở footer với `hideNavOnPhones`), `lang-switch`, `lang-<locale>` (`lang-vi`, `lang-en`, `lang-zh-CN`), `theme-switch`, `theme-light`, `theme-dark`,
 `theme-system`, `sign-in-card`, `sign-in-cta`, `hero`, `features` (hoặc `dataId`), `feature-<id>`; link app truyền vào dùng `dataId`
 của nó.
 
@@ -165,7 +220,8 @@ const script = themeBootstrapScript({ legacyThemeKey: "localman-theme" });
 // index.html: <script>${script}</script>; CSP cho phép bằng hash sha256 của đúng chuỗi này
 ```
 
-Cùng tùy chọn luôn cho cùng một chuỗi, nên hash CSP ổn định. `ThemeSwitch` không đụng `data-theme` lúc mount (script
+Cùng tùy chọn luôn cho cùng một chuỗi, nên hash CSP ổn định. Trang server có CSP không cho script inline nào dùng
+file `app-shell-enhance.js` trong `<head>` thay cho script này (xem "Trang dựng trên server"). `ThemeSwitch` không đụng `data-theme` lúc mount (script
 đã đặt); nó áp lựa chọn khi người dùng bấm, và khi trang được xem lại sau khi một app khác đổi cookie.
 
 ## Lựa chọn dùng chung (`@achoo254/app-shell/preferences`)
@@ -194,26 +250,81 @@ Chuyển từ key cũ: khi chưa có cookie chung, `readPreferences` và script 
 (`legacyThemeKey`, `legacyLangKey`), nên người dùng giữ lựa chọn cũ. Lần đầu bấm đổi, lựa chọn được ghi vào cookie
 chung và từ đó key cũ không còn được đọc.
 
-## Dùng trên server (auth-next)
+## Trang dựng trên server (auth-next, Tunelo)
+
+Trang dựng HTML trên server bằng `renderToStaticMarkup`, không chạy React trong trình duyệt, CSP không có
+`'unsafe-inline'`:
 
 ```ts
 import { renderToStaticMarkup } from "react-dom/server";
 import { createElement } from "react";
 import { PublicPage, SignInCard } from "@achoo254/app-shell";
 
-const html = renderToStaticMarkup(
+const body = renderToStaticMarkup(
 	createElement(PublicPage, {
-		brand, locale, signInHref, homeHref: "/apps",
+		brand, locale, locales: ["en", "zh-CN", "vi"], signInHref, homeHref: "/apps",
 		languageHref: (locale) => languageHref(locale, page.path), // link /lang?set=…, không cần script
 		layout: "center",
 		children: createElement(SignInCard, { brand, locale, signInHref, title }),
 	}),
 );
+
+const html = `<!DOCTYPE html><html lang="${locale}"><head>
+<script src="/assets/js/app-shell-enhance.js"></script>
+<link rel="stylesheet" href="/assets/css/tokens.css"><link rel="stylesheet" href="/assets/css/app-shell.css">
+</head><body>${body}</body></html>`;
 ```
 
-Trên server `ThemeSwitch` hiện "Theo máy"; nút chỉ hoạt động khi trang có React chạy phía client (hoặc script riêng
-của trang đặt `data-theme` theo `value` của nút). React 19 chèn `<link rel="preload" as="image">` cho dấu app ngay
-trước khung.
+**`app-shell-enhance.js`** (`@achoo254/app-shell/app-shell-enhance.js`, file `dist/app-shell-enhance.js`): một script
+thường (IIFE), không import gì lúc chạy, khoảng 7 KB chưa nén. App phục vụ nó như một file tĩnh của chính origin: chép
+vào thư mục static lúc build, hoặc trả thẳng file của gói
+(`fileURLToPath(import.meta.resolve("@achoo254/app-shell/app-shell-enhance.js"))`).
+
+- Đặt trong `<head>`, **không** `defer`/`async`/`type="module"`: script đặt `data-theme` theo lựa chọn đã lưu (cookie
+  `hd_theme`, rồi localStorage) trước lần vẽ đầu, thay cho `themeBootstrapScript` inline. Không cần hash CSP.
+- Khi DOM xong, mọi `ThemeSwitch` dựng trên server (`[data-id="theme-switch"]`) chạy: bấm thì ghi `hd_theme` cho tên
+  miền gốc trong `data-domain` của fieldset (qua chính module `preferences`), đặt `data-theme`, chuyển `aria-pressed`.
+  Trang được xem lại (focus, `visibilitychange`) sau khi app khác đổi giao diện thì trang và nút theo lựa chọn mới.
+- Chỉ bắt sự kiện bằng `addEventListener` (một listener click cho cả trang): không có `onclick` inline, nên chạy được
+  với `script-src-attr 'none'`. Không đặt `style` nào, nên hợp `style-src 'self'`. Nạp hai lần cũng chỉ chạy một lần.
+- Nút đổi ngôn ngữ trên trang server vẫn là link (`languageHref`), không cần script: server ghi cookie `hd_lang` rồi
+  quay lại trang.
+- Không dùng script này trên trang có React chạy phía trình duyệt: `ThemeSwitch` của React đã tự làm việc đó.
+
+CSP tối thiểu cho trang như vậy: `script-src 'self'` (cộng nguồn analytics nếu có), `style-src 'self'`,
+`img-src 'self' data:` (dấu app). auth-next đã có `script-src 'self'`; Tunelo hiện chỉ cho
+`https://static.cloudflareinsights.com`, phải thêm `'self'`. React 19 chèn `<link rel="preload" as="image">` cho dấu
+app ngay trước khung; HTML của gói không có thuộc tính `style` hay script inline nào.
+
+## Nâng từ 0.2 lên 0.3 (tag `v0.9.0`)
+
+Không có thay đổi phá API: mọi prop và kiểu của 0.2 vẫn dùng như cũ (kiểu không truyền tham số mặc định
+`ShellLocale`). Những chỗ hiển thị đổi:
+
+- `accountSlot={null}` giờ ẩn nút đăng nhập (0.2 vẫn hiện nút). Không app nào đang truyền `null` để mong có nút.
+- `box-sizing` và vòng focus của gói không còn áp lên nội dung của app trong `.shell` (`.shell *`,
+  `.shell :focus-visible` cũ).
+- Trên màn cảm ứng và dưới 480 px, link và nút ở header, footer, nút ngôn ngữ rộng ít nhất 44 px (chữ ngắn như
+  "Terms", "登录" được đệm, căn giữa).
+- Fieldset của `ThemeSwitch` có thêm `data-domain`; test so khớp HTML của app có thể phải cập nhật.
+
+Từng app:
+
+- **Scribe**: không bắt buộc sửa. Có thể truyền thẳng `setLocale` cho `onLocaleChange` thay cho `followStoredLocale`.
+- **Chat**: như Scribe; kiểm lại nội dung trong `<main>` nếu từng dựa vào `.shell *` của gói (Chat có preflight
+  Tailwind nên không đổi).
+- **Localman web**: thay link `#feedback` và listener click ở layout bằng mục nút
+  `{ label, dataId: FEEDBACK_LINK_ID, onClick: openFeedback }` trong `footerLinks`; bỏ ép kiểu ngôn ngữ ở
+  `onLocaleChange` nếu có.
+- **Tử Vi**: dòng "giải trí, tham khảo" chuyển sang `footerNote`; `accountSlot={null}` thay `<></>`; nút đăng xuất chỉ
+  cần `className="shell-topbar-link"`, xoá CSS reset riêng; bỏ `isLocale` trong `onLocaleChange`.
+- **Clip**: như Tử Vi (trừ `footerNote`); có thể dùng `hideNavOnPhones` thay cho `hideOnPhones` từng link để link vẫn
+  có ở footer trên điện thoại.
+- **auth-next** (bước 4): dựng header, footer, thẻ bằng `renderToStaticMarkup` như trên; phục vụ
+  `app-shell-enhance.js` và đặt nó trong `<head>`; cookie `hd_theme` do script ghi (không `httpOnly`), cookie `hd_lang`
+  server ghi phải bỏ `httpOnly` và đặt `Domain=hoandat.com` như kế hoạch.
+- **Tunelo**: như auth-next; thêm `'self'` vào `script-src`; form đăng xuất dùng `shell-topbar-form` và nút
+  `shell-topbar-link` trong `accountSlot`.
 
 ## Thay đổi gói
 

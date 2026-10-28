@@ -3,8 +3,10 @@
    .topbar, .idp-brand, .topbar-link, .container, .card, .auth-card, .btn,
    .page-foot, .lang-switch, .foot-link). Every colour, radius, duration and
    spacing step is a tokens.css variable; load tokens.css first. Classes all
-   start with "shell-" and no element is styled outside them, so the file
-   sits next to Tailwind (unlayered, it wins over its preflight) or plain CSS.
+   start with "shell-" and no element is styled outside them (the app's own
+   content inside <main> keeps its own box sizing and focus ring), so the
+   file sits next to Tailwind (unlayered, it wins over its preflight) or
+   plain CSS.
    Breakpoints: 900px (hero beside its card), 640px, 480px (phones), 380px
    and 360px (narrow phones); touch screens get 44px targets. */
 
@@ -24,12 +26,13 @@
 	background-position: -1px -1px;
 	-webkit-font-smoothing: antialiased;
 }
-.shell *,
-.shell *::before,
-.shell *::after {
+/* the shell's own elements only; :where() keeps them easy to override */
+:where([class^="shell-"], [class*=" shell-"]),
+:where([class^="shell-"], [class*=" shell-"])::before,
+:where([class^="shell-"], [class*=" shell-"])::after {
 	box-sizing: border-box;
 }
-.shell :focus-visible {
+:where([class^="shell-"], [class*=" shell-"]):focus-visible {
 	outline: 2px solid var(--c-primary);
 	outline-offset: 2px;
 }
@@ -133,7 +136,12 @@
 	gap: var(--space-1);
 	flex: none;
 }
+/* also a <button> (sign out) or a <form>'s button: same look as the links */
 .shell-topbar-link {
+	margin: 0;
+	border: 0;
+	background: none;
+	cursor: pointer;
 	font-family: var(--font-mono);
 	font-size: 13px;
 	font-weight: 600;
@@ -159,6 +167,10 @@
 .shell-topbar-cta:hover {
 	color: var(--c-primary);
 	background: color-mix(in srgb, var(--c-primary) 16%, transparent);
+}
+/* a form in the account slot (sign out by POST): lays out as its button */
+.shell-topbar-form {
+	display: contents;
 }
 
 /* card + the one call to action */
@@ -445,7 +457,14 @@
 	column-gap: var(--space-4);
 	margin: 0;
 }
+/* a link, or a <button> footer item (Feedback opening a form) */
 .shell-foot-link {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	background: none;
+	cursor: pointer;
+	font: inherit;
 	font-size: 13px;
 	color: var(--c-text-muted);
 	text-decoration: none;
@@ -456,14 +475,29 @@
 	text-decoration: underline;
 	text-underline-offset: 2px;
 }
+.shell-foot-note {
+	margin: 0;
+	max-width: 40em;
+	font-size: 12px;
+	line-height: 1.5;
+	text-align: center;
+	color: var(--c-text-muted);
+}
+/* header links PublicPage repeats in the footer: phones only */
+.shell-foot-link.shell-only-phone {
+	display: none;
+}
 
-/* touch screens and phones: every header and footer control is a 44px target */
+/* touch screens and phones: every header and footer control is a 44 x 44
+   target, short words ("Terms", "登录") padded out to the width */
 @media (pointer: coarse), (max-width: 479px) {
 	.shell-topbar-link,
 	.shell-foot-link,
 	.shell-lang-option {
 		display: inline-flex;
 		align-items: center;
+		justify-content: center;
+		min-width: 44px;
 		min-height: 44px;
 	}
 	.shell-theme-option {
@@ -480,6 +514,9 @@
 @media (max-width: 479px) {
 	.shell-hide-phone {
 		display: none;
+	}
+	.shell-foot-link.shell-only-phone {
+		display: inline-flex;
 	}
 	.shell-topbar-link {
 		padding-inline: var(--space-2);

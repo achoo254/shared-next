@@ -6,7 +6,9 @@ import { writePreference } from "./preferences.js";
 export function LanguageSwitch(props) {
     const { locale, domain, languageHref, onLocaleChange } = props;
     const label = SHELL_MESSAGES[locale].language;
-    const locales = props.locales ?? DEFAULT_SHELL_LOCALES;
+    // Without `locales` the app has vi and en, which `L` then covers.
+    const locales = props.locales ??
+        DEFAULT_SHELL_LOCALES;
     const options = locales.map((option) => {
         const common = {
             className: "shell-lang-option",

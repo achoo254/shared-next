@@ -1,5 +1,5 @@
 {
-	"$comment": "Emits the JS and .d.ts consumers load (dist/, committed: git dependencies install the repository as is). CI rebuilds and fails when dist differs from src.",
+	"$comment": "Emits the JS and .d.ts consumers load (dist/, committed: git dependencies install the repository as is). CI rebuilds and fails when dist differs from src. app-shell-enhance.ts is bundled into one script by scripts/build-enhance.mjs instead.",
 	"extends": "./tsconfig.browser.json",
 	"compilerOptions": {
 		"noEmit": false,
@@ -9,5 +9,6 @@
 		"sourceMap": false,
 		"newLine": "lf"
 	},
-	"include": ["src"]
+	"include": ["src"],
+	"exclude": ["src/app-shell-enhance.ts"]
 }

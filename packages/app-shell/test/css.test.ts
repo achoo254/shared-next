@@ -49,16 +49,28 @@ describe("app-shell.css", () => {
 		expect(css).not.toMatch(/\b(?:rgb|rgba|hsl|hsla|oklch)\(/i);
 	});
 
+	const selectors = css
+		.replace(/@media[^{]*\{/g, "")
+		.split("}")
+		.map((block) => block.split("{")[0]?.trim() ?? "")
+		.filter(Boolean)
+		// Commas inside :where( ) do not split the list.
+		.flatMap((list) => list.split(/,(?![^(]*\))/).map((s) => s.trim()));
+
 	it("only styles shell- classes", () => {
-		const selectors = css
-			.replace(/@media[^{]*\{/g, "")
-			.split("}")
-			.map((block) => block.split("{")[0]?.trim() ?? "")
-			.filter(Boolean)
-			.flatMap((list) => list.split(",").map((s) => s.trim()));
 		expect(selectors.length).toBeGreaterThan(50);
 		for (const selector of selectors) {
-			expect(selector, selector).toMatch(/^\.shell(?:-[\w-]+)?\b/);
+			expect(selector, selector).toMatch(
+				/^(?:\.shell(?:-[\w-]+)?\b|:where\(\[class\^="shell-"\], \[class\*=" shell-"\]\))/,
+			);
+		}
+	});
+
+	it("does not reach into the app's content inside the shell", () => {
+		// `.shell *` or `.shell :focus-visible` would style the app's own body.
+		for (const selector of selectors) {
+			expect(selector, selector).not.toMatch(/^\.shell\s+[*:]/);
+			expect(selector, selector).not.toMatch(/(?:^|\s)\*/);
 		}
 	});
 });

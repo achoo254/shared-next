@@ -40,6 +40,7 @@ export { PublicFooter, type PublicFooterProps } from "./public-footer.js";
 export { PublicHeader, type PublicHeaderProps } from "./public-header.js";
 export { PublicPage, type PublicPageProps } from "./public-page.js";
 export type {
+	ShellAction,
 	ShellAnchorProps,
 	ShellBrand,
 	ShellLink,

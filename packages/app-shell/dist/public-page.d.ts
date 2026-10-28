@@ -4,9 +4,10 @@
  * Renders the same on a server (renderToStaticMarkup) as in the browser.
  */
 import type { ReactNode } from "react";
+import type { ShellLocale } from "./locale.js";
 import { type PublicFooterProps } from "./public-footer.js";
 import { type PublicHeaderProps } from "./public-header.js";
-export type PublicPageProps = PublicHeaderProps & PublicFooterProps & {
+export type PublicPageProps<L extends ShellLocale = ShellLocale> = PublicHeaderProps & PublicFooterProps<L> & {
     readonly children: ReactNode;
     /**
      * "flow" (default): the body from the top, for welcome and legal pages;
@@ -16,4 +17,4 @@ export type PublicPageProps = PublicHeaderProps & PublicFooterProps & {
     /** `id` of `<main>`, the skip link's target; "main" by default. */
     readonly mainId?: string | undefined;
 };
-export declare function PublicPage(props: PublicPageProps): ReactNode;
+export declare function PublicPage<L extends ShellLocale = ShellLocale>(props: PublicPageProps<L>): ReactNode;

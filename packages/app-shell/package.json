@@ -1,7 +1,7 @@
 {
 	"name": "@achoo254/app-shell",
-	"version": "0.2.0",
-	"description": "Signed-out shell of the *-next products: header, page frame, sign-in card, hero, feature list, footer, language and theme switches, shared preference cookies and design tokens",
+	"version": "0.3.0",
+	"description": "Signed-out shell of the *-next products: header, page frame, sign-in card, hero, feature list, footer, language and theme switches, shared preference cookies, design tokens and a script-free-page theme switch script",
 	"type": "module",
 	"engines": {
 		"node": ">=22.12"
@@ -18,12 +18,13 @@
 		},
 		"./tokens.css": "./dist/tokens.css",
 		"./app-shell.css": "./dist/app-shell.css",
+		"./app-shell-enhance.js": "./dist/app-shell-enhance.js",
 		"./package.json": "./package.json"
 	},
 	"files": ["dist", "README.md", "LICENSE"],
 	"sideEffects": ["*.css"],
 	"scripts": {
-		"build": "node --eval \"require('node:fs').rmSync('dist',{recursive:true,force:true})\" && tsc -p tsconfig.build.json && node --eval \"for (const f of ['tokens.css','app-shell.css']) require('node:fs').copyFileSync('src/'+f,'dist/'+f)\" && node --eval \"require('node:fs').copyFileSync('../../LICENSE','LICENSE')\"",
+		"build": "node --eval \"require('node:fs').rmSync('dist',{recursive:true,force:true})\" && tsc -p tsconfig.build.json && node scripts/build-enhance.mjs && node --eval \"for (const f of ['tokens.css','app-shell.css']) require('node:fs').copyFileSync('src/'+f,'dist/'+f)\" && node --eval \"require('node:fs').copyFileSync('../../LICENSE','LICENSE')\"",
 		"typecheck": "tsc -p tsconfig.json && tsc -p tsconfig.browser.json",
 		"test": "vitest run --maxWorkers=2"
 	},
@@ -35,8 +36,10 @@
 		"@achoo254/brand": "workspace:*",
 		"@testing-library/dom": "10.4.2",
 		"@testing-library/react": "16.3.3",
+		"@types/jsdom": "21.1.7",
 		"@types/react": "19.3.0",
 		"@types/react-dom": "19.3.0",
+		"esbuild": "0.28.2",
 		"jsdom": "26.1.0",
 		"react": "19.3.0",
 		"react-dom": "19.3.0"

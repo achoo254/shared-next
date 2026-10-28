@@ -29,6 +29,7 @@ describe("dist", () => {
 			"preferences.js",
 			"tokens.css",
 			"app-shell.css",
+			"app-shell-enhance.js",
 		]) {
 			expect(
 				existsSync(new URL(`../dist/${file}`, import.meta.url)),
@@ -56,7 +57,7 @@ describe("dist", () => {
 					brand: { appName: "Chat", domain: "hoandat.com", markSrc: "/m.webp" },
 					locale: "en", signInHref: "/login", title: "Chat",
 				}));
-				const css = ["tokens.css", "app-shell.css"].map((file) =>
+				const css = ["tokens.css", "app-shell.css", "app-shell-enhance.js"].map((file) =>
 					import.meta.resolve("@achoo254/app-shell/" + file).endsWith("/dist/" + file));
 				process.stdout.write(JSON.stringify({
 					keys: Object.keys(mod).sort(),
@@ -70,7 +71,7 @@ describe("dist", () => {
 			keys: Object.keys(srcIndex).sort(),
 			prefsKeys: Object.keys(srcPreferences).sort(),
 			cta: true,
-			css: [true, true],
+			css: [true, true, true],
 		});
 	});
 

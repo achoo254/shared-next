@@ -13,34 +13,45 @@ import {
 import { SHELL_MESSAGES } from "./messages.js";
 import { writePreference } from "./preferences.js";
 
-/** How a pick reaches the app: a callback, or a link per language. */
-export type LanguageSwitchMode =
+/**
+ * How a pick reaches the app: a callback, or a link per language. `L` is
+ * the app's languages (its `locales`), so a vi/en app passes its own
+ * `(locale: "vi" | "en") => void`.
+ */
+export type LanguageSwitchMode<L extends ShellLocale = ShellLocale> =
 	| {
 			/** Called after the choice is stored; the app re-renders in it. */
-			readonly onLocaleChange: (locale: ShellLocale) => void;
+			readonly onLocaleChange: (locale: L) => void;
 			readonly languageHref?: undefined;
 	  }
 	| {
 			/** The URL that switches to a language (a server route). */
-			readonly languageHref: (locale: ShellLocale) => string;
+			readonly languageHref: (locale: L) => string;
 			readonly onLocaleChange?: undefined;
 	  };
 
-export type LanguageSwitchProps = LanguageSwitchMode & {
-	readonly locale: ShellLocale;
-	/** The brand's root domain, for the shared cookie. */
-	readonly domain: string;
-	/**
-	 * The app's languages in switch order; vi and en by default. Localman
-	 * and the account app pass `["en", "zh-CN", "vi"]`.
-	 */
-	readonly locales?: readonly ShellLocale[] | undefined;
-};
+export type LanguageSwitchProps<L extends ShellLocale = ShellLocale> =
+	LanguageSwitchMode<L> & {
+		readonly locale: L;
+		/** The brand's root domain, for the shared cookie. */
+		readonly domain: string;
+		/**
+		 * The app's languages in switch order; vi and en by default. Localman
+		 * and the account app pass `["en", "zh-CN", "vi"]`. Pass them whenever
+		 * `L` is not vi and en, so the callback only gets the app's own.
+		 */
+		readonly locales?: readonly L[] | undefined;
+	};
 
-export function LanguageSwitch(props: LanguageSwitchProps): ReactNode {
+export function LanguageSwitch<L extends ShellLocale = ShellLocale>(
+	props: LanguageSwitchProps<L>,
+): ReactNode {
 	const { locale, domain, languageHref, onLocaleChange } = props;
 	const label = SHELL_MESSAGES[locale].language;
-	const locales = props.locales ?? DEFAULT_SHELL_LOCALES;
+	// Without `locales` the app has vi and en, which `L` then covers.
+	const locales: readonly L[] =
+		props.locales ??
+		(DEFAULT_SHELL_LOCALES as readonly ShellLocale[] as readonly L[]);
 	const options = locales.map((option) => {
 		const common = {
 			className: "shell-lang-option",

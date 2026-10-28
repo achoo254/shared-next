@@ -32,5 +32,5 @@ export function ThemeSwitch(props) {
         writePreference("theme", theme, { domain });
         applyTheme(theme);
     }
-    return (_jsxs("fieldset", { className: "shell-theme-switch", "data-id": "theme-switch", children: [_jsx("legend", { className: "shell-sr-only", children: t.theme }), THEME_PREFERENCES.map((theme) => (_jsx("button", { type: "button", className: "shell-theme-option", value: theme, "aria-label": t.themes[theme], title: t.themes[theme], "aria-pressed": theme === current, "data-id": `theme-${theme}`, onClick: () => pick(theme), children: _jsx(ThemeIcon, { theme: theme }) }, theme)))] }));
+    return (_jsxs("fieldset", { className: "shell-theme-switch", "data-id": "theme-switch", "data-domain": domain, children: [_jsx("legend", { className: "shell-sr-only", children: t.theme }), THEME_PREFERENCES.map((theme) => (_jsx("button", { type: "button", className: "shell-theme-option", value: theme, "aria-label": t.themes[theme], title: t.themes[theme], "aria-pressed": theme === current, "data-id": `theme-${theme}`, onClick: () => pick(theme), children: _jsx(ThemeIcon, { theme: theme }) }, theme)))] }));
 }

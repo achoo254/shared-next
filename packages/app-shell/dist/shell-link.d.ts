@@ -23,6 +23,21 @@ export interface ShellLink {
     /** Header only: hidden on phones (< 480px), where room is short. */
     readonly hideOnPhones?: boolean | undefined;
 }
+/**
+ * A footer item that does something on the page instead of going
+ * somewhere (Feedback opening a form): a button styled as the links.
+ */
+export interface ShellAction {
+    readonly label: string;
+    /** `data-id` of the button, e.g. "foot-feedback". */
+    readonly dataId: string;
+    /**
+     * What the button does. A server-rendered page without React leaves it
+     * out and wires the button by its `data-id` in its own script file.
+     */
+    readonly onClick?: ((event: MouseEvent<HTMLButtonElement>) => void) | undefined;
+    readonly href?: undefined;
+}
 /** Props the shell gives a router link component. */
 export interface ShellAnchorProps {
     readonly href: string;
