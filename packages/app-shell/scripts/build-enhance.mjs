@@ -18,7 +18,7 @@ await build({
 	charset: "utf8",
 	legalComments: "none",
 	banner: {
-		js: `/* @achoo254/app-shell ${version} app-shell-enhance.js: theme switch of server-rendered pages (README, "Trang dựng trên server"). MIT. */`,
+		js: `/* @achoo254/app-shell ${version} app-shell-enhance.js: theme switch and account menu of server-rendered pages (README, "Trang dựng trên server"). MIT. */`,
 	},
 	logLevel: "warning",
 });

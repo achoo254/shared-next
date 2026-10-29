@@ -1,4 +1,12 @@
 export {
+	AccountMenu,
+	type AccountMenuEntry,
+	type AccountMenuProps,
+	type AccountSignOut,
+	type ShellUser,
+} from "./account-menu.js";
+export { wireAccountMenu } from "./account-menu-behavior.js";
+export {
 	FeatureList,
 	type FeatureItem,
 	type FeatureListProps,

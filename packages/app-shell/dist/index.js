@@ -1,3 +1,5 @@
+export { AccountMenu, } from "./account-menu.js";
+export { wireAccountMenu } from "./account-menu-behavior.js";
 export { FeatureList, } from "./feature-list.js";
 export { Hero } from "./hero.js";
 export { LanguageSwitch, } from "./language-switch.js";

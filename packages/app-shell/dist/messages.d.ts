@@ -23,5 +23,16 @@ export interface ShellMessages {
     readonly language: string;
     readonly theme: string;
     readonly themes: Readonly<Record<ThemePreference, string>>;
+    /** Name of a signed-in user the app knows nothing about. */
+    readonly account: string;
+    /** Accessible name of the avatar button. */
+    readonly accountTrigger: (name: string) => string;
+    /** Heading of the account menu's links to the IdP account pages. */
+    readonly idpHeading: (domain: string) => string;
+    readonly idpEmail: string;
+    readonly idpSignIn: string;
+    /** Read after each IdP link: where it opens. */
+    readonly opensIdp: (domain: string) => string;
+    readonly signOut: string;
 }
 export declare const SHELL_MESSAGES: Readonly<Record<ShellLocale, ShellMessages>>;

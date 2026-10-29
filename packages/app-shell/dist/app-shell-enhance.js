@@ -1,6 +1,43 @@
-/* @achoo254/app-shell 0.3.1 app-shell-enhance.js: theme switch of server-rendered pages (README, "Trang dựng trên server"). MIT. */
+/* @achoo254/app-shell 0.4.0 app-shell-enhance.js: theme switch and account menu of server-rendered pages (README, "Trang dựng trên server"). MIT. */
 "use strict";
 (() => {
+  // src/account-menu-behavior.ts
+  function wireAccountMenu(menu) {
+    const summary = menu.querySelector("summary");
+    const close = () => {
+      menu.open = false;
+    };
+    const onPointerDown = (event) => {
+      if (menu.open && !menu.contains(event.target)) close();
+    };
+    const onKeyDown = (event) => {
+      if (event.key !== "Escape" || !menu.open) return;
+      close();
+      summary?.focus();
+    };
+    const onFocusOut = (event) => {
+      const next = event.relatedTarget;
+      if (next instanceof Node && !menu.contains(next)) close();
+    };
+    const onClick2 = (event) => {
+      const target = event.target;
+      if (target instanceof Element && target.closest("a.shell-account-item, button.shell-account-item")) {
+        if (target.closest('button[type="submit"]')) return;
+        close();
+      }
+    };
+    document.addEventListener("pointerdown", onPointerDown);
+    document.addEventListener("keydown", onKeyDown);
+    menu.addEventListener("focusout", onFocusOut);
+    menu.addEventListener("click", onClick2);
+    return () => {
+      document.removeEventListener("pointerdown", onPointerDown);
+      document.removeEventListener("keydown", onKeyDown);
+      menu.removeEventListener("focusout", onFocusOut);
+      menu.removeEventListener("click", onClick2);
+    };
+  }
+
   // ../brand/dist/hosts.js
   var DOMAIN_PATTERN = /^([a-z0-9]([a-z0-9-]*[a-z0-9])?\.)+[a-z]{2,}$/;
 
@@ -216,6 +253,13 @@
       syncSwitches(button.value);
     }
   }
+  function wireAccountMenus() {
+    for (const menu of document.querySelectorAll(
+      'details[data-id="account-menu"]'
+    )) {
+      wireAccountMenu(menu);
+    }
+  }
   function start() {
     const root = document.documentElement;
     if (root.hasAttribute("data-shell-enhanced")) return;
@@ -224,9 +268,17 @@
     document.addEventListener("click", onClick);
     subscribePreferences(follow);
     if (document.readyState === "loading") {
-      document.addEventListener("DOMContentLoaded", follow, { once: true });
+      document.addEventListener(
+        "DOMContentLoaded",
+        () => {
+          follow();
+          wireAccountMenus();
+        },
+        { once: true }
+      );
     } else {
       follow();
+      wireAccountMenus();
     }
   }
   start();

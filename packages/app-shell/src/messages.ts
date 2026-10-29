@@ -24,6 +24,17 @@ export interface ShellMessages {
 	readonly language: string;
 	readonly theme: string;
 	readonly themes: Readonly<Record<ThemePreference, string>>;
+	/** Name of a signed-in user the app knows nothing about. */
+	readonly account: string;
+	/** Accessible name of the avatar button. */
+	readonly accountTrigger: (name: string) => string;
+	/** Heading of the account menu's links to the IdP account pages. */
+	readonly idpHeading: (domain: string) => string;
+	readonly idpEmail: string;
+	readonly idpSignIn: string;
+	/** Read after each IdP link: where it opens. */
+	readonly opensIdp: (domain: string) => string;
+	readonly signOut: string;
 }
 
 export const SHELL_MESSAGES: Readonly<Record<ShellLocale, ShellMessages>> = {
@@ -41,6 +52,13 @@ export const SHELL_MESSAGES: Readonly<Record<ShellLocale, ShellMessages>> = {
 		language: "Ngôn ngữ",
 		theme: "Giao diện",
 		themes: { light: "Sáng", dark: "Tối", system: "Theo máy" },
+		account: "Tài khoản",
+		accountTrigger: (name) => `${name} · Tài khoản`,
+		idpHeading: (domain) => `Tài khoản ${domain} · mở tab mới`,
+		idpEmail: "Email",
+		idpSignIn: "Phương thức đăng nhập",
+		opensIdp: (domain) => `, mở trang tài khoản ${domain} ở tab mới`,
+		signOut: "Đăng xuất",
 	},
 	en: {
 		skipToContent: "Skip to content",
@@ -56,6 +74,13 @@ export const SHELL_MESSAGES: Readonly<Record<ShellLocale, ShellMessages>> = {
 		language: "Language",
 		theme: "Theme",
 		themes: { light: "Light", dark: "Dark", system: "System" },
+		account: "Account",
+		accountTrigger: (name) => `${name} · Account`,
+		idpHeading: (domain) => `${domain} account · opens in a new tab`,
+		idpEmail: "Email",
+		idpSignIn: "Sign-in methods",
+		opensIdp: (domain) => `, opens your ${domain} account in a new tab`,
+		signOut: "Sign out",
 	},
 	// Worded as the account app and Localman word the same things.
 	"zh-CN": {
@@ -72,5 +97,12 @@ export const SHELL_MESSAGES: Readonly<Record<ShellLocale, ShellMessages>> = {
 		language: "语言",
 		theme: "颜色模式",
 		themes: { light: "浅色主题", dark: "深色主题", system: "跟随系统" },
+		account: "账号",
+		accountTrigger: (name) => `${name} · 账号`,
+		idpHeading: (domain) => `${domain} 账号 · 在新标签页中打开`,
+		idpEmail: "邮箱",
+		idpSignIn: "登录方式",
+		opensIdp: (domain) => `，在新标签页中打开 ${domain} 账号`,
+		signOut: "退出登录",
 	},
 };

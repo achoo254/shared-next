@@ -10,8 +10,11 @@
  * `hd_theme` for the root domain in its `data-domain`, sets `data-theme`
  * and moves `aria-pressed`. A choice made in another app's tab is picked
  * up when the page comes back into view. The language switch of such a
- * page stays links to the server (`languageHref`), with no script.
+ * page stays links to the server (`languageHref`), with no script. Each
+ * server-rendered AccountMenu closes on an outside click, Escape, tabbing
+ * away or a chosen item, as it does in React.
  */
+import { wireAccountMenu } from "./account-menu-behavior.js";
 import {
 	THEME_PREFERENCES,
 	type ThemePreference,
@@ -65,6 +68,14 @@ function onClick(event: MouseEvent): void {
 	}
 }
 
+function wireAccountMenus(): void {
+	for (const menu of document.querySelectorAll<HTMLDetailsElement>(
+		'details[data-id="account-menu"]',
+	)) {
+		wireAccountMenu(menu);
+	}
+}
+
 function start(): void {
 	// A second copy of the script on the page must not double every click.
 	const root = document.documentElement;
@@ -74,9 +85,17 @@ function start(): void {
 	document.addEventListener("click", onClick);
 	subscribePreferences(follow);
 	if (document.readyState === "loading") {
-		document.addEventListener("DOMContentLoaded", follow, { once: true });
+		document.addEventListener(
+			"DOMContentLoaded",
+			() => {
+				follow();
+				wireAccountMenus();
+			},
+			{ once: true },
+		);
 	} else {
 		follow();
+		wireAccountMenus();
 	}
 }
 

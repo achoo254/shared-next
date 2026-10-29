@@ -6,7 +6,7 @@ thiệu, danh sách tính năng, footer, nút đổi ngôn ngữ và nút đổi
 riêng của app, phần body); chữ trên nút của khung, số nút, thứ tự và breakpoint do gói quyết định, nên các app không
 lệch nhau.
 
-- **Component React 19**: `PublicPage`, `PublicHeader`, `PublicFooter`, `SignInCard`, `Hero`, `FeatureList`,
+- **Component React 19**: `PublicPage`, `PublicHeader`, `PublicFooter`, `SignInCard`, `Hero`, `FeatureList`, `AccountMenu`,
   `LanguageSwitch`, `ThemeSwitch`. Render được trên server bằng `renderToStaticMarkup` (không cần DOM).
 - **Lựa chọn dùng chung** (`@achoo254/app-shell/preferences`, không phụ thuộc React): cookie `hd_lang` và `hd_theme`.
 - **Trang dựng trên server không có React phía trình duyệt** (auth-next, Tunelo): `app-shell-enhance.js`, một file
@@ -295,6 +295,38 @@ CSP tối thiểu cho trang như vậy: `script-src 'self'` (cộng nguồn anal
 `img-src 'self' data:` (dấu app). auth-next đã có `script-src 'self'`; Tunelo hiện chỉ cho
 `https://static.cloudflareinsights.com`, phải thêm `'self'`. React 19 chèn `<link rel="preload" as="image">` cho dấu
 app ngay trước khung; HTML của gói không có thuộc tính `style` hay script inline nào.
+
+## Menu tài khoản khi đã đăng nhập (`AccountMenu`, từ 0.4.0)
+
+Nút avatar + tên trên header và menu tài khoản, như top bar của Localman. Mọi app trừ Localman (bản gốc), Miu và
+Tiểu Đệ dùng component này; không chép tay.
+
+```tsx
+<PublicHeader
+	brand={brand} locale={locale} signInHref="/login"
+	accountSlot={
+		<AccountMenu
+			user={{ name: me.name, email: me.email, picture: me.picture }}
+			locale={locale}
+			domain={brand.domain}
+			idpAccountUrl="https://auth.hoandat.com/account"
+			entries={[[{ label: "Cài đặt", dataId: "account-menu-settings", href: "/settings" }]]}
+			signOut={{ onClick: signOut, busy }}   // hoặc { action: "/logout", fields: { csrf } }
+			linkComponent={RouterLink}
+		/>
+	}
+/>
+```
+
+- Avatar: ảnh IdP nếu là `https:`, không thì chữ cái đầu của tên (hoặc email) trên nền màu chính. Tên: `name`, rồi
+  `email`, rồi chữ "Tài khoản". Dưới 640px chỉ còn avatar.
+- Menu: tên + email, các nhóm `entries` của app, nhóm "Tài khoản hoandat.com · mở tab mới" (Email, Phương thức đăng
+  nhập; `idpAccountUrl: null` bỏ nhóm này, dùng trên chính trang IdP), Đăng xuất.
+- App native (Capacitor) truyền `onOpenExternal` để mở link IdP bằng trình duyệt hệ thống.
+- Là một `<details>`: mở được không cần script. Đóng khi bấm ra ngoài, Escape, tab ra khỏi menu hay chọn một mục:
+  React tự gắn; trang dựng trên server được `app-shell-enhance.js` gắn.
+- CSP: ảnh avatar đến từ Google (`https://lh3.googleusercontent.com`) và GitHub
+  (`https://avatars.githubusercontent.com`), phải có trong `img-src`. Ảnh tải với `referrerpolicy="no-referrer"`.
 
 ## Nâng từ 0.2 lên 0.3 (tag `v0.9.0`)
 
