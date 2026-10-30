@@ -1,6 +1,6 @@
 {
 	"name": "@achoo254/app-shell",
-	"version": "0.4.0",
+	"version": "0.4.1",
 	"description": "Shell of the *-next products: header, signed-in account menu, page frame, sign-in card, hero, feature list, footer, language and theme switches, shared preference cookies, design tokens and a script-free-page theme switch script",
 	"type": "module",
 	"engines": {

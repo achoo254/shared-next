@@ -401,9 +401,9 @@ describe("ThemeSwitch", () => {
 
 describe("SignInCard", () => {
 	it.each([
-		["vi", "Đăng nhập bằng hoandat.com", "Google hoặc GitHub"],
-		["en", "Sign in with hoandat.com", "Google or GitHub"],
-		["zh-CN", "使用 hoandat.com 登录", "Google 或 GitHub"],
+		["vi", "Đăng nhập bằng hoandat.com", "Google, GitHub hoặc Apple"],
+		["en", "Sign in with hoandat.com", "Google, GitHub or Apple"],
+		["zh-CN", "使用 hoandat.com 登录", "Google、GitHub 或 Apple"],
 	] as const)("has one call to action in %s", (locale, cta, note) => {
 		render(
 			<SignInCard
