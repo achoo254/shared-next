@@ -41,6 +41,7 @@ export function appSwitcherLinks(options) {
             label: entry.label[locale],
             description: entry.description[locale],
             href: url.href,
+            developer: entry.developer === true,
         };
     });
 }

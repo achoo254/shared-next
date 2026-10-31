@@ -69,16 +69,20 @@ describe("AppSwitcher", () => {
 		expect(screen.getByRole("dialog", { name: "Apps" })).toBe(panel());
 		const links = within(panel()).getAllByRole("link");
 		expect(links.map((link) => link.textContent)).toEqual([
+			"Tử ViYour 12-palace horoscope chart and a fortune stick every day, just for fun.",
+			"Miu WorldA 3D block world to play with friends, with maths and Vietnamese quests.",
+			"Web NhanhA website from a template, published at its own address.",
 			"ChatFast messaging with searchable history and bots.",
+			"Tiểu ĐệAn AI bot that does small writing jobs for free and lives on voluntary tips.",
 			"LocalmanMock APIs and an API client in your browser.",
 			"TuneloYour tunnels in the browser.",
-			"Web NhanhA website from a template, published at its own address.",
-			"Tiểu ĐệAn AI bot that does small writing jobs for free and lives on voluntary tips.",
 			"Manage your accountSign-in, devices and app access.",
 		]);
 		expect(links[0]?.getAttribute("href")).toBe(
-			"https://chat.hoandat.com/?utm_source=scribe&utm_medium=app_switcher",
+			"https://tuvi.hoandat.com/?utm_source=scribe&utm_medium=app_switcher",
 		);
+		// The developer tools sit under their own heading.
+		expect(within(panel()).getByText("For developers")).toBeTruthy();
 		expect(document.activeElement).toBe(links[0]);
 	});
 
@@ -140,9 +144,9 @@ describe("AppSwitcher", () => {
 		const onOpen = vi.fn();
 		const { button } = setup({ onOpen });
 		fireEvent.click(button);
-		const chat = within(panel()).getByRole("link", { name: /Chat/ });
-		expect(document.activeElement).toBe(chat);
-		fireEvent.click(chat);
+		const first = within(panel()).getByRole("link", { name: /Tử Vi/ });
+		expect(document.activeElement).toBe(first);
+		fireEvent.click(first);
 		expect(onOpen).toHaveBeenCalledTimes(1);
 		expect(document.activeElement).toBe(button);
 	});

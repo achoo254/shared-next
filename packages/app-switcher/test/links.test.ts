@@ -18,21 +18,28 @@ describe("appSwitcherLinks", () => {
 			locale: "en",
 		});
 		expect(ids(links)).toEqual([
+			"tuvi",
+			"miu",
+			"webnhanh",
 			"chat",
+			"tieude",
 			"scribe",
 			"tunelo",
-			"webnhanh",
-			"tieude",
 			"account",
 		]);
 		expect(links.map((link) => link.href)).toEqual([
+			"https://tuvi.hoandat.com/?utm_source=localman&utm_medium=app_switcher",
+			"https://miu.hoandat.com/?utm_source=localman&utm_medium=app_switcher",
+			"https://webnhanh.hoandat.com/?utm_source=localman&utm_medium=app_switcher",
 			"https://chat.hoandat.com/?utm_source=localman&utm_medium=app_switcher",
+			"https://tieude.hoandat.com/?utm_source=localman&utm_medium=app_switcher",
 			"https://scribe.hoandat.com/?utm_source=localman&utm_medium=app_switcher",
 			"https://tunnel.hoandat.com/?utm_source=localman&utm_medium=app_switcher",
-			"https://webnhanh.hoandat.com/?utm_source=localman&utm_medium=app_switcher",
-			"https://tieude.hoandat.com/?utm_source=localman&utm_medium=app_switcher",
 			"https://auth.hoandat.com/account?utm_source=localman&utm_medium=app_switcher",
 		]);
+		expect(
+			links.filter((link) => link.developer).map((link) => link.id),
+		).toEqual(["scribe", "tunelo"]);
 	});
 
 	it("builds every host under the domain it is given", () => {
@@ -42,18 +49,20 @@ describe("appSwitcherLinks", () => {
 			locale: "vi",
 		});
 		expect(ids(links)).toEqual([
+			"tuvi",
+			"miu",
+			"webnhanh",
 			"chat",
+			"tieude",
 			"scribe",
 			"tunelo",
-			"webnhanh",
-			"tieude",
 			"account",
 		]);
 		expect(links[0]?.href).toBe(
-			"https://chat.example.org/?utm_source=localman&utm_medium=app_switcher",
+			"https://tuvi.example.org/?utm_source=localman&utm_medium=app_switcher",
 		);
 		expect(links[1]?.href).toBe(
-			"https://scribe.example.org/?utm_source=localman&utm_medium=app_switcher",
+			"https://miu.example.org/?utm_source=localman&utm_medium=app_switcher",
 		);
 	});
 
@@ -77,8 +86,12 @@ describe("appSwitcherLinks", () => {
 		},
 	);
 
-	it("never lists Miu World", () => {
-		expect(ids([...APP_SWITCHER_CATALOG])).not.toContain("miu");
+	it("leads with the apps people come back to", () => {
+		expect(ids([...APP_SWITCHER_CATALOG]).slice(0, 3)).toEqual([
+			"tuvi",
+			"miu",
+			"webnhanh",
+		]);
 	});
 
 	it("labels the links in the requested locale", () => {
@@ -93,10 +106,9 @@ describe("appSwitcherLinks", () => {
 		expect(account("zh-CN")).toBe("管理你的账号");
 		const vi = appSwitcherLinks({ ...options, locale: "vi" });
 		expect(vi[0]).toMatchObject({
-			id: "scribe",
-			label: "Scribe",
-			description:
-				"Ghi âm và chuyển thành bản chép lời để tìm kiếm, chỉnh sửa.",
+			id: "tuvi",
+			label: "Tử Vi",
+			description: "Lập lá số 12 cung và xin quẻ mỗi ngày, xem cho vui.",
 		});
 	});
 
@@ -128,7 +140,7 @@ describe("appSwitcherLinks", () => {
 			locale: "vi-VN",
 		});
 		expect(first?.description).toBe(
-			"Ghi âm và chuyển thành bản chép lời để tìm kiếm, chỉnh sửa.",
+			"Lập lá số 12 cung và xin quẻ mỗi ngày, xem cho vui.",
 		);
 	});
 

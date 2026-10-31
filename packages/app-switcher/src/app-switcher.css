@@ -80,6 +80,19 @@
 	list-style: none;
 }
 
+/* The developer tools come after the apps, under a small heading. */
+.sn-app-switcher__heading {
+	margin-top: 0.25rem;
+	padding: 0.5rem 0.75rem 0.25rem;
+	border-top: 1px solid
+		var(--app-switcher-border, color-mix(in srgb, CanvasText 15%, transparent));
+	font-size: 0.75rem;
+	font-weight: 600;
+	text-transform: uppercase;
+	letter-spacing: 0.04em;
+	opacity: 0.7;
+}
+
 /* The account page closes the list, after a divider. */
 .sn-app-switcher__list > li[data-entry="account"] {
 	margin-top: 0.25rem;

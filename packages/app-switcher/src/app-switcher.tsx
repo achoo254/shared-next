@@ -8,6 +8,7 @@
  * focused or opened.
  */
 import {
+	Fragment,
 	type MouseEvent,
 	useCallback,
 	useEffect,
@@ -47,6 +48,13 @@ const BUTTON_LABEL: LocalizedText = {
 	en: "Switch app",
 	vi: "Chuyển ứng dụng",
 	"zh-CN": "切换应用",
+};
+
+/** Above the developer tools, after the apps people come back to. */
+const DEVELOPER_HEADING: LocalizedText = {
+	en: "For developers",
+	vi: "Công cụ cho lập trình viên",
+	"zh-CN": "开发者工具",
 };
 
 const PANEL_LABEL: LocalizedText = {
@@ -140,24 +148,31 @@ export function AppSwitcher(props: AppSwitcherProps) {
 				open={open}
 			>
 				<ul className="sn-app-switcher__list">
-					{links.map((link) => (
-						<li key={link.id} data-entry={link.id}>
-							<a
-								className="sn-app-switcher__link"
-								href={link.href}
-								target={newContext ? "_blank" : undefined}
-								rel={newContext ? "noopener" : undefined}
-								onClick={(event) => follow(event, link.href)}
-							>
-								<EntryIcon id={link.id} />
-								<span className="sn-app-switcher__text">
-									<span className="sn-app-switcher__label">{link.label}</span>
-									<span className="sn-app-switcher__description">
-										{link.description}
+					{links.map((link, index) => (
+						<Fragment key={link.id}>
+							{link.developer && !links[index - 1]?.developer ? (
+								<li className="sn-app-switcher__heading" role="presentation">
+									{DEVELOPER_HEADING[locale]}
+								</li>
+							) : null}
+							<li data-entry={link.id}>
+								<a
+									className="sn-app-switcher__link"
+									href={link.href}
+									target={newContext ? "_blank" : undefined}
+									rel={newContext ? "noopener" : undefined}
+									onClick={(event) => follow(event, link.href)}
+								>
+									<EntryIcon id={link.id} />
+									<span className="sn-app-switcher__text">
+										<span className="sn-app-switcher__label">{link.label}</span>
+										<span className="sn-app-switcher__description">
+											{link.description}
+										</span>
 									</span>
-								</span>
-							</a>
-						</li>
+								</a>
+							</li>
+						</Fragment>
 					))}
 				</ul>
 			</dialog>

@@ -15,6 +15,8 @@ export interface AppSwitcherLink {
     readonly description: string;
     /** Absolute https URL carrying `utm_source` and `utm_medium`. */
     readonly href: string;
+    /** Listed under the developer tools heading. */
+    readonly developer: boolean;
 }
 /**
  * The catalog locale for a BCP 47 tag, by its language, case-insensitively:

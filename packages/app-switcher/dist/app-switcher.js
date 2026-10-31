@@ -8,7 +8,7 @@ import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
  * the app's own chunk of app marks, loaded when the button is hovered,
  * focused or opened.
  */
-import { useCallback, useEffect, useId, useMemo, useRef, useState, } from "react";
+import { Fragment, useCallback, useEffect, useId, useMemo, useRef, useState, } from "react";
 import { EntryIcon, GridIcon } from "./icons.js";
 import { appSwitcherLinks, resolveAppSwitcherLocale, } from "./links.js";
 import { loadAppMarks } from "./mark-loader.js";
@@ -18,6 +18,12 @@ const BUTTON_LABEL = {
     en: "Switch app",
     vi: "Chuyển ứng dụng",
     "zh-CN": "切换应用",
+};
+/** Above the developer tools, after the apps people come back to. */
+const DEVELOPER_HEADING = {
+    en: "For developers",
+    vi: "Công cụ cho lập trình viên",
+    "zh-CN": "开发者工具",
 };
 const PANEL_LABEL = {
     en: "Apps",
@@ -73,5 +79,5 @@ export function AppSwitcher(props) {
     const rootClass = ["sn-app-switcher", props.className]
         .filter(Boolean)
         .join(" ");
-    return (_jsxs("div", { ref: root, className: rootClass, "data-placement": props.placement ?? "bottom-end", children: [_jsx("button", { ref: trigger, type: "button", className: "sn-app-switcher__button", "aria-label": BUTTON_LABEL[locale], title: BUTTON_LABEL[locale], "aria-haspopup": "dialog", "aria-expanded": open, "aria-controls": panelId, onClick: () => setOpen((value) => !value), onPointerEnter: prefetchMarks, onFocus: prefetchMarks, children: _jsx(GridIcon, {}) }), _jsx("dialog", { ref: panel, id: panelId, "aria-label": PANEL_LABEL[locale], className: "sn-app-switcher__panel", open: open, children: _jsx("ul", { className: "sn-app-switcher__list", children: links.map((link) => (_jsx("li", { "data-entry": link.id, children: _jsxs("a", { className: "sn-app-switcher__link", href: link.href, target: newContext ? "_blank" : undefined, rel: newContext ? "noopener" : undefined, onClick: (event) => follow(event, link.href), children: [_jsx(EntryIcon, { id: link.id }), _jsxs("span", { className: "sn-app-switcher__text", children: [_jsx("span", { className: "sn-app-switcher__label", children: link.label }), _jsx("span", { className: "sn-app-switcher__description", children: link.description })] })] }) }, link.id))) }) })] }));
+    return (_jsxs("div", { ref: root, className: rootClass, "data-placement": props.placement ?? "bottom-end", children: [_jsx("button", { ref: trigger, type: "button", className: "sn-app-switcher__button", "aria-label": BUTTON_LABEL[locale], title: BUTTON_LABEL[locale], "aria-haspopup": "dialog", "aria-expanded": open, "aria-controls": panelId, onClick: () => setOpen((value) => !value), onPointerEnter: prefetchMarks, onFocus: prefetchMarks, children: _jsx(GridIcon, {}) }), _jsx("dialog", { ref: panel, id: panelId, "aria-label": PANEL_LABEL[locale], className: "sn-app-switcher__panel", open: open, children: _jsx("ul", { className: "sn-app-switcher__list", children: links.map((link, index) => (_jsxs(Fragment, { children: [link.developer && !links[index - 1]?.developer ? (_jsx("li", { className: "sn-app-switcher__heading", role: "presentation", children: DEVELOPER_HEADING[locale] })) : null, _jsx("li", { "data-entry": link.id, children: _jsxs("a", { className: "sn-app-switcher__link", href: link.href, target: newContext ? "_blank" : undefined, rel: newContext ? "noopener" : undefined, onClick: (event) => follow(event, link.href), children: [_jsx(EntryIcon, { id: link.id }), _jsxs("span", { className: "sn-app-switcher__text", children: [_jsx("span", { className: "sn-app-switcher__label", children: link.label }), _jsx("span", { className: "sn-app-switcher__description", children: link.description })] })] }) })] }, link.id))) }) })] }));
 }
