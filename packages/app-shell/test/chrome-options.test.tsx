@@ -109,7 +109,9 @@ describe("account slot", () => {
 				accountSlot={undefined}
 			/>,
 		);
-		expect(byDataId("public-sign-in").textContent).toBe("Đăng nhập");
+		expect(byDataId("public-sign-in").textContent).toBe(
+			"Đăng ký miễn phíĐăng ký",
+		);
 	});
 
 	it("takes a sign-out form whose button looks like the header links", () => {

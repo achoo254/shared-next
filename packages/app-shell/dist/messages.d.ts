@@ -9,8 +9,17 @@ export interface ShellMessages {
     readonly skipToContent: string;
     /** Accessible name of the header links. */
     readonly nav: string;
-    /** The header pill. */
-    readonly signIn: string;
+    /**
+     * The header pill for guests. Signing in with Google, GitHub or Apple
+     * creates the account on first use, so it invites newcomers to sign up;
+     * phones show the short form so the app name keeps its room.
+     */
+    readonly signUp: string;
+    readonly signUpShort: string;
+    /** Title of the card that tells a guest what an account keeps. */
+    readonly valueTitle: (domain: string) => string;
+    /** Last line of that card, the same for every app. */
+    readonly valueEveryApp: (domain: string) => string;
     /** The one call to action of the sign-in card. */
     readonly signInWith: (domain: string) => string;
     /** Under the call to action: how the sign-in page signs people in. */

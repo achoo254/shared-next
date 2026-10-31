@@ -56,6 +56,10 @@ export type {
 } from "./shell-link.js";
 export { SignInCard, type SignInCardProps } from "./sign-in-card.js";
 export {
+	AccountValueCard,
+	type AccountValueCardProps,
+} from "./account-value-card.js";
+export {
 	ThemeSwitch,
 	type ThemeSwitchProps,
 	useThemePreference,

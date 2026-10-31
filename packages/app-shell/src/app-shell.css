@@ -656,10 +656,37 @@
 		padding: var(--space-6);
 	}
 }
+/* what a free account keeps (AccountValueCard) */
+.shell-value-card {
+	width: 100%;
+	max-width: 420px;
+	padding: var(--space-5);
+	display: grid;
+	gap: var(--space-3);
+}
+.shell-value-title {
+	margin: 0;
+	font-weight: 700;
+	color: var(--c-text);
+}
+.shell-value-list {
+	margin: 0;
+	padding-inline-start: var(--space-5);
+	display: grid;
+	gap: var(--space-1);
+	color: var(--c-text-muted);
+}
+/* the short form of a label, shown on phones only */
+.shell-only-phone-label {
+	display: none;
+}
 /* phones */
 @media (max-width: 479px) {
 	.shell-hide-phone {
 		display: none;
+	}
+	.shell-only-phone-label {
+		display: inline;
 	}
 	.shell-foot-link.shell-only-phone {
 		display: inline-flex;

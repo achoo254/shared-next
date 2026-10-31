@@ -104,7 +104,7 @@ describe("server render in Simplified Chinese (auth-next)", () => {
 			</PublicPage>,
 		);
 		expect(html).toContain(">跳到主要内容</a>");
-		expect(html).toContain(">登录</a>");
+		expect(html).toContain('<span class="shell-hide-phone">免费注册</span>');
 		expect(html).toContain(">使用 hoandat.com 登录</a>");
 		expect(html).toContain(">hoandat.com 旗下应用</a>");
 		expect(html).toContain(">隐私政策</a>");

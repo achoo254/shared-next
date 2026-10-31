@@ -52,11 +52,11 @@ afterEach(() => {
 
 describe("PublicHeader", () => {
 	it.each([
-		["vi", "Đăng nhập", "Điều hướng"],
-		["en", "Sign in", "Navigation"],
-		["zh-CN", "登录", "站点导航"],
+		["vi", "Đăng ký miễn phíĐăng ký", "Điều hướng"],
+		["en", "Sign up freeSign up", "Navigation"],
+		["zh-CN", "免费注册注册", "站点导航"],
 	] as const)(
-		"shows the mark, the name and the sign-in pill in %s",
+		"shows the mark, the name and the sign-up pill (full and phone forms) in %s",
 		(locale, signIn, nav) => {
 			render(
 				<PublicHeader

@@ -107,7 +107,8 @@ export function PublicHeader(props: PublicHeaderProps): ReactNode {
 							onClick={handOver(props.signInHref, props.onSignIn)}
 							linkComponent={linkComponent}
 						>
-							{t.signIn}
+							<span className="shell-hide-phone">{t.signUp}</span>
+							<span className="shell-only-phone-label">{t.signUpShort}</span>
 						</ShellAnchor>
 					)}
 				</div>

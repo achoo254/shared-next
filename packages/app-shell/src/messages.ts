@@ -10,8 +10,17 @@ export interface ShellMessages {
 	readonly skipToContent: string;
 	/** Accessible name of the header links. */
 	readonly nav: string;
-	/** The header pill. */
-	readonly signIn: string;
+	/**
+	 * The header pill for guests. Signing in with Google, GitHub or Apple
+	 * creates the account on first use, so it invites newcomers to sign up;
+	 * phones show the short form so the app name keeps its room.
+	 */
+	readonly signUp: string;
+	readonly signUpShort: string;
+	/** Title of the card that tells a guest what an account keeps. */
+	readonly valueTitle: (domain: string) => string;
+	/** Last line of that card, the same for every app. */
+	readonly valueEveryApp: (domain: string) => string;
 	/** The one call to action of the sign-in card. */
 	readonly signInWith: (domain: string) => string;
 	/** Under the call to action: how the sign-in page signs people in. */
@@ -41,7 +50,10 @@ export const SHELL_MESSAGES: Readonly<Record<ShellLocale, ShellMessages>> = {
 	vi: {
 		skipToContent: "Bỏ qua tới nội dung",
 		nav: "Điều hướng",
-		signIn: "Đăng nhập",
+		signUp: "Đăng ký miễn phí",
+		signUpShort: "Đăng ký",
+		valueTitle: (domain) => `Giữ lại với tài khoản ${domain} miễn phí`,
+		valueEveryApp: (domain) => `Một tài khoản dùng cho mọi app của ${domain}`,
 		signInWith: (domain) => `Đăng nhập bằng ${domain}`,
 		signInNote: (domain) =>
 			`Dùng tài khoản ${domain}: đăng nhập bằng Google, GitHub hoặc Apple. App không bao giờ thấy mật khẩu của bạn.`,
@@ -63,7 +75,10 @@ export const SHELL_MESSAGES: Readonly<Record<ShellLocale, ShellMessages>> = {
 	en: {
 		skipToContent: "Skip to content",
 		nav: "Navigation",
-		signIn: "Sign in",
+		signUp: "Sign up free",
+		signUpShort: "Sign up",
+		valueTitle: (domain) => `Keep it with a free ${domain} account`,
+		valueEveryApp: (domain) => `One account for every ${domain} app`,
 		signInWith: (domain) => `Sign in with ${domain}`,
 		signInNote: (domain) =>
 			`Use your ${domain} account: sign in with Google, GitHub or Apple. The app never sees your password.`,
@@ -86,7 +101,10 @@ export const SHELL_MESSAGES: Readonly<Record<ShellLocale, ShellMessages>> = {
 	"zh-CN": {
 		skipToContent: "跳到主要内容",
 		nav: "站点导航",
-		signIn: "登录",
+		signUp: "免费注册",
+		signUpShort: "注册",
+		valueTitle: (domain) => `用免费的 ${domain} 账号保存`,
+		valueEveryApp: (domain) => `一个账号通用 ${domain} 所有应用`,
 		signInWith: (domain) => `使用 ${domain} 登录`,
 		signInNote: (domain) =>
 			`使用你的 ${domain} 账号：通过 Google、GitHub 或 Apple 登录。应用永远看不到你的密码。`,

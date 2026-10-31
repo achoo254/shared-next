@@ -10,4 +10,5 @@ export { PublicHeader, type PublicHeaderProps } from "./public-header.js";
 export { PublicPage, type PublicPageProps } from "./public-page.js";
 export type { ShellAction, ShellAnchorProps, ShellBrand, ShellLink, ShellLinkComponent, } from "./shell-link.js";
 export { SignInCard, type SignInCardProps } from "./sign-in-card.js";
+export { AccountValueCard, type AccountValueCardProps, } from "./account-value-card.js";
 export { ThemeSwitch, type ThemeSwitchProps, useThemePreference, } from "./theme-switch.js";

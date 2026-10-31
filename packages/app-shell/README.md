@@ -121,6 +121,25 @@ Trang `/login`: `<PublicPage layout="center" signInCurrent …><SignInCard … /
 thẳng `setLocale: (locale: "vi" | "en") => void`, không cần kiểm `isLocale` nữa. App có ngôn ngữ khác vi và en phải
 truyền `locales`, để gói chỉ gọi callback với ngôn ngữ của app.
 
+### Mời đăng ký (0.5.0)
+
+Nút của header cho khách giờ là **"Đăng ký miễn phí"** ("Sign up free", "免费注册"); dưới 480 px chỉ hiện dạng ngắn
+"Đăng ký" để tên app không bị cắt. Đăng nhập bằng Google/GitHub/Apple tạo tài khoản ngay lần đầu, nên đăng nhập và đăng
+ký là cùng một nút; `signInHref` không đổi.
+
+`AccountValueCard` là thẻ app hiện cho khách **sau việc thật đầu tiên** (lập xong lá số, xong một nhiệm vụ, dựng xong
+video): tối đa ba dòng lợi ích do app viết (`benefits`), dòng chung "Một tài khoản dùng cho mọi app của …" và nút đăng
+ký như header. App tự quyết lúc hiện; gói không giữ trạng thái đã đóng.
+
+```tsx
+<AccountValueCard
+	brand={brand}
+	locale={locale}
+	signInHref="/api/auth/login"
+	benefits={["Lưu lá số để xem lại", "Quẻ hôm nay mỗi sáng"]}
+/>
+```
+
 ### Header trên điện thoại: giữ nguyên tên app
 
 Dưới 480 px header chỉ đủ chỗ cho dấu, **trọn tên app**, nhiều nhất một link ngắn và nút đăng nhập hoặc một control tài

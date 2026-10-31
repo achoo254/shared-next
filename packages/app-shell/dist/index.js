@@ -9,4 +9,5 @@ export { PublicFooter } from "./public-footer.js";
 export { PublicHeader } from "./public-header.js";
 export { PublicPage } from "./public-page.js";
 export { SignInCard } from "./sign-in-card.js";
+export { AccountValueCard, } from "./account-value-card.js";
 export { ThemeSwitch, useThemePreference, } from "./theme-switch.js";
