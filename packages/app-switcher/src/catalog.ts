@@ -5,7 +5,8 @@
  * root domain, given by the caller. The apps people come back to lead the
  * list; the developer tools follow under their own heading. Tử Vi, Miu
  * World, Web Nhanh and Tiểu Đệ are listed but do not show the switcher
- * themselves.
+ * themselves. KnowFlow (`kb`) is a main app: it can pass itself as
+ * `current` once it shows the switcher.
  */
 
 /** Locales the labels are written in. */
@@ -15,6 +16,7 @@ export type AppSwitcherLocale = (typeof APP_SWITCHER_LOCALES)[number];
 /** Apps that show the switcher (the value of `current`). */
 export const APP_SWITCHER_APP_IDS = [
 	"chat",
+	"kb",
 	"scribe",
 	"localman",
 	"tunelo",
@@ -93,6 +95,17 @@ export const APP_SWITCHER_CATALOG: readonly AppSwitcherCatalogEntry[] = [
 			"zh-CN": "快速聊天，可搜索历史消息并使用机器人。",
 		},
 		hostTemplate: "chat.{domain}",
+		path: "/",
+	},
+	{
+		id: "kb",
+		label: same("KnowFlow"),
+		description: {
+			en: "A bilingual knowledge base, mostly IT, to read, search and ask AI.",
+			vi: "Knowledge base song ngữ, phần lớn về CNTT, để đọc, tìm và hỏi AI.",
+			"zh-CN": "双语知识库，以 IT 为主，可阅读、搜索并向 AI 提问。",
+		},
+		hostTemplate: "kb.{domain}",
 		path: "/",
 	},
 	{
