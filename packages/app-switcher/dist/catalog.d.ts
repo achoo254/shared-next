@@ -5,7 +5,7 @@
  * root domain, given by the caller. The apps people come back to lead the
  * list; the developer tools follow under their own heading. Tử Vi, Miu
  * World, Web Nhanh and Tiểu Đệ are listed but do not show the switcher
- * themselves. KnowFlow (`kb`) is a main app: it can pass itself as
+ * themselves. Knowledge Base (`kb`) is a main app: it can pass itself as
  * `current` once it shows the switcher.
  */
 /** Locales the labels are written in. */

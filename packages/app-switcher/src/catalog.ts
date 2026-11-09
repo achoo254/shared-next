@@ -5,7 +5,7 @@
  * root domain, given by the caller. The apps people come back to lead the
  * list; the developer tools follow under their own heading. Tử Vi, Miu
  * World, Web Nhanh and Tiểu Đệ are listed but do not show the switcher
- * themselves. KnowFlow (`kb`) is a main app: it can pass itself as
+ * themselves. Knowledge Base (`kb`) is a main app: it can pass itself as
  * `current` once it shows the switcher.
  */
 
@@ -99,11 +99,11 @@ export const APP_SWITCHER_CATALOG: readonly AppSwitcherCatalogEntry[] = [
 	},
 	{
 		id: "kb",
-		label: same("KnowFlow"),
+		label: same("Knowledge Base"),
 		description: {
-			en: "A bilingual knowledge base on all kinds of topics to read, search and ask AI.",
-			vi: "Knowledge base song ngữ về đủ mọi chủ đề để đọc, tìm và hỏi AI.",
-			"zh-CN": "双语知识库，以 IT 为主，可阅读、搜索并向 AI 提问。",
+			en: "Bilingual articles on all kinds of topics to read, search and ask AI.",
+			vi: "Kho tri thức song ngữ về đủ mọi chủ đề để đọc, tìm và hỏi AI.",
+			"zh-CN": "涵盖各类主题的双语知识库，可阅读、搜索并向 AI 提问。",
 		},
 		hostTemplate: "kb.{domain}",
 		path: "/",
