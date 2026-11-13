@@ -74,7 +74,7 @@ describe("AppSwitcher", () => {
 			"Web NhanhA website from a template, published at its own address.",
 			"ChatFast messaging with searchable history and bots.",
 			"Knowledge BaseBilingual articles on all kinds of topics to read, search and ask AI.",
-			"Tiểu ĐệAn AI bot that does small writing jobs for free and lives on voluntary tips.",
+			"Tiểu ĐệAn AI bot that does small writing jobs for free.",
 			"LocalmanMock APIs and an API client in your browser.",
 			"TuneloYour tunnels in the browser.",
 			"Manage your accountSign-in, devices and app access.",

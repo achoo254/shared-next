@@ -112,9 +112,9 @@ export const APP_SWITCHER_CATALOG: readonly AppSwitcherCatalogEntry[] = [
 		id: "tieude",
 		label: same("Tiểu Đệ"),
 		description: {
-			en: "An AI bot that does small writing jobs for free and lives on voluntary tips.",
-			vi: "Bot AI làm giúp miễn phí các việc viết nhỏ, sống nhờ tiền ủng hộ tự nguyện.",
-			"zh-CN": "免费帮你写些小东西的 AI 机器人，靠自愿打赏维持运行。",
+			en: "An AI bot that does small writing jobs for free.",
+			vi: "Bot AI làm giúp miễn phí các việc viết nhỏ.",
+			"zh-CN": "免费帮你写些小东西的 AI 机器人。",
 		},
 		hostTemplate: "tieude.{domain}",
 		path: "/",
