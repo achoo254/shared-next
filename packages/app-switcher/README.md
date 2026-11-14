@@ -4,9 +4,9 @@ The app switcher of the *-next products: a 9-dot button that opens a list of the
 signs in to, then the account page. One sign-in at the IdP covers every app, so a click lands the user in the
 other app without signing in again.
 
-- **Static catalog** (`APP_SWITCHER_CATALOG`): the apps people come back to first (Tử Vi, Miu World, Web Nhanh,
-  then Chat, Knowledge Base and Tiểu Đệ), then Scribe, Localman and Tunelo under a "For developers" heading (`developer` on each
-  link, 0.6.0), then the account page (`auth.<domain>/account`), every host under the one root domain the app passes. Labels and one-line descriptions in `en`, `vi`
+- **Static catalog** (`APP_SWITCHER_CATALOG`): the apps in three groups, each under its own heading (`group` on each
+  link): Tools (Web Nhanh, Chat, Tiểu Đệ, Scribe, Localman, Tunelo), Entertainment (Tử Vi, Clip, Truyện, Lockin) and Learning (Miu World,
+  Knowledge Base), then the account page (`auth.<domain>/account`), every host under the one root domain the app passes. Labels and one-line descriptions in `en`, `vi`
   and `zh-CN`. `locale` takes any BCP 47 tag, matched by language and case-insensitively (`vi-VN` -> `vi`,
   `zh` or `zh-*` -> `zh-CN`); any other language falls back to English.
 - **`appSwitcherLinks(options)`**: the list as plain data (no React, no DOM).

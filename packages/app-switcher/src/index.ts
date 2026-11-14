@@ -1,10 +1,12 @@
 export {
 	APP_SWITCHER_APP_IDS,
 	APP_SWITCHER_CATALOG,
+	APP_SWITCHER_GROUPS,
 	APP_SWITCHER_LOCALES,
 	type AppSwitcherAppId,
 	type AppSwitcherCatalogEntry,
 	type AppSwitcherEntryId,
+	type AppSwitcherGroup,
 	type AppSwitcherLocale,
 	type LocalizedText,
 } from "./catalog.js";

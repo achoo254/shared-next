@@ -17,7 +17,11 @@ import {
 	useRef,
 	useState,
 } from "react";
-import type { AppSwitcherLocale, LocalizedText } from "./catalog.js";
+import type {
+	AppSwitcherGroup,
+	AppSwitcherLocale,
+	LocalizedText,
+} from "./catalog.js";
 import { EntryIcon, GridIcon } from "./icons.js";
 import {
 	type AppSwitcherLink,
@@ -50,11 +54,11 @@ const BUTTON_LABEL: LocalizedText = {
 	"zh-CN": "切换应用",
 };
 
-/** Above the developer tools, after the apps people come back to. */
-const DEVELOPER_HEADING: LocalizedText = {
-	en: "For developers",
-	vi: "Công cụ cho lập trình viên",
-	"zh-CN": "开发者工具",
+/** Heading above the first app of each group. */
+const GROUP_HEADING: Readonly<Record<AppSwitcherGroup, LocalizedText>> = {
+	tools: { en: "Tools", vi: "Công cụ", "zh-CN": "工具" },
+	fun: { en: "Entertainment", vi: "Giải trí", "zh-CN": "娱乐" },
+	learn: { en: "Learning", vi: "Học tập", "zh-CN": "学习" },
 };
 
 const PANEL_LABEL: LocalizedText = {
@@ -150,9 +154,9 @@ export function AppSwitcher(props: AppSwitcherProps) {
 				<ul className="sn-app-switcher__list">
 					{links.map((link, index) => (
 						<Fragment key={link.id}>
-							{link.developer && !links[index - 1]?.developer ? (
+							{link.group && link.group !== links[index - 1]?.group ? (
 								<li className="sn-app-switcher__heading" role="presentation">
-									{DEVELOPER_HEADING[locale]}
+									{GROUP_HEADING[link.group][locale]}
 								</li>
 							) : null}
 							<li data-entry={link.id}>

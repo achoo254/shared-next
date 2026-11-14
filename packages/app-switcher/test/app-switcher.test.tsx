@@ -69,21 +69,28 @@ describe("AppSwitcher", () => {
 		expect(screen.getByRole("dialog", { name: "Apps" })).toBe(panel());
 		const links = within(panel()).getAllByRole("link");
 		expect(links.map((link) => link.textContent)).toEqual([
-			"Tử ViYour 12-palace horoscope chart and a fortune stick every day, just for fun.",
-			"Miu WorldA 3D block world to play with friends, with maths and Vietnamese quests.",
 			"Web NhanhA website from a template, published at its own address.",
 			"ChatFast messaging with searchable history and bots.",
-			"Knowledge BaseBilingual articles on all kinds of topics to read, search and ask AI.",
 			"Tiểu ĐệAn AI bot that does small writing jobs for free.",
 			"LocalmanMock APIs and an API client in your browser.",
 			"TuneloYour tunnels in the browser.",
+			"Tử ViYour 12-palace horoscope chart and a fortune stick every day, just for fun.",
+			"ClipShort vertical videos from a template.",
+			"TruyệnVietnamese and world folk tales, retold.",
+			"LockinLock in plans through one link.",
+			"Miu WorldA 3D block world to play with friends, with maths and Vietnamese quests.",
+			"Knowledge BaseBilingual articles on all kinds of topics to read, search and ask AI.",
 			"Manage your accountSign-in, devices and app access.",
 		]);
 		expect(links[0]?.getAttribute("href")).toBe(
-			"https://tuvi.hoandat.com/?utm_source=scribe&utm_medium=app_switcher",
+			"https://webnhanh.hoandat.com/?utm_source=scribe&utm_medium=app_switcher",
 		);
-		// The developer tools sit under their own heading.
-		expect(within(panel()).getByText("For developers")).toBeTruthy();
+		// The apps sit under three group headings, in this order.
+		const headings = within(panel())
+			.getAllByRole("presentation")
+			.map((heading) => heading.textContent);
+		expect(headings).toEqual(["Tools", "Entertainment", "Learning"]);
+		expect(within(panel()).queryByText(/developers/i)).toBeNull();
 		expect(document.activeElement).toBe(links[0]);
 	});
 
@@ -145,7 +152,7 @@ describe("AppSwitcher", () => {
 		const onOpen = vi.fn();
 		const { button } = setup({ onOpen });
 		fireEvent.click(button);
-		const first = within(panel()).getByRole("link", { name: /Tử Vi/ });
+		const first = within(panel()).getByRole("link", { name: /Web Nhanh/ });
 		expect(document.activeElement).toBe(first);
 		fireEvent.click(first);
 		expect(onOpen).toHaveBeenCalledTimes(1);

@@ -1,4 +1,4 @@
-import { type AppSwitcherAppId, type AppSwitcherEntryId, type AppSwitcherLocale } from "./catalog.js";
+import { type AppSwitcherAppId, type AppSwitcherEntryId, type AppSwitcherGroup, type AppSwitcherLocale } from "./catalog.js";
 /** `utm_medium` of every switcher link. */
 export declare const APP_SWITCHER_UTM_MEDIUM = "app_switcher";
 export interface AppSwitcherLinksOptions {
@@ -15,8 +15,8 @@ export interface AppSwitcherLink {
     readonly description: string;
     /** Absolute https URL carrying `utm_source` and `utm_medium`. */
     readonly href: string;
-    /** Listed under the developer tools heading. */
-    readonly developer: boolean;
+    /** The group heading it is listed under; the account page has none. */
+    readonly group?: AppSwitcherGroup;
 }
 /**
  * The catalog locale for a BCP 47 tag, by its language, case-insensitively:
