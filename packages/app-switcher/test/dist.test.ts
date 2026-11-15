@@ -59,6 +59,7 @@ describe("dist", () => {
 				"https://clip.hoandat.com/?utm_source=chat&utm_medium=app_switcher",
 				"https://truyen.hoandat.com/?utm_source=chat&utm_medium=app_switcher",
 				"https://lockin.hoandat.com/?utm_source=chat&utm_medium=app_switcher",
+				"https://chuanho.hoandat.com/?utm_source=chat&utm_medium=app_switcher",
 				"https://miu.hoandat.com/?utm_source=chat&utm_medium=app_switcher",
 				"https://kb.hoandat.com/?utm_source=chat&utm_medium=app_switcher",
 				"https://auth.hoandat.com/account?utm_source=chat&utm_medium=app_switcher",

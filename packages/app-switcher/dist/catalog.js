@@ -145,6 +145,18 @@ export const APP_SWITCHER_CATALOG = [
         group: "fun",
     },
     {
+        id: "chuanho",
+        label: same("Chùa Nhỏ"),
+        description: {
+            en: "Tap the wooden fish, light incense, ease up on harsh words.",
+            vi: "Gõ mõ, thắp hương, bớt khẩu nghiệp cho tâm bớt lag.",
+            "zh-CN": "敲木鱼、点香，少说伤人的话，让心静一静。",
+        },
+        hostTemplate: "chuanho.{domain}",
+        path: "/",
+        group: "fun",
+    },
+    {
         id: "miu",
         label: same("Miu World"),
         description: {

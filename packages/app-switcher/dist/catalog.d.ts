@@ -15,7 +15,7 @@ export type AppSwitcherLocale = (typeof APP_SWITCHER_LOCALES)[number];
 export declare const APP_SWITCHER_APP_IDS: readonly ["chat", "kb", "scribe", "localman", "tunelo"];
 export type AppSwitcherAppId = (typeof APP_SWITCHER_APP_IDS)[number];
 /** Every entry of the list: the apps by group, then the account page. */
-export type AppSwitcherEntryId = AppSwitcherAppId | "tuvi" | "miu" | "webnhanh" | "clip" | "truyen" | "lockin" | "tieude" | "account";
+export type AppSwitcherEntryId = AppSwitcherAppId | "tuvi" | "miu" | "webnhanh" | "clip" | "truyen" | "lockin" | "chuanho" | "tieude" | "account";
 /** The three kinds of app, in the order the switcher lists them. */
 export declare const APP_SWITCHER_GROUPS: readonly ["tools", "fun", "learn"];
 export type AppSwitcherGroup = (typeof APP_SWITCHER_GROUPS)[number];

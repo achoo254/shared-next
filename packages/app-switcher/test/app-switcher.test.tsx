@@ -78,6 +78,7 @@ describe("AppSwitcher", () => {
 			"ClipShort vertical videos from a template.",
 			"TruyệnVietnamese and world folk tales, retold.",
 			"LockinLock in plans through one link.",
+			"Chùa NhỏTap the wooden fish, light incense, ease up on harsh words.",
 			"Miu WorldA 3D block world to play with friends, with maths and Vietnamese quests.",
 			"Knowledge BaseBilingual articles on all kinds of topics to read, search and ask AI.",
 			"Manage your accountSign-in, devices and app access.",

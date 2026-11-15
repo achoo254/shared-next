@@ -5,7 +5,7 @@ signs in to, then the account page. One sign-in at the IdP covers every app, so 
 other app without signing in again.
 
 - **Static catalog** (`APP_SWITCHER_CATALOG`): the apps in three groups, each under its own heading (`group` on each
-  link): Tools (Web Nhanh, Chat, Tiểu Đệ, Scribe, Localman, Tunelo), Entertainment (Tử Vi, Clip, Truyện, Lockin) and Learning (Miu World,
+  link): Tools (Web Nhanh, Chat, Tiểu Đệ, Scribe, Localman, Tunelo), Entertainment (Tử Vi, Clip, Truyện, Lockin, Chùa Nhỏ) and Learning (Miu World,
   Knowledge Base), then the account page (`auth.<domain>/account`), every host under the one root domain the app passes. Labels and one-line descriptions in `en`, `vi`
   and `zh-CN`. `locale` takes any BCP 47 tag, matched by language and case-insensitively (`vi-VN` -> `vi`,
   `zh` or `zh-*` -> `zh-CN`); any other language falls back to English.
