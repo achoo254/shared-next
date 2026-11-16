@@ -56,7 +56,7 @@ describe("dist", () => {
 				"https://localman.hoandat.com/?utm_source=chat&utm_medium=app_switcher",
 				"https://tunnel.hoandat.com/?utm_source=chat&utm_medium=app_switcher",
 				"https://tuvi.hoandat.com/?utm_source=chat&utm_medium=app_switcher",
-				"https://clip.hoandat.com/?utm_source=chat&utm_medium=app_switcher",
+				"https://clip.hoandat.com/?utm_source=cross_sell&utm_medium=app_switcher&utm_campaign=chat",
 				"https://truyen.hoandat.com/?utm_source=chat&utm_medium=app_switcher",
 				"https://lockin.hoandat.com/?utm_source=chat&utm_medium=app_switcher",
 				"https://chuanho.hoandat.com/?utm_source=chat&utm_medium=app_switcher",
@@ -66,6 +66,30 @@ describe("dist", () => {
 			],
 			css: true,
 		});
+	});
+
+	it("serves the cross-sell pairing alone, without React, at ./cross-sell", () => {
+		const loaded = JSON.parse(
+			node(`
+				const mod = await import("@achoo254/app-switcher/cross-sell");
+				process.stdout.write(JSON.stringify({ keys: Object.keys(mod).sort(), tuvi: mod.crossSellSuggestion("tuvi") }));
+			`),
+		);
+		expect(loaded).toEqual({
+			keys: [
+				"CROSS_SELL_FALLBACK",
+				"CROSS_SELL_PAIRS",
+				"CROSS_SELL_UTM_SOURCE",
+				"crossSellHref",
+				"crossSellSuggestion",
+			],
+			tuvi: "truyen",
+		});
+		const source = readFileSync(
+			new URL("../dist/cross-sell.js", import.meta.url),
+			"utf8",
+		);
+		expect(source).not.toMatch(STATIC_IMPORT);
 	});
 
 	it("keeps the marks out of the main entry's static imports (own chunk)", () => {

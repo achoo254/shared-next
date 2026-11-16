@@ -11,6 +11,7 @@ import {
 	type AppSwitcherGroup,
 	type AppSwitcherLocale,
 } from "./catalog.js";
+import { crossSellHref, crossSellSuggestion } from "./cross-sell.js";
 
 /** `utm_medium` of every switcher link. */
 export const APP_SWITCHER_UTM_MEDIUM = "app_switcher";
@@ -22,6 +23,12 @@ export interface AppSwitcherLinksOptions {
 	readonly domain: string;
 	/** A BCP 47 tag such as `vi-VN` or `zh` (see `resolveAppSwitcherLocale`). */
 	readonly locale: string;
+	/**
+	 * Marks the app suggested for `current` (the cross-sell pairing) and tags
+	 * its link for cross-sell; on by default. The switcher turns it off once
+	 * the user hides the badge.
+	 */
+	readonly suggest?: boolean | undefined;
 }
 
 export interface AppSwitcherLink {
@@ -32,6 +39,11 @@ export interface AppSwitcherLink {
 	readonly href: string;
 	/** The group heading it is listed under; the account page has none. */
 	readonly group?: AppSwitcherGroup;
+	/**
+	 * The one app suggested for `current`: its link carries
+	 * `utm_source=cross_sell&utm_medium=app_switcher&utm_campaign=<current>`.
+	 */
+	readonly suggested?: true;
 }
 
 /**
@@ -61,6 +73,8 @@ export function appSwitcherLinks(
 		throw new Error(`app-switcher: "${current}" is not a catalog app`);
 	}
 	const locale = resolveAppSwitcherLocale(options.locale);
+	const suggestion =
+		options.suggest === false ? undefined : crossSellSuggestion(current);
 	return APP_SWITCHER_CATALOG.filter((entry) => entry.id !== current).map(
 		(entry) => {
 			const { webOrigin } = hostsFor(
@@ -70,12 +84,16 @@ export function appSwitcherLinks(
 			const url = new URL(entry.path, webOrigin);
 			url.searchParams.set("utm_source", current);
 			url.searchParams.set("utm_medium", APP_SWITCHER_UTM_MEDIUM);
+			const suggested = entry.id === suggestion;
 			return {
 				id: entry.id,
 				label: entry.label[locale],
 				description: entry.description[locale],
-				href: url.href,
+				href: suggested
+					? crossSellHref(url.href, current, APP_SWITCHER_UTM_MEDIUM)
+					: url.href,
 				...(entry.group ? { group: entry.group } : {}),
+				...(suggested ? { suggested: true as const } : {}),
 			};
 		},
 	);

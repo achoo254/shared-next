@@ -4,6 +4,7 @@
  */
 import { hostsFor } from "@achoo254/brand/hosts";
 import { APP_SWITCHER_APP_IDS, APP_SWITCHER_CATALOG, } from "./catalog.js";
+import { crossSellHref, crossSellSuggestion } from "./cross-sell.js";
 /** `utm_medium` of every switcher link. */
 export const APP_SWITCHER_UTM_MEDIUM = "app_switcher";
 /**
@@ -31,17 +32,22 @@ export function appSwitcherLinks(options) {
         throw new Error(`app-switcher: "${current}" is not a catalog app`);
     }
     const locale = resolveAppSwitcherLocale(options.locale);
+    const suggestion = options.suggest === false ? undefined : crossSellSuggestion(current);
     return APP_SWITCHER_CATALOG.filter((entry) => entry.id !== current).map((entry) => {
         const { webOrigin } = hostsFor({ hostTemplates: { web: entry.hostTemplate } }, domain);
         const url = new URL(entry.path, webOrigin);
         url.searchParams.set("utm_source", current);
         url.searchParams.set("utm_medium", APP_SWITCHER_UTM_MEDIUM);
+        const suggested = entry.id === suggestion;
         return {
             id: entry.id,
             label: entry.label[locale],
             description: entry.description[locale],
-            href: url.href,
+            href: suggested
+                ? crossSellHref(url.href, current, APP_SWITCHER_UTM_MEDIUM)
+                : url.href,
             ...(entry.group ? { group: entry.group } : {}),
+            ...(suggested ? { suggested: true } : {}),
         };
     });
 }

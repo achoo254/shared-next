@@ -1,7 +1,7 @@
 {
 	"name": "@achoo254/app-switcher",
-	"version": "0.9.0",
-	"description": "App switcher of the *-next products: static catalog of the apps one account signs in to, links under one root domain with UTM tags, and an accessible React popover",
+	"version": "0.10.0",
+	"description": "App switcher of the *-next products: static catalog of the apps one account signs in to, links under one root domain with UTM tags, the cross-sell pairing (one suggested app per app), and an accessible React popover",
 	"type": "module",
 	"engines": {
 		"node": ">=22.12"
@@ -11,6 +11,10 @@
 		".": {
 			"types": "./dist/index.d.ts",
 			"default": "./dist/index.js"
+		},
+		"./cross-sell": {
+			"types": "./dist/cross-sell.d.ts",
+			"default": "./dist/cross-sell.js"
 		},
 		"./app-switcher.css": "./dist/app-switcher.css",
 		"./package.json": "./package.json"

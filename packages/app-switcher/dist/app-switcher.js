@@ -9,9 +9,11 @@ import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
  * focused or opened.
  */
 import { Fragment, useCallback, useEffect, useId, useMemo, useRef, useState, } from "react";
+import { crossSellSuggestion } from "./cross-sell.js";
 import { EntryIcon, GridIcon } from "./icons.js";
 import { appSwitcherLinks, resolveAppSwitcherLocale, } from "./links.js";
 import { loadAppMarks } from "./mark-loader.js";
+import { readHiddenSuggestion, storeHiddenSuggestion, } from "./suggestion-dismissal.js";
 import { usePopoverDismiss } from "./use-popover-dismiss.js";
 import { useStandaloneDisplay } from "./use-standalone-display.js";
 const BUTTON_LABEL = {
@@ -29,6 +31,18 @@ const PANEL_LABEL = {
     en: "Apps",
     vi: "Ứng dụng",
     "zh-CN": "应用",
+};
+/** Badge of the app suggested for this one (cross-sell.ts). */
+const SUGGESTED_BADGE = {
+    en: "Suggested",
+    vi: "Gợi ý",
+    "zh-CN": "推荐",
+};
+/** Name of the small button that hides the badge, before the app's name. */
+const HIDE_SUGGESTION = {
+    en: "Hide suggestion",
+    vi: "Ẩn gợi ý",
+    "zh-CN": "隐藏推荐",
 };
 /** Fetches the marks chunk; a failure only leaves the placeholders. */
 function prefetchMarks() {
@@ -55,7 +69,9 @@ export function AppSwitcher(props) {
     usePopoverDismiss(open, close, refs);
     // An installed PWA would load the other app in its own window.
     const newContext = useStandaloneDisplay() && !onOpen;
-    const { links, error } = useMemo(() => safeLinks({ current, domain, locale }), [current, domain, locale]);
+    const [hiddenSuggestion, setHiddenSuggestion] = useState(readHiddenSuggestion);
+    const suggest = hiddenSuggestion !== crossSellSuggestion(current);
+    const { links, error } = useMemo(() => safeLinks({ current, domain, locale, suggest }), [current, domain, locale, suggest]);
     useEffect(() => {
         // A wrong domain hides the switcher; the app keeps working.
         if (error !== undefined)
@@ -76,8 +92,14 @@ export function AppSwitcher(props) {
         trigger.current?.focus();
         onOpen(href);
     }
+    /** Hides the badge for good; focus moves to the app's link, which stays. */
+    function hideSuggestion(event, id) {
+        event.currentTarget.parentElement?.querySelector("a")?.focus();
+        storeHiddenSuggestion(id);
+        setHiddenSuggestion(id);
+    }
     const rootClass = ["sn-app-switcher", props.className]
         .filter(Boolean)
         .join(" ");
-    return (_jsxs("div", { ref: root, className: rootClass, "data-placement": props.placement ?? "bottom-end", children: [_jsx("button", { ref: trigger, type: "button", className: "sn-app-switcher__button", "aria-label": BUTTON_LABEL[locale], title: BUTTON_LABEL[locale], "aria-haspopup": "dialog", "aria-expanded": open, "aria-controls": panelId, onClick: () => setOpen((value) => !value), onPointerEnter: prefetchMarks, onFocus: prefetchMarks, children: _jsx(GridIcon, {}) }), _jsx("dialog", { ref: panel, id: panelId, "aria-label": PANEL_LABEL[locale], className: "sn-app-switcher__panel", open: open, children: _jsx("ul", { className: "sn-app-switcher__list", children: links.map((link, index) => (_jsxs(Fragment, { children: [link.group && link.group !== links[index - 1]?.group ? (_jsx("li", { className: "sn-app-switcher__heading", role: "presentation", children: GROUP_HEADING[link.group][locale] })) : null, _jsx("li", { "data-entry": link.id, children: _jsxs("a", { className: "sn-app-switcher__link", href: link.href, target: newContext ? "_blank" : undefined, rel: newContext ? "noopener" : undefined, onClick: (event) => follow(event, link.href), children: [_jsx(EntryIcon, { id: link.id }), _jsxs("span", { className: "sn-app-switcher__text", children: [_jsx("span", { className: "sn-app-switcher__label", children: link.label }), _jsx("span", { className: "sn-app-switcher__description", children: link.description })] })] }) })] }, link.id))) }) })] }));
+    return (_jsxs("div", { ref: root, className: rootClass, "data-placement": props.placement ?? "bottom-end", children: [_jsx("button", { ref: trigger, type: "button", className: "sn-app-switcher__button", "aria-label": BUTTON_LABEL[locale], title: BUTTON_LABEL[locale], "aria-haspopup": "dialog", "aria-expanded": open, "aria-controls": panelId, onClick: () => setOpen((value) => !value), onPointerEnter: prefetchMarks, onFocus: prefetchMarks, children: _jsx(GridIcon, {}) }), _jsx("dialog", { ref: panel, id: panelId, "aria-label": PANEL_LABEL[locale], className: "sn-app-switcher__panel", open: open, children: _jsx("ul", { className: "sn-app-switcher__list", children: links.map((link, index) => (_jsxs(Fragment, { children: [link.group && link.group !== links[index - 1]?.group ? (_jsx("li", { className: "sn-app-switcher__heading", role: "presentation", children: GROUP_HEADING[link.group][locale] })) : null, _jsxs("li", { "data-entry": link.id, children: [_jsxs("a", { className: "sn-app-switcher__link", href: link.href, target: newContext ? "_blank" : undefined, rel: newContext ? "noopener" : undefined, "data-suggested": link.suggested ? "" : undefined, onClick: (event) => follow(event, link.href), children: [_jsx(EntryIcon, { id: link.id }), _jsxs("span", { className: "sn-app-switcher__text", children: [_jsxs("span", { className: "sn-app-switcher__label", children: [link.label, link.suggested ? (_jsx("span", { className: "sn-app-switcher__badge", children: SUGGESTED_BADGE[locale] })) : null] }), _jsx("span", { className: "sn-app-switcher__description", children: link.description })] })] }), link.suggested ? (_jsx("button", { type: "button", className: "sn-app-switcher__hide", "aria-label": `${HIDE_SUGGESTION[locale]}: ${link.label}`, title: HIDE_SUGGESTION[locale], onClick: (event) => hideSuggestion(event, link.id), children: _jsx("span", { "aria-hidden": "true", children: "\u00D7" }) })) : null] })] }, link.id))) }) })] }));
 }

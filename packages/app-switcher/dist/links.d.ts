@@ -8,6 +8,12 @@ export interface AppSwitcherLinksOptions {
     readonly domain: string;
     /** A BCP 47 tag such as `vi-VN` or `zh` (see `resolveAppSwitcherLocale`). */
     readonly locale: string;
+    /**
+     * Marks the app suggested for `current` (the cross-sell pairing) and tags
+     * its link for cross-sell; on by default. The switcher turns it off once
+     * the user hides the badge.
+     */
+    readonly suggest?: boolean | undefined;
 }
 export interface AppSwitcherLink {
     readonly id: AppSwitcherEntryId;
@@ -17,6 +23,11 @@ export interface AppSwitcherLink {
     readonly href: string;
     /** The group heading it is listed under; the account page has none. */
     readonly group?: AppSwitcherGroup;
+    /**
+     * The one app suggested for `current`: its link carries
+     * `utm_source=cross_sell&utm_medium=app_switcher&utm_campaign=<current>`.
+     */
+    readonly suggested?: true;
 }
 /**
  * The catalog locale for a BCP 47 tag, by its language, case-insensitively:

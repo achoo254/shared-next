@@ -66,6 +66,26 @@ appSwitcherLinks({
 
 It throws when `current` is not a catalog app or `domain` is not a root domain.
 
+## Suggested app (cross-sell)
+
+`src/cross-sell.ts` holds the one pairing table of the ecosystem: each app suggests one other app to its users
+(Tử Vi -> Truyện, Web Nhanh -> Knowledge Base, Miu World -> Chùa Nhỏ, Chat -> Clip, Clip -> Tử Vi,
+Knowledge Base -> Web Nhanh, Truyện -> Tử Vi, Chùa Nhỏ -> Miu World, any other app -> Web Nhanh). Two places read
+it, so they always agree:
+
+- **The switcher** marks the suggested app with a small "Suggested" badge ("Gợi ý", "推荐") and tags its link
+  `utm_source=cross_sell&utm_medium=app_switcher&utm_campaign=<current>`. A small button at the end of the row hides
+  the badge for good (no popup); the link stays, with the plain switcher tags. The hidden suggestion is stored in the
+  app's `localStorage` under `sn-app-switcher:hidden-suggestion` (the suggested app's id, so a changed pairing shows
+  again); a storage that refuses only makes hiding last until the page reloads. `appSwitcherLinks` marks it with
+  `suggested: true` unless `suggest: false`.
+- **The IdP's welcome page** for a new account (auth-next) suggests the app paired with the one the account was made
+  from. It imports the React-free entry `@achoo254/app-switcher/cross-sell` (`crossSellSuggestion`,
+  `crossSellHref`, `CROSS_SELL_PAIRS`), and tags the link with `utm_medium=welcome`.
+
+Changing a pair is a change of `CROSS_SELL_PAIRS` here, a release, and a bump in auth-next and the apps that show
+the switcher.
+
 ## Keyboard and screen readers
 
 - The button has an accessible name ("Switch app" in the app's locale), `aria-haspopup="dialog"`,
@@ -88,6 +108,7 @@ colours (`Canvas`, `CanvasText`, `GrayText`, `Highlight`), never a brand colour.
 | `--app-switcher-button-text` | dots colour | `currentColor` |
 | `--app-switcher-hover` | button and link hover | `currentColor` at 10% |
 | `--app-switcher-focus-ring` | focus outline | `Highlight` |
+| `--app-switcher-badge` | "Suggested" badge text and border | `--app-switcher-focus-ring` |
 | `--app-switcher-surface` | panel background | `Canvas` |
 | `--app-switcher-text` | panel text | `CanvasText` |
 | `--app-switcher-muted` | descriptions | `GrayText` |

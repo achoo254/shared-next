@@ -33,7 +33,7 @@ describe("appSwitcherLinks", () => {
 			"account",
 		]);
 		expect(links.map((link) => link.href)).toEqual([
-			"https://webnhanh.hoandat.com/?utm_source=localman&utm_medium=app_switcher",
+			"https://webnhanh.hoandat.com/?utm_source=cross_sell&utm_medium=app_switcher&utm_campaign=localman",
 			"https://chat.hoandat.com/?utm_source=localman&utm_medium=app_switcher",
 			"https://tieude.hoandat.com/?utm_source=localman&utm_medium=app_switcher",
 			"https://scribe.hoandat.com/?utm_source=localman&utm_medium=app_switcher",
@@ -86,7 +86,7 @@ describe("appSwitcherLinks", () => {
 			"account",
 		]);
 		expect(links[0]?.href).toBe(
-			"https://webnhanh.example.org/?utm_source=localman&utm_medium=app_switcher",
+			"https://webnhanh.example.org/?utm_source=cross_sell&utm_medium=app_switcher&utm_campaign=localman",
 		);
 		expect(links[1]?.href).toBe(
 			"https://chat.example.org/?utm_source=localman&utm_medium=app_switcher",
@@ -107,7 +107,10 @@ describe("appSwitcherLinks", () => {
 			for (const link of links) {
 				const url = new URL(link.href);
 				expect(url.protocol).toBe("https:");
-				expect(url.searchParams.get("utm_source")).toBe(current);
+				// The suggested app's link is tagged for cross-sell (cross-sell.test.ts).
+				expect(url.searchParams.get("utm_source")).toBe(
+					link.suggested ? "cross_sell" : current,
+				);
 				expect(url.searchParams.get("utm_medium")).toBe("app_switcher");
 			}
 		},

@@ -48,6 +48,7 @@ function displayStandalone(standalone: boolean): void {
 
 afterEach(() => {
 	cleanup();
+	localStorage.clear();
 	vi.restoreAllMocks();
 	vi.unstubAllGlobals();
 });
@@ -69,7 +70,7 @@ describe("AppSwitcher", () => {
 		expect(screen.getByRole("dialog", { name: "Apps" })).toBe(panel());
 		const links = within(panel()).getAllByRole("link");
 		expect(links.map((link) => link.textContent)).toEqual([
-			"Web NhanhA website from a template, published at its own address.",
+			"Web NhanhSuggestedA website from a template, published at its own address.",
 			"ChatFast messaging with searchable history and bots.",
 			"Tiểu ĐệAn AI bot that does small writing jobs for free.",
 			"LocalmanMock APIs and an API client in your browser.",
@@ -84,7 +85,7 @@ describe("AppSwitcher", () => {
 			"Manage your accountSign-in, devices and app access.",
 		]);
 		expect(links[0]?.getAttribute("href")).toBe(
-			"https://webnhanh.hoandat.com/?utm_source=scribe&utm_medium=app_switcher",
+			"https://webnhanh.hoandat.com/?utm_source=cross_sell&utm_medium=app_switcher&utm_campaign=scribe",
 		);
 		// The apps sit under three group headings, in this order.
 		const headings = within(panel())
@@ -211,6 +212,12 @@ describe("AppSwitcher", () => {
 		);
 		fireEvent.click(screen.getByRole("button", { name: "Chuyển ứng dụng" }));
 		expect(screen.getByRole("dialog", { name: "Ứng dụng" })).toBe(panel());
+		expect(panel().querySelector(".sn-app-switcher__badge")?.textContent).toBe(
+			"Gợi ý",
+		);
+		expect(
+			screen.getByRole("button", { name: "Ẩn gợi ý: Web Nhanh" }),
+		).toBeTruthy();
 		expect(
 			container
 				.querySelector(".sn-app-switcher")
@@ -229,5 +236,75 @@ describe("AppSwitcher", () => {
 				message: expect.stringContaining("is not a root domain"),
 			}),
 		);
+	});
+});
+
+describe("AppSwitcher suggestion", () => {
+	const HIDE = "Hide suggestion: Clip";
+
+	function suggestedRow(): HTMLElement {
+		const row = panel().querySelector<HTMLElement>('li[data-entry="clip"]');
+		if (!row) throw new Error("no Clip row");
+		return row;
+	}
+
+	it("marks the one app paired with this one, with a cross-sell link", () => {
+		const { button } = setup({ current: "chat" });
+		fireEvent.click(button);
+		const badges = panel().querySelectorAll(".sn-app-switcher__badge");
+		expect([...badges].map((badge) => badge.textContent)).toEqual([
+			"Suggested",
+		]);
+		const link = within(suggestedRow()).getByRole("link");
+		expect(link.getAttribute("href")).toBe(
+			"https://clip.hoandat.com/?utm_source=cross_sell&utm_medium=app_switcher&utm_campaign=chat",
+		);
+		expect(link.hasAttribute("data-suggested")).toBe(true);
+		expect(within(panel()).getAllByRole("button")).toHaveLength(1);
+	});
+
+	it("hides the badge for good, keeps the app and moves focus to it", () => {
+		const { button, unmount } = setup({ current: "chat" });
+		fireEvent.click(button);
+		fireEvent.click(screen.getByRole("button", { name: HIDE }));
+		expect(panel().querySelector(".sn-app-switcher__badge")).toBeNull();
+		expect(screen.queryByRole("button", { name: HIDE })).toBeNull();
+		const link = within(suggestedRow()).getByRole("link");
+		expect(document.activeElement).toBe(link);
+		expect(link.getAttribute("href")).toBe(
+			"https://clip.hoandat.com/?utm_source=chat&utm_medium=app_switcher",
+		);
+		expect(panel().open).toBe(true);
+
+		unmount();
+		const again = setup({ current: "chat" });
+		fireEvent.click(again.button);
+		expect(panel().querySelector(".sn-app-switcher__badge")).toBeNull();
+	});
+
+	it("shows a new suggestion after another one was hidden", () => {
+		localStorage.setItem("sn-app-switcher:hidden-suggestion", "clip");
+		const { button } = setup({ current: "scribe" });
+		fireEvent.click(button);
+		expect(
+			panel().querySelector('li[data-entry="webnhanh"] .sn-app-switcher__badge')
+				?.textContent,
+		).toBe("Suggested");
+	});
+
+	it("still works when storage refuses, hiding the badge until reload", () => {
+		vi.spyOn(Storage.prototype, "getItem").mockImplementation(() => {
+			throw new Error("blocked");
+		});
+		vi.spyOn(Storage.prototype, "setItem").mockImplementation(() => {
+			throw new Error("blocked");
+		});
+		const { button } = setup({ current: "chat" });
+		fireEvent.click(button);
+		expect(panel().querySelector(".sn-app-switcher__badge")?.textContent).toBe(
+			"Suggested",
+		);
+		fireEvent.click(screen.getByRole("button", { name: HIDE }));
+		expect(panel().querySelector(".sn-app-switcher__badge")).toBeNull();
 	});
 });
