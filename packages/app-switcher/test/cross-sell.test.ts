@@ -23,9 +23,8 @@ describe("crossSellSuggestion", () => {
 			scribe: "webnhanh",
 			localman: "webnhanh",
 			tunelo: "webnhanh",
-			tuvi: "truyen",
+			tuvi: "clip",
 			clip: "tuvi",
-			truyen: "tuvi",
 			lockin: "webnhanh",
 			chuanho: "miu",
 			miu: "chuanho",
@@ -56,17 +55,17 @@ describe("crossSellHref", () => {
 	it("tags a link, replacing the tags it had", () => {
 		expect(
 			crossSellHref(
-				"https://truyen.hoandat.com/?utm_source=x&page=2",
+				"https://lockin.hoandat.com/?utm_source=x&page=2",
 				"tuvi",
 				"welcome",
 			),
 		).toBe(
-			"https://truyen.hoandat.com/?utm_source=cross_sell&page=2&utm_medium=welcome&utm_campaign=tuvi",
+			"https://lockin.hoandat.com/?utm_source=cross_sell&page=2&utm_medium=welcome&utm_campaign=tuvi",
 		);
 	});
 
 	it("throws on a relative link", () => {
-		expect(() => crossSellHref("/truyen", "tuvi", "welcome")).toThrow();
+		expect(() => crossSellHref("/lockin", "tuvi", "welcome")).toThrow();
 	});
 });
 

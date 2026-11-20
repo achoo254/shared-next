@@ -77,7 +77,6 @@ describe("AppSwitcher", () => {
 			"TuneloYour tunnels in the browser.",
 			"Tử ViYour 12-palace horoscope chart and a fortune stick every day, just for fun.",
 			"ClipShort vertical videos from a template.",
-			"TruyệnVietnamese and world folk tales, retold.",
 			"LockinLock in plans through one link.",
 			"Chùa NhỏTap the wooden fish, light incense, ease up on harsh words.",
 			"Miu WorldA 3D block world to play with friends, with maths and Vietnamese quests.",

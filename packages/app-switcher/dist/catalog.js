@@ -121,18 +121,6 @@ export const APP_SWITCHER_CATALOG = [
         group: "fun",
     },
     {
-        id: "truyen",
-        label: same("Truyện"),
-        description: {
-            en: "Vietnamese and world folk tales, retold.",
-            vi: "Truyện cổ tích Việt Nam và thế giới, kể lại.",
-            "zh-CN": "重述的越南与世界民间故事。",
-        },
-        hostTemplate: "truyen.{domain}",
-        path: "/",
-        group: "fun",
-    },
-    {
         id: "lockin",
         label: same("Lockin"),
         description: {

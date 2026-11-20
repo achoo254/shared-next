@@ -5,7 +5,7 @@ signs in to, then the account page. One sign-in at the IdP covers every app, so 
 other app without signing in again.
 
 - **Static catalog** (`APP_SWITCHER_CATALOG`): the apps in three groups, each under its own heading (`group` on each
-  link): Tools (Web Nhanh, Chat, Tiểu Đệ, Scribe, Localman, Tunelo), Entertainment (Tử Vi, Clip, Truyện, Lockin, Chùa Nhỏ) and Learning (Miu World,
+  link): Tools (Web Nhanh, Chat, Tiểu Đệ, Scribe, Localman, Tunelo), Entertainment (Tử Vi, Clip, Lockin, Chùa Nhỏ) and Learning (Miu World,
   Knowledge Base), then the account page (`auth.<domain>/account`), every host under the one root domain the app passes. Labels and one-line descriptions in `en`, `vi`
   and `zh-CN`. `locale` takes any BCP 47 tag, matched by language and case-insensitively (`vi-VN` -> `vi`,
   `zh` or `zh-*` -> `zh-CN`); any other language falls back to English.
@@ -69,8 +69,8 @@ It throws when `current` is not a catalog app or `domain` is not a root domain.
 ## Suggested app (cross-sell)
 
 `src/cross-sell.ts` holds the one pairing table of the ecosystem: each app suggests one other app to its users
-(Tử Vi -> Truyện, Web Nhanh -> Knowledge Base, Miu World -> Chùa Nhỏ, Chat -> Clip, Clip -> Tử Vi,
-Knowledge Base -> Web Nhanh, Truyện -> Tử Vi, Chùa Nhỏ -> Miu World, any other app -> Web Nhanh). Two places read
+(Tử Vi -> Clip, Web Nhanh -> Knowledge Base, Miu World -> Chùa Nhỏ, Chat -> Clip, Clip -> Tử Vi,
+Knowledge Base -> Web Nhanh, Chùa Nhỏ -> Miu World, any other app -> Web Nhanh). Two places read
 it, so they always agree:
 
 - **The switcher** marks the suggested app with a small "Suggested" badge ("Gợi ý", "推荐") and tags its link

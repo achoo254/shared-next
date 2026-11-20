@@ -7,13 +7,12 @@ export const CROSS_SELL_FALLBACK = "webnhanh";
  * itself; the fallback's own entry keeps it from suggesting itself.
  */
 export const CROSS_SELL_PAIRS = {
-    tuvi: "truyen",
+    tuvi: "clip",
     webnhanh: "kb",
     miu: "chuanho",
     chat: "clip",
     clip: "tuvi",
     kb: "webnhanh",
-    truyen: "tuvi",
     chuanho: "miu",
 };
 function isPaired(origin) {

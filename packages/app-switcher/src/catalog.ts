@@ -30,7 +30,6 @@ export type AppSwitcherEntryId =
 	| "miu"
 	| "webnhanh"
 	| "clip"
-	| "truyen"
 	| "lockin"
 	| "chuanho"
 	| "tieude"
@@ -154,18 +153,6 @@ export const APP_SWITCHER_CATALOG: readonly AppSwitcherCatalogEntry[] = [
 			"zh-CN": "用模板制作竖屏短视频。",
 		},
 		hostTemplate: "clip.{domain}",
-		path: "/",
-		group: "fun",
-	},
-	{
-		id: "truyen",
-		label: same("Truyện"),
-		description: {
-			en: "Vietnamese and world folk tales, retold.",
-			vi: "Truyện cổ tích Việt Nam và thế giới, kể lại.",
-			"zh-CN": "重述的越南与世界民间故事。",
-		},
-		hostTemplate: "truyen.{domain}",
 		path: "/",
 		group: "fun",
 	},

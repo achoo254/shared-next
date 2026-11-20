@@ -57,7 +57,6 @@ describe("dist", () => {
 				"https://tunnel.hoandat.com/?utm_source=chat&utm_medium=app_switcher",
 				"https://tuvi.hoandat.com/?utm_source=chat&utm_medium=app_switcher",
 				"https://clip.hoandat.com/?utm_source=cross_sell&utm_medium=app_switcher&utm_campaign=chat",
-				"https://truyen.hoandat.com/?utm_source=chat&utm_medium=app_switcher",
 				"https://lockin.hoandat.com/?utm_source=chat&utm_medium=app_switcher",
 				"https://chuanho.hoandat.com/?utm_source=chat&utm_medium=app_switcher",
 				"https://miu.hoandat.com/?utm_source=chat&utm_medium=app_switcher",
@@ -83,7 +82,7 @@ describe("dist", () => {
 				"crossSellHref",
 				"crossSellSuggestion",
 			],
-			tuvi: "truyen",
+			tuvi: "clip",
 		});
 		const source = readFileSync(
 			new URL("../dist/cross-sell.js", import.meta.url),

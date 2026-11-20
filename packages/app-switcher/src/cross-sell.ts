@@ -23,13 +23,12 @@ export const CROSS_SELL_FALLBACK = "webnhanh" satisfies CrossSellAppId;
 export const CROSS_SELL_PAIRS: Readonly<
 	Partial<Record<CrossSellAppId, CrossSellAppId>>
 > = {
-	tuvi: "truyen",
+	tuvi: "clip",
 	webnhanh: "kb",
 	miu: "chuanho",
 	chat: "clip",
 	clip: "tuvi",
 	kb: "webnhanh",
-	truyen: "tuvi",
 	chuanho: "miu",
 };
 
