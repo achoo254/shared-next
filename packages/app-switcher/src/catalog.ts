@@ -196,8 +196,8 @@ export const APP_SWITCHER_CATALOG: readonly AppSwitcherCatalogEntry[] = [
 		id: "kb",
 		label: same("Knowledge Base"),
 		description: {
-			en: "Bilingual articles on all kinds of topics to read, search and ask AI.",
-			vi: "Kho tri thức song ngữ về đủ mọi chủ đề để đọc, tìm và hỏi AI.",
+			en: "Bilingual articles on infrastructure and software engineering to read, search and ask AI.",
+			vi: "Kho tri thức song ngữ về hạ tầng và kỹ thuật phần mềm để đọc, tìm và hỏi AI.",
 			"zh-CN": "涵盖各类主题的双语知识库，可阅读、搜索并向 AI 提问。",
 		},
 		hostTemplate: "kb.{domain}",
